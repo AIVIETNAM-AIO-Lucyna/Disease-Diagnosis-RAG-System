@@ -1,0 +1,23 @@
+# Environment variables
+.env
+.venv
+
+# Cache directories
+__pycache__
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+# Python bytecode
+__pycache__
+
+# Test directories
+.pytest_cache
+
+# IDE directories
+.vscode
+.idea
+
+
+# Models directories
+models/*
