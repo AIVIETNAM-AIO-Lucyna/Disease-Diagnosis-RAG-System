@@ -119,9 +119,7 @@ class Retriever:
             results=results,
         )
 
-    def retrieve(
-        self, query: str, index_name: str | None = None
-    ) -> RetrieveResult:
+    def retrieve(self, query: str, index_name: str | None = None) -> RetrieveResult:
         index_name = index_name or settings.RETRIEVE_INDEX_ALIAS
         return self.search_hybrid(
             HybridRetrieveRequest(query=query, index_name=index_name)
@@ -144,9 +142,10 @@ class Retriever:
                     doc_id=source.get("doc_id"),
                     disease=source.get("disease"),
                     symptoms=source.get("symptoms"),
+                    antecedents=source.get("antecedents"),
                     severity=source.get("severity"),
                     description=source.get("description"),
-                    precautions=source.get("precautions"),
+                    source=source.get("source"),
                 )
             )
         return hits

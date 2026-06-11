@@ -34,7 +34,9 @@ def normalize_symptoms(symptoms: list[str]) -> list[str]:
 def expand_synonyms(text: str) -> str:
     """Replace known synonym phrases in free-text queries."""
     expanded = text.lower()
-    for source, target in sorted(SYMPTOM_SYNONYMS.items(), key=lambda item: -len(item[0])):
+    for source, target in sorted(
+        SYMPTOM_SYNONYMS.items(), key=lambda item: -len(item[0])
+    ):
         expanded = expanded.replace(source, normalize_symptom(target))
     return expanded
 

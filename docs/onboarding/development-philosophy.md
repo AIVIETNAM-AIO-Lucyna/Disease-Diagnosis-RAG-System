@@ -1,7 +1,7 @@
 # Development philosophy
 
-> **Version:** 2026-06-09  
-> **See also:** [Project structure](./project-structure.md), [Roadmap and refactors](./roadmap-and-refactors.md)
+> **Version:** 2026-06-11  
+> **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
 
@@ -15,11 +15,11 @@ Ship the Module 1 pipeline end-to-end before optimizing. At the same time:
 - No experimental hacks in shared paths
 - Idempotent migrations and ingest (`_id = doc_id`)
 
-### 2. Educational scope, not clinical
+### 2. Educational scope
 
-The LLM summarizes retrieved disease information. It must **not** be positioned or implemented as a medical diagnostic system. Prompts and API copy should express uncertainty when evidence is weak.
+The system is **not** a clinical diagnostic tool. The LLM summarizes retrieved disease information. Prompts and API copy should express uncertainty when evidence is weak.
 
-### 3. Explicit boundaries between layers
+### 3. Explicit layer boundaries
 
 | Layer | May depend on | Must not contain |
 |-------|---------------|------------------|
@@ -28,32 +28,30 @@ The LLM summarizes retrieved disease information. It must **not** be positioned 
 | `services/rag/` | db, ai_inference, rag schemas | Raw OpenSearch client calls scattered in handlers |
 | `services/ai_inference/` | settings | OpenSearch queries |
 
-Keep **prompt construction**, **model invocation**, and **post-processing** in separate modules as generation and reranking land.
+Keep **prompt construction**, **model invocation**, and **post-processing** in separate modules.
 
 ### 4. Schemas are contracts
 
 We use two Pydantic base types for OpenSearch integration:
 
 ```python
-# Request / wire → OpenSearch
 class RWSBaseModel:
     def to_dict(self) -> dict: ...
 
-# OpenSearch JSON → typed response
 class ORSBaseModel:
     @classmethod
     def from_opensearch(cls, raw): ...
 ```
 
-RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expose `to_search_body()`; responses are slim and purpose-specific (`RetrieveResult` for production, `ExperimentModeResult` for debugging).
+RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expose `to_search_body()`; responses are slim and purpose-specific.
 
 **Rule:** If it crosses a network boundary (OpenSearch, LLM API), it gets an explicit schema.
 
 ### 5. Settings over hardcoding
 
-Index alias, source fields, search pipeline name, model paths, and OpenSearch credentials live in `src/settings.py` and `.env`. Code defaults should match migration/bootstrap scripts.
+Index alias, source fields, search pipeline name, model paths, and credentials live in `src/settings.py` and `.env`. Code defaults should match migration scripts.
 
-### 6. Retrieval is experiment-friendly
+### 6. Experiment-friendly retrieval
 
 The team compares retrieval strategies before locking the pipeline:
 
@@ -62,7 +60,7 @@ The team compares retrieval strategies before locking the pipeline:
 - `search_hybrid()` — BM25 + k-NN + RRF (MVP default)
 - `run_experiment()` — side-by-side comparison
 
-Production callers use slim `RetrieveResult`. Debug metadata (`opensearch_body`, `total_hits`, `mode`) stays on experiment types only.
+Production callers use slim `RetrieveResult`. Debug metadata stays on experiment types only.
 
 ### 7. OpenSearch does search; the app does AI
 
@@ -71,17 +69,17 @@ Production callers use slim `RetrieveResult`. Debug metadata (`opensearch_body`,
 | BM25, k-NN, RRF fusion | OpenSearch (Aiven) |
 | BGE embeddings | Application |
 | Cross-encoder reranker | Application |
-| LLM generation | Application (local Qwen3 8B target) |
+| LLM generation | Application |
 
-Vectors are computed in Python and sent in the k-NN sub-query. Do not assume OpenSearch hosts the embedding model.
+Vectors are computed in Python and sent in the k-NN sub-query.
 
 ### 8. Symptom-first indexing
 
 User queries are symptom lists. Searchable text must be **symptom-dense**:
 
-- **`keyword_text`** (text) — BM25 field: symptoms + disease name + synonyms
+- **`keyword_text`** (text) — BM25 field: disease + symptoms + antecedents
 - **`embedding`** — built from symptom-first natural language at ingest
-- **`symptoms`** (keyword[]) — structured field for display and reranking, not primary BM25
+- **`symptoms`**, **`antecedents`** (keyword[]) — structured for display/rerank, not BM25
 
 Use `match` on `keyword_text`, not on `keyword`-typed fields.
 
@@ -134,4 +132,5 @@ Before opening a PR, verify:
 
 | Date | Change |
 |------|--------|
-| 2026-06-09 | Initial philosophy doc (layer boundaries, RWS/ORS, retrieval experiments) |
+| 2026-06-11 | Streamlined document; removed duplicate project description |
+| 2026-06-09 | Initial philosophy doc |

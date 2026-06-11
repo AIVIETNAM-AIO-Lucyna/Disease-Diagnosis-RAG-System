@@ -1,9 +1,22 @@
 # Roadmap and refactors
 
-> **Version:** 2026-06-09  
+> **Version:** 2026-06-11
 > **See also:** [Getting started](./getting-started.md), [Project structure](./project-structure.md)
 
 MVP status, planned features, and structural changes we may make as the project matures.
+
+This document is the **authoritative source** for project status. Other docs link here rather than duplicating status tables.
+
+## Target architecture
+
+```
+[Ingest — offline]
+  dataset → normalize → build keyword_text / embed_text → BGE doc embed → bulk upsert
+
+[Query — online]
+  user symptoms → preprocess → BGE query embed → hybrid search (top 20)
+                → rerank (top 5) → Qwen3 8B generate → API response
+```
 
 ## MVP phases (Module 1)
 
@@ -11,7 +24,8 @@ MVP status, planned features, and structural changes we may make as the project 
 
 | Item | Status | Notes |
 |------|--------|-------|
-| OpenSearch on Aiven (BM25 + k-NN) | Done | `init_diseases` index, `diseases` alias |
+| OpenSearch on Aiven (BM25 + k-NN) | Done | `diseases` alias → `ddxplus_diseases` |
+| DDXPlus index mapping + migration | Done | `ddxplus_mapping.json`, `migrate_ddxplus_index.py` |
 | Search pipeline `hybrid-rrf` (RRF) | Done | `src/migrations/init_db.py` |
 | OpenSearch client (sync + async) | Done | `src/db/vector_db/opensearch.py` |
 | OpenSearch wire/response schemas | Done | `src/schemas/` |
@@ -19,11 +33,11 @@ MVP status, planned features, and structural changes we may make as the project 
 | Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + experiment runner |
 | Slim retrieval responses | Done | `RetrieveResult` vs `ExperimentModeResult` |
 | Query preprocessing (retrieval) | Done | `preprocess.py` — used by `Retriever` |
-| Batch ingestion | **Todo** | Stub in `ingest.py`; contracts only |
+| Batch ingestion | **Todo** | Stub in `ingest.py`; see [DDXPlus index mapping](../ddxplus-index-mapping.md) |
 | bge-reranker-base reranking | **Todo** | `services/ai_inference/reranker/` |
 | Qwen3 8B generation | **Todo** | Prompt + local inference |
 | FastAPI HTTP layer | **Todo** | Symptom query endpoint |
-| Full pipeline wiring | **Todo** | ingest -> rerank -> generate in `pipeline.py` |
+| Full pipeline wiring | **Todo** | ingest → rerank → generate in `pipeline.py` |
 | Automated tests | **Todo** | `tests/` directory configured, no tests yet |
 
 ### Phase 2 — Production scaling (future)
@@ -36,17 +50,6 @@ MVP status, planned features, and structural changes we may make as the project 
 | LLM | GPT-class or larger open models |
 | Ops | Monitoring, eval metrics, feedback loops |
 
-
-## Target end-to-end flow
-
-```
-[Ingest - offline]
-  dataset → normalize → build keyword_text / embed_text → BGE doc embed → bulk upsert
-
-[Query - online]
-  user query → preprocess → BGE query embed → hybrid search (top 20)
-            → rerank (top 5) → LLM generate → API response
-```
 
 ## Completed refactors (2026-06-09)
 
@@ -103,4 +106,6 @@ Optional thin CLI or Jupyter examples under `examples/` for `run_experiment()` �
 
 | Date | Change |
 |------|--------|
+| 2026-06-11 | Merged duplicate architecture diagrams into one section |
+| 2026-06-11 | DDXPlus mapping and migration marked done; ingest guide linked |
 | 2026-06-09 | Initial roadmap reflecting services/ layout and RetrieveResult split |
