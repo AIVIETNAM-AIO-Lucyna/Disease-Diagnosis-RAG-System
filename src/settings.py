@@ -55,9 +55,10 @@ class Settings(BaseSettings):
             "doc_id",
             "disease",
             "symptoms",
+            "antecedents",
             "severity",
             "description",
-            "precautions",
+            "source",
         ],
         description="OpenSearch _source fields returned by retrieval queries",
     )

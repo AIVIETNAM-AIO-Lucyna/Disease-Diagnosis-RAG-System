@@ -222,9 +222,10 @@ class RetrieveHit(ORSBaseModel):
     doc_id: str | None = None
     disease: str | None = None
     symptoms: list[str] | None = None
-    severity: str | None = None
+    antecedents: list[str] | None = None
+    severity: int | None = None
     description: str | None = None
-    precautions: list[str] | None = None
+    source: str | None = None
 
 
 class RetrieveResult(ORSBaseModel):

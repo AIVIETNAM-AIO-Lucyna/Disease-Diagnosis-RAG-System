@@ -23,11 +23,12 @@ class DiseaseDocument(RWSBaseModel):
     doc_id: str = Field(..., min_length=1)
     disease: str = Field(..., min_length=1)
     symptoms: list[str]
+    antecedents: list[str] = Field(default_factory=list)
     keyword_text: str = Field(..., min_length=1)
     embedding: list[float]
-    severity: str | None = None
+    severity: int = Field(..., ge=1, le=5)
     description: str = ""
-    precautions: list[str] | str | None = None
+    source: str = Field(..., min_length=1)
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "DiseaseDocument":
