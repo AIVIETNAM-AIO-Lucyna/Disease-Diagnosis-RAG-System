@@ -1,7 +1,7 @@
 # Project structure
 
-> **Version:** 2026-06-09  
-> **See also:** [Development philosophy](./development-philosophy.md), [Roadmap and refactors](./roadmap-and-refactors.md)
+> **Version:** 2026-06-11
+> **See also:** [Development philosophy](./development-philosophy.md), [Roadmap](./roadmap-and-refactors.md)
 
 ## Repository layout
 
@@ -10,7 +10,8 @@ disease-diagnosis-rag-system/
 ├── docs/                          # Contributor documentation (you are here)
 ├── indices/
 │   └── diseases/
-│       └── init_mapping.json      # OpenSearch field mappings (source of truth)
+│       ├── init_mapping.json          # Symptom2Disease mapping (bootstrap)
+│       └── ddxplus_mapping.json       # DDXPlus mapping (active)
 ├── models/                        # Downloaded HF models (gitignored)
 ├── src/
 │   ├── settings.py                # Env-based config (OpenSearch, models, retrieval)
@@ -23,14 +24,15 @@ disease-diagnosis-rag-system/
 │   │   ├── opensearch_responses.py
 │   │   └── search_pipelines.py
 │   ├── migrations/
-│   │   └── init_db.py             # Index + alias + search pipeline bootstrap
+│   │   ├── init_db.py             # Index + alias + search pipeline bootstrap
+│   │   └── migrate_ddxplus_index.py
 │   └── services/
 │       ├── ai_inference/
 │       │   └── bge/
-│       │       └── service.py       # BGE query embedding
+│       │       └── service.py     # BGE query embedding
 │       └── rag/
 │           ├── preprocess.py      # Query normalization + synonyms
-│           ├── ingest.py          # Document views + bulk upsert
+│           ├── ingest.py          # Document views + bulk upsert (stub)
 │           ├── retrieve.py        # Retriever (BM25 / k-NN / hybrid)
 │           ├── pipeline.py        # RAGService orchestration
 │           └── schemas.py         # Retrieval request/response DTOs
@@ -82,11 +84,11 @@ flowchart TD
 | **OpenSearch schemas** | `src/schemas/` | Parse/serialize OpenSearch API bodies (RWS / ORS) |
 | **RAG schemas** | `src/services/rag/schemas.py` | Retrieval requests, slim `RetrieveResult`, experiment DTOs |
 | **AI inference** | `src/services/ai_inference/` | Model loading and embedding (BGE today; reranker later) |
-| **RAG service** | `src/services/rag/service.py` | Retrieval orchestration, future ingest/rerank/generate |
+| **RAG service** | `src/services/rag/` | Retrieval orchestration, future ingest/rerank/generate |
 | **Migrations** | `src/migrations/` | Idempotent index/pipeline setup scripts |
 | **Index definitions** | `indices/` | JSON mappings versioned in git |
 
-## Key modules in detail
+## Key modules
 
 ### `src/db/vector_db/opensearch.py`
 
@@ -111,7 +113,7 @@ Domain-specific retrieval DTOs:
 - **Production response:** `RetrieveResult` — `hits` + optional `took_ms`
 - **Experiment response:** `ExperimentModeResult`, `ExperimentCompareResponse` — adds mode, totals, optional debug body
 
-### `src/services/rag/`
+### `src/services/rag/` modules
 
 | Module | Status | Owner |
 |--------|--------|-------|
@@ -119,35 +121,34 @@ Domain-specific retrieval DTOs:
 | `preprocess.py` | Done | Retrieval — query normalization + synonyms |
 | `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, experiments |
 | `pipeline.py` | Partial | Retrieval — `RAGService.query()` only |
-| `ingest.py` | Stub | Other dev — `DiseaseDocument`, `BulkIngestRequest` contracts |
+| `ingest.py` | Stub | Data team — `DiseaseDocument`, `BulkIngestRequest` |
 
+### Index mappings (`indices/diseases/`)
 
-### `indices/diseases/init_mapping.json`
+Two mapping files versioned in git. Retrieval always queries the `diseases` **alias**.
 
-OpenSearch document shape:
+| Mapping file | Physical index | Dataset |
+|--------------|----------------|---------|
+| `init_mapping.json` | `init_diseases` | Symptom2Disease (24 disease classes) |
+| `ddxplus_mapping.json` | `ddxplus_diseases` | DDXPlus (49 pathologies) — **active** |
 
-| Field | Type | Purpose |
-|-------|------|---------|
-| `keyword_text` | text | BM25 lexical search |
-| `embedding` | knn_vector (384) | Semantic search (cosine) |
-| `symptoms` | keyword | Structured symptoms (display / rerank) |
-| `disease`, `description` | text | Display + LLM context |
-| `severity`, `precautions` | keyword | Metadata / LLM context |
+See [DDXPlus index mapping](../ddxplus-index-mapping.md) for full field reference.
 
-## Data flow: retrieval (implemented)
+## Data flow: retrieval
 
-1. Caller builds a `HybridRetrieveRequest` (or BM25 / vector variant).
-2. `BGEInferenceService.embed_query()` produces a 384-dim vector with the BGE search prefix.
-3. Request schema builds OpenSearch Query DSL.
-4. `OpenSearchClient.query()` runs search; hybrid passes `search_pipeline=hybrid-rrf`.
-5. Hits are normalized into `RetrieveHit` → `RetrieveResult`.
+1. Caller builds a `HybridRetrieveRequest` (or BM25 / vector variant)
+2. `BGEInferenceService.embed_query()` produces a 384-dim vector with the BGE search prefix
+3. Request schema builds OpenSearch Query DSL
+4. `OpenSearchClient.query()` runs search; hybrid passes `search_pipeline=hybrid-rrf`
+5. Hits are normalized into `RetrieveHit` → `RetrieveResult`
 
-## What is intentionally not in `src/schemas/`
+## Schema organization rationale
 
-RAG domain models live under `src/services/rag/` so OpenSearch infrastructure stays reusable and separate from product logic. If the project grows, see [Roadmap and refactors](./roadmap-and-refactors.md).
+RAG domain models live under `src/services/rag/` so OpenSearch infrastructure stays reusable and separate from product logic. If the project grows, see [Roadmap](./roadmap-and-refactors.md) for schema consolidation options.
 
 ## Changelog
 
 | Date | Change |
 |------|--------|
-| 2026-06-09 | Initial structure guide reflecting services/ layout and slim RetrieveResult |
+| 2026-06-11 | Documented DDXPlus mapping and migration |
+| 2026-06-09 | Initial structure guide |

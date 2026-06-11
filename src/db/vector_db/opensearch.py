@@ -3,7 +3,8 @@
 from typing import Any, Dict, List
 
 from opensearchpy import AsyncOpenSearch, OpenSearch
-from opensearchpy.helpers import async_bulk, bulk as opensearch_bulk
+from opensearchpy.helpers import async_bulk
+from opensearchpy.helpers import bulk as opensearch_bulk
 
 from src.db.vector_db.base import VectorDB
 from src.schemas import (

@@ -3,74 +3,53 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![OpenSearch](https://img.shields.io/badge/OpenSearch-k--NN%20%2B%20BM25-green.svg)](https://opensearch.org/)
 
-**Educational RAG system** for disease symptom prediction - AIO Vietnam, Module 1.
+**Educational RAG system** for disease symptom prediction — AIO Vietnam, Module 1.
 
 > **Disclaimer:** Not a clinical diagnostic tool.
 
-## What is implemented
+## Current status
 
-**Retrieval only** (this branch): BM25, k-NN, hybrid + RRF, query preprocessing, BGE query embedding, experiment runner.
+Retrieval (BM25, k-NN, hybrid + RRF) is implemented. Ingestion, reranking, generation, and HTTP API are **Todo**.
 
-Ingestion, reranking, generation, and the HTTP API are **Todo**.
-
-## Architecture (MVP target)
-
-```text
-User query -> preprocess -> BGE embedding -> OpenSearch hybrid (BM25 + k-NN + RRF)  [DONE]
-          -> rerank (Todo) -> LLM (Todo) -> response
-```
-
-| Component | Status |
-| --- | --- |
-| OpenSearch BM25 + k-NN + RRF | Done |
-| BGE query embedding | Done |
-| Retriever + experiments | Done |
-| Ingestion | Todo |
-| Reranking / LLM / API | Todo |
-
-## Documentation
-
-[Onboarding guides](./docs/onboarding/README.md) (read once)
+See [Roadmap](./docs/onboarding/roadmap-and-refactors.md) for full MVP status.
 
 ## Quick start
 
 ```bash
 uv sync
-# configure .env (OPENSEARCH_*)
+cp .env.example .env   # configure OPENSEARCH_* credentials
 uv run python -m src.migrations.init_db upgrade
+uv run python -m src.migrations.migrate_ddxplus_index upgrade
 ```
 
-```python
-from src.services.ai_inference.bge.service import BGEInferenceService
-from src.services.rag import Retriever
-from src.services.rag.schemas import HybridRetrieveRequest
+See [Getting started](./docs/onboarding/getting-started.md) for detailed setup and verification steps.
 
-retriever = Retriever(embed_service=BGEInferenceService())
-result = retriever.search_hybrid(
-    HybridRetrieveRequest(query="fever cough fatigue")
-)
-for hit in result.hits:
-    print(hit.rank, hit.disease, hit.score)
-```
+## Documentation
 
-Requires documents already indexed in the `diseases` alias (ingest team).
+Read these guides **once** when joining the project:
 
-Example notebook: [`notebooks/example.ipynb`](./notebooks/example.ipynb) (`uv sync --extra dev && uv run jupyter notebook notebooks/example.ipynb`).
+| # | Document | What you will learn |
+|---|----------|---------------------|
+| 1 | [Getting started](./docs/onboarding/getting-started.md) | Prerequisites, setup, first commands |
+| 2 | [Project structure](./docs/onboarding/project-structure.md) | Folders, modules, layer responsibilities |
+| 3 | [Development philosophy](./docs/onboarding/development-philosophy.md) | Conventions, patterns, code style |
+| 4 | [Roadmap and refactors](./docs/onboarding/roadmap-and-refactors.md) | MVP status, planned work |
 
-## Layout
+### Reference documents
 
-```text
-src/services/rag/
-  schemas.py      # retrieval DTOs
-  preprocess.py   # query normalization (retrieval)
-  retrieve.py     # Retriever [implemented]
-  pipeline.py     # RAGService.query() only
-  ingest.py       # stub [data team]
-```
+| Document | Audience |
+|----------|----------|
+| [DDXPlus index mapping](./docs/ddxplus-index-mapping.md) | Data team — field schema, ingest workflow |
+| [`technical-proposal.tex`](./docs/technical-proposal.tex) | All — original architecture design |
+| [`indices/diseases/ddxplus_mapping.json`](./indices/diseases/ddxplus_mapping.json) | Data team — active OpenSearch mapping |
+
+### Versioning policy
+
+Documentation uses **date-based versions** (`YYYY-MM-DD`), not semver. Update the `Version` line at the top of a doc when its content meaningfully changes, and add a row to the **Changelog** section.
 
 ## Changelog
 
 | Date | Change |
-| --- | --- |
-| 2026-06-09 | Added `notebooks/example.ipynb` retrieval walkthrough |
-| 2026-06-09 | Scope: retrieval only; ingest stubbed for data team |
+|------|--------|
+| 2026-06-11 | Consolidated to single README; added DDXPlus mapping and migration |
+| 2026-06-09 | Initial retrieval implementation |

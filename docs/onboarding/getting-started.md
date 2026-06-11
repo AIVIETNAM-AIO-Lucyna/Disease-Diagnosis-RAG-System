@@ -1,26 +1,8 @@
 # Getting started
 
-> **Version:** 2026-06-09  
+> **Version:** 2026-06-11  
 > **Audience:** New contributors  
-> **See also:** [Project structure](./project-structure.md), [Development philosophy](./development-philosophy.md)
-
-## What this project is
-
-An **educational** RAG system that accepts a symptom query and returns possible diseases with descriptions, severity, and precautions. It is **not** a clinical diagnostic tool.
-
-**MVP pipeline (target end state):**
-
-```
-User symptoms
-  → normalize + synonym expansion
-  → BGE-small-en-v1.5 query embedding (app)
-  → OpenSearch hybrid: BM25 + k-NN → RRF (top 20)
-  → bge-reranker-base (top 5, app)
-  → Qwen3 8B (local generation)
-  → response
-```
-
-Retrieval (BM25, k-NN, hybrid) is implemented. Ingestion, reranking, generation, and the HTTP API are still in progress.
+> **Next:** [Project structure](./project-structure.md)
 
 ## Prerequisites
 
@@ -43,7 +25,13 @@ uv sync
 
 ### 2. Configure environment
 
-Create a `.env` file in the project root (never commit it):
+Copy the example file and fill in your OpenSearch credentials (never commit `.env`):
+
+```bash
+cp .env.example .env
+```
+
+Required variables:
 
 ```env
 OPENSEARCH_HOST=your-aiven-host.aivencloud.com
@@ -64,24 +52,29 @@ EMBEDDING_MODEL=bge-small-en-v1.5
 
 ### 3. Initialize OpenSearch
 
-Creates physical index `init_diseases`, alias `diseases`, and search pipeline `hybrid-rrf`:
+Bootstrap the search pipeline and DDXPlus index:
 
 ```bash
 uv run python -m src.migrations.init_db upgrade
+uv run python -m src.migrations.migrate_ddxplus_index upgrade
 ```
 
-To tear down:
+`init_db` creates the `hybrid-rrf` search pipeline and a bootstrap index. `migrate_ddxplus_index` creates `ddxplus_diseases` and points the `diseases` alias to it.
+
+Rollback to the Symptom2Disease mapping:
 
 ```bash
-uv run python -m src.migrations.init_db downgrade
+uv run python -m src.migrations.migrate_ddxplus_index downgrade
 ```
+
+See [DDXPlus index mapping](../ddxplus-index-mapping.md) for field schema and ingest steps.
 
 ### 4. Verify retrieval (after documents are indexed)
 
 ```python
 from src.services.ai_inference.bge.service import BGEInferenceService
+from src.services.rag import Retriever
 from src.services.rag.schemas import HybridRetrieveRequest
-from src.services.rag.service import Retriever
 
 retriever = Retriever(embed_service=BGEInferenceService())
 result = retriever.search_hybrid(HybridRetrieveRequest(query="fever cough fatigue"))
@@ -99,13 +92,13 @@ comparison = retriever.run_experiment(
 print(comparison.modes_run)
 ```
 
-Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipynb) (run `uv sync --extra dev` then run the notebook).
+Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipynb) (run `uv sync --extra dev`).
 
 ## First-day checklist
 
 - [ ] Read [Project structure](./project-structure.md)
 - [ ] Read [Development philosophy](./development-philosophy.md)
-- [ ] Copy `.env` and run `init_db upgrade`
+- [ ] Copy `.env` and run migrations
 - [ ] Run one retrieval experiment against the `diseases` alias
 
 ## Common issues
@@ -116,10 +109,12 @@ Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipy
 | DNS / connection errors to OpenSearch | Wrong host or network | Check Aiven dashboard and `.env` |
 | Model download on every import | First run or missing `models/` | Wait for `snapshot_download`; ensure `models/` is writable |
 | Hybrid search returns empty | No documents indexed yet | Implement/run ingestion (see [Roadmap](./roadmap-and-refactors.md)) |
-| BM25 on `symptoms` field fails | `symptoms` is `keyword`, not `text` | Use `keyword_text` for BM25 (see design notes) |
+| BM25 on `symptoms` field fails | `symptoms` is `keyword`, not `text` | Use `keyword_text` for BM25 |
 
 ## Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-06-11 | Fixed Retriever import; aligned setup with `.env.example` |
+| 2026-06-11 | Removed duplicate project description; streamlined setup instructions |
 | 2026-06-09 | Initial getting started guide |
