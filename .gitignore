@@ -22,3 +22,4 @@ __pycache__
 # Models directories
 models/*data/kb/*.csv
 release_*_patients_dedup.csv
+data/kb/*.csv
