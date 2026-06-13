@@ -27,7 +27,7 @@ This document is the **authoritative source** for project status. Other docs lin
 | OpenSearch on Aiven (BM25 + k-NN) | Done | `diseases` alias → `ddxplus_diseases` |
 | DDXPlus index mapping + migration | Done | `ddxplus_mapping.json`, `migrate_ddxplus_index.py` |
 | Search pipeline `hybrid-rrf` (RRF) | Done | `src/migrations/init_db.py` |
-| OpenSearch client (sync + async) | Done | `src/db/vector_db/opensearch.py` |
+| OpenSearch client (sync) | Done | `src/db/vector_db/opensearch.py` |
 | OpenSearch wire/response schemas | Done | `src/schemas/` |
 | BGE query embedding | Done | `BGEInferenceService` |
 | Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + experiment runner |
@@ -79,14 +79,16 @@ Shared concern: model path resolution, lazy loading, device selection.
 src/api/
   main.py           # FastAPI app
   routes/query.py   # POST /query
-  dependencies.py   # inject RAGService, async OpenSearch
+  dependencies.py   # inject RAGService, OpenSearch client
 ```
 
-Use `AsyncOpenSearchClient` in routes; keep sync client for migrations.
+Use `asyncio.to_thread` (or `asyncer.asyncify`) on service methods in routes — e.g.
+`await asyncio.to_thread(retriever.retrieve, query)` — so the sync `OpenSearchClient`
+stays the single data-access path for migrations and API alike.
 
 ### 3. Consolidate or split schemas
 
-**Option A (current):** OpenSearch infra in `src/schemas/`, RAG DTOs in `services/rag/schemas.py`.  
+**Option A (current):** OpenSearch infra in `src/schemas/`, RAG DTOs in `services/rag/schemas.py`.
 **Option B (if RAG grows):** Rename to `src/schemas/opensearch/` and `src/services/rag/contracts/`.
 
 Stay with Option A until file count or import cycles force a split.

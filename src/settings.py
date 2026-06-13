@@ -37,7 +37,7 @@ class Settings(BaseSettings):
         description="The path to the indices",
     )
     CURRENT_INDEX_MAPPING: str = Field(
-        default="diseases/init_mapping.json",
+        default="diseases/ddxplus_mapping.json",
         description="The path to the current index mapping",
     )
     CURRENT_SEARCH_PIPELINE: str = Field(
