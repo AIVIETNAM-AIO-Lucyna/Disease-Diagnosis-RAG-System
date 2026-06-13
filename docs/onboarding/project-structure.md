@@ -18,7 +18,7 @@ disease-diagnosis-rag-system/
 │   ├── db/
 │   │   └── vector_db/
 │   │       ├── base.py            # VectorDB protocol
-│   │       └── opensearch.py      # Sync + async OpenSearch clients
+│   │       └── opensearch.py      # Sync OpenSearch client
 │   ├── schemas/                   # OpenSearch wire/response models (shared infra)
 │   │   ├── base.py                # RWSBaseModel, ORSBaseModel
 │   │   ├── opensearch_responses.py
@@ -92,8 +92,8 @@ flowchart TD
 
 ### `src/db/vector_db/opensearch.py`
 
-- **`OpenSearchClient`** — sync; used by migrations, scripts, notebooks
-- **`AsyncOpenSearchClient`** — async; reserved for future FastAPI handlers
+- **`OpenSearchClient`** — sync; used by migrations, scripts, notebooks, and services
+- FastAPI routes offload blocking work with `asyncio.to_thread` at the service boundary
 - Methods: index CRUD, aliases, search pipelines, `query()`, `bulk()`
 
 ### `src/schemas/` (OpenSearch infrastructure)

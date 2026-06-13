@@ -1,6 +1,6 @@
 # Development philosophy
 
-> **Version:** 2026-06-11  
+> **Version:** 2026-06-11
 > **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
@@ -104,12 +104,10 @@ Every IO path (OpenSearch, model load, file read) should surface meaningful erro
 | Tests | `tests/` with pytest; add tests for non-trivial behavior |
 | Commits | Focus on *why*; only commit when asked |
 
-## Sync vs async clients
+## Sync client, async routes
 
-- **`OpenSearchClient` (sync)** — migrations, CLI, notebooks, batch ingest
-- **`AsyncOpenSearchClient` (async)** — future FastAPI routes
-
-Do not mix async client calls inside sync migration scripts.
+- **`OpenSearchClient` (sync)** — single client for migrations, CLI, notebooks, ingest, and retrieval
+- **FastAPI routes** — wrap blocking service calls with `asyncio.to_thread` or `asyncer.asyncify` at the route/service boundary; do not add a parallel async OpenSearch client unless load requires native async I/O
 
 ## Configuration and secrets
 
