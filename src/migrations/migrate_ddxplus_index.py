@@ -1,8 +1,6 @@
 import json
 import sys
 
-from opensearchpy.exceptions import NotFoundError
-
 from src.db.vector_db.opensearch import get_opensearch_client
 from src.settings import settings
 
@@ -25,18 +23,8 @@ def upgrade() -> None:
             "mappings": json.load(open(PATH_TO_DDXPLUS_MAPPING)),
         },
     )
-    try:
-        current_indices = list(client.client.indices.get_alias(name=ALIAS_NAME).keys())
-    except NotFoundError:
-        current_indices = []
-    alias_actions = [
-        {"remove": {"index": index_name, "alias": ALIAS_NAME}}
-        for index_name in current_indices
-        if index_name != DDXPLUS_INDEX_NAME
-    ]
-    alias_actions.append({"add": {"index": DDXPLUS_INDEX_NAME, "alias": ALIAS_NAME}})
-    client.client.indices.update_aliases(body={"actions": alias_actions})
-    if client.client.indices.exists(index=LEGACY_INDEX_NAME):
+    client.swap_alias(ALIAS_NAME, DDXPLUS_INDEX_NAME)
+    if client.index_exists(LEGACY_INDEX_NAME):
         client.delete_index(LEGACY_INDEX_NAME)
 
 
@@ -49,18 +37,8 @@ def downgrade() -> None:
             "mappings": json.load(open(PATH_TO_LEGACY_MAPPING)),
         },
     )
-    try:
-        current_indices = list(client.client.indices.get_alias(name=ALIAS_NAME).keys())
-    except NotFoundError:
-        current_indices = []
-    alias_actions = [
-        {"remove": {"index": index_name, "alias": ALIAS_NAME}}
-        for index_name in current_indices
-        if index_name != LEGACY_INDEX_NAME
-    ]
-    alias_actions.append({"add": {"index": LEGACY_INDEX_NAME, "alias": ALIAS_NAME}})
-    client.client.indices.update_aliases(body={"actions": alias_actions})
-    if client.client.indices.exists(index=DDXPLUS_INDEX_NAME):
+    client.swap_alias(ALIAS_NAME, LEGACY_INDEX_NAME)
+    if client.index_exists(DDXPLUS_INDEX_NAME):
         client.delete_index(DDXPLUS_INDEX_NAME)
 
 
