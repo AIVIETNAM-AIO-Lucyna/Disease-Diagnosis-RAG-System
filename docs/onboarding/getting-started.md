@@ -1,7 +1,7 @@
 # Getting started
 
-> **Version:** 2026-06-11  
-> **Audience:** New contributors  
+> **Version:** 2026-06-17
+> **Audience:** New contributors
 > **Next:** [Project structure](./project-structure.md)
 
 ## Prerequisites
@@ -84,15 +84,27 @@ print(result.hits)
 Compare BM25 vs k-NN vs hybrid:
 
 ```python
-from src.services.rag.schemas import RetrieveExperimentRequest
+from src.services.rag.schemas import RetrievalMode, RetrieveExperimentRequest
 
 comparison = retriever.run_experiment(
     RetrieveExperimentRequest(query="fever cough fatigue")
 )
-print(comparison.modes_run)
+print(comparison.modes_run)  # ["bm25", "knn", "hybrid"]
+
+hybrid_hits = comparison.results[RetrievalMode.HYBRID].hits
+print(hybrid_hits)
 ```
 
 Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipynb) (run `uv sync --extra dev`).
+
+### 5. Run tests (before commit)
+
+```bash
+uv sync --extra dev
+uv run pytest tests/rag
+```
+
+Tests mock OpenSearch and BGE — no `.env` or indexed documents required. See [README](../../README.md#testing-before-commit) for pre-commit hooks.
 
 ## First-day checklist
 
@@ -100,6 +112,7 @@ Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipy
 - [ ] Read [Development philosophy](./development-philosophy.md)
 - [ ] Copy `.env` and run migrations
 - [ ] Run one retrieval experiment against the `diseases` alias
+- [ ] Run `uv run pytest tests/rag`
 
 ## Common issues
 
@@ -115,6 +128,7 @@ Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipy
 
 | Date | Change |
 |------|--------|
+| 2026-06-17 | Added test commands; `RetrievalMode` experiment result keys |
 | 2026-06-11 | Fixed Retriever import; aligned setup with `.env.example` |
 | 2026-06-11 | Removed duplicate project description; streamlined setup instructions |
 | 2026-06-09 | Initial getting started guide |

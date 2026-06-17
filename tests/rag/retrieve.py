@@ -15,7 +15,11 @@ from src.services.rag.schemas import (
     VectorRetrieveRequest,
 )
 from src.settings import settings
-from tests.rag.conftest import fake_embedding, make_search_response
+from tests.rag.conftest import (
+    fake_embedding,
+    knn_vector_from_search_body,
+    make_search_response,
+)
 
 
 class TestRetrieverHelpers:
@@ -79,6 +83,45 @@ class TestRetrieverHelpers:
         assert len(result.hits) == 1
         assert result.hits[0].doc_id == "G70.0"
 
+    @pytest.mark.parametrize(
+        ("mode", "expected"),
+        [
+            (RetrievalMode.BM25, RetrievalMode.BM25),
+            ("knn", RetrievalMode.KNN),
+        ],
+    )
+    def test_normalize_mode(
+        self, mode: RetrievalMode | str, expected: RetrievalMode
+    ) -> None:
+        assert Retriever._normalize_mode(mode) == expected
+
+    def test_to_experiment_mode_result_includes_total_hits(self) -> None:
+        response = make_search_response(took=42, total=7)
+
+        result = Retriever._to_experiment_mode_result(
+            mode=RetrievalMode.BM25,
+            response=response,
+        )
+
+        assert result.mode == RetrievalMode.BM25
+        assert result.took_ms == 42
+        assert result.total_hits == 7
+        assert len(result.hits) == 1
+
+
+class TestRetrieveRequestSchemas:
+    def test_vector_to_search_body_requires_embedding(self) -> None:
+        request = VectorRetrieveRequest(query="fever")
+
+        with pytest.raises(ValueError, match="embedding must be set"):
+            request.to_search_body()
+
+    def test_hybrid_to_search_body_requires_embedding(self) -> None:
+        request = HybridRetrieveRequest(query="fever")
+
+        with pytest.raises(ValueError, match="embedding must be set"):
+            request.to_search_body()
+
 
 class TestRetrieverSearch:
     def test_search_bm25_queries_opensearch_and_returns_hits(
@@ -137,7 +180,7 @@ class TestRetrieverSearch:
 
         mock_embed_service.embed_query.assert_called_once_with("fever cough")
         body = mock_opensearch_client.query.call_args.args[1]
-        assert body["query"]["knn"]["embedding"]["vector"] == fake_embedding()
+        assert knn_vector_from_search_body(body) == fake_embedding()
         assert len(result.hits) == 1
 
     def test_search_vector_uses_provided_embedding(
@@ -153,7 +196,21 @@ class TestRetrieverSearch:
 
         mock_embed_service.embed_query.assert_not_called()
         body = mock_opensearch_client.query.call_args.args[1]
-        assert body["query"]["knn"]["embedding"]["vector"] == embedding
+        assert knn_vector_from_search_body(body) == embedding
+
+    def test_search_hybrid_embeds_query_when_embedding_omitted(
+        self,
+        retriever: Retriever,
+        mock_embed_service: Mock,
+        mock_opensearch_client: Mock,
+    ) -> None:
+        request = HybridRetrieveRequest(query="fever cough")
+
+        retriever.search_hybrid(request)
+
+        mock_embed_service.embed_query.assert_called_once_with("fever cough")
+        body = mock_opensearch_client.query.call_args.args[1]
+        assert knn_vector_from_search_body(body) == fake_embedding()
 
     def test_search_hybrid_passes_search_pipeline(
         self,
@@ -174,12 +231,14 @@ class TestRetrieverSearch:
     def test_retrieve_delegates_to_hybrid_with_default_index(
         self,
         retriever: Retriever,
+        mock_embed_service: Mock,
         mock_opensearch_client: Mock,
     ) -> None:
         result = retriever.retrieve("fever cough")
 
         index_name = mock_opensearch_client.query.call_args.args[0]
         assert index_name == settings.RETRIEVE_INDEX_ALIAS
+        mock_embed_service.embed_query.assert_called_once_with("fever cough")
         assert len(result.hits) == 1
 
 
@@ -191,9 +250,9 @@ class TestRetrieverExperiment:
         mock_opensearch_client: Mock,
     ) -> None:
         mock_opensearch_client.query.side_effect = [
-            make_search_response(took=10),
-            make_search_response(took=20),
-            make_search_response(took=30),
+            make_search_response(took=10, total=3),
+            make_search_response(took=20, total=5),
+            make_search_response(took=30, total=7),
         ]
         request = RetrieveExperimentRequest(
             query="fever",
@@ -204,16 +263,36 @@ class TestRetrieverExperiment:
         response = retriever.run_experiment(request)
 
         assert mock_opensearch_client.query.call_count == 3
-        assert mock_embed_service.embed_query.call_count == 2
-        assert set(response.results.keys()) == {"bm25", "knn", "hybrid"}
-        assert response.results["bm25"].took_ms == 10
-        assert response.results["knn"].took_ms == 20
-        assert response.results["hybrid"].took_ms == 30
+        assert mock_embed_service.embed_query.call_count == 1
+        assert set(response.results.keys()) == {
+            RetrievalMode.BM25,
+            RetrievalMode.KNN,
+            RetrievalMode.HYBRID,
+        }
+        assert response.results[RetrievalMode.BM25].mode == RetrievalMode.BM25
+        assert response.results[RetrievalMode.BM25].took_ms == 10
+        assert response.results[RetrievalMode.BM25].total_hits == 3
+        assert response.results[RetrievalMode.KNN].took_ms == 20
+        assert response.results[RetrievalMode.HYBRID].took_ms == 30
         assert (
-            response.results["hybrid"].search_pipeline
+            response.results[RetrievalMode.HYBRID].search_pipeline
             == settings.CURRENT_SEARCH_PIPELINE
         )
-        assert response.results["bm25"].opensearch_body is not None
+        assert response.results[RetrievalMode.BM25].opensearch_body is not None
+        assert response.modes_run == ["bm25", "knn", "hybrid"]
+
+    def test_run_experiment_excludes_opensearch_body_by_default(
+        self,
+        retriever: Retriever,
+    ) -> None:
+        request = RetrieveExperimentRequest(
+            query="fever",
+            modes=[RetrievalMode.BM25],
+        )
+
+        response = retriever.run_experiment(request)
+
+        assert response.results[RetrievalMode.BM25].opensearch_body is None
 
     def test_run_experiment_preprocesses_query(
         self,
@@ -230,3 +309,107 @@ class TestRetrieverExperiment:
         body = mock_opensearch_client.query.call_args.args[1]
         assert body["query"]["match"]["keyword_text"]["query"] == "i am fatigue"
         assert response.query == "i am fatigue"
+
+    def test_run_experiment_bm25_only_skips_embedding(
+        self,
+        retriever: Retriever,
+        mock_embed_service: Mock,
+    ) -> None:
+        request = RetrieveExperimentRequest(
+            query="fever",
+            modes=[RetrievalMode.BM25],
+        )
+
+        retriever.run_experiment(request)
+
+        mock_embed_service.embed_query.assert_not_called()
+
+    def test_run_experiment_sets_embedding_once_for_vector_modes(
+        self,
+        retriever: Retriever,
+        mock_embed_service: Mock,
+        mock_opensearch_client: Mock,
+    ) -> None:
+        mock_opensearch_client.query.side_effect = [
+            make_search_response(took=10),
+            make_search_response(took=20),
+        ]
+        request = RetrieveExperimentRequest(
+            query="fever",
+            modes=[RetrievalMode.KNN, RetrievalMode.HYBRID],
+        )
+
+        retriever.run_experiment(request)
+
+        mock_embed_service.embed_query.assert_called_once_with("fever")
+        for call in mock_opensearch_client.query.call_args_list:
+            assert knn_vector_from_search_body(call.args[1]) == fake_embedding()
+
+    def test_run_experiment_uses_fixed_embedding(
+        self,
+        retriever: Retriever,
+        mock_embed_service: Mock,
+        mock_opensearch_client: Mock,
+    ) -> None:
+        embedding = fake_embedding()
+        request = RetrieveExperimentRequest(
+            query="fever",
+            modes=[RetrievalMode.KNN, RetrievalMode.HYBRID],
+            embedding=embedding,
+        )
+
+        retriever.run_experiment(request)
+
+        mock_embed_service.embed_query.assert_not_called()
+        for call in mock_opensearch_client.query.call_args_list:
+            assert knn_vector_from_search_body(call.args[1]) == embedding
+
+    def test_run_experiment_normalizes_string_mode_keys(
+        self,
+        retriever: Retriever,
+        mock_opensearch_client: Mock,
+    ) -> None:
+        request = RetrieveExperimentRequest(
+            query="fever",
+            modes=[RetrievalMode.BM25],
+        )
+        # RWSBaseModel stores enum values as strings after validation.
+        request = request.model_copy(update={"modes": ["bm25"]})
+
+        response = retriever.run_experiment(request)
+
+        assert RetrievalMode.BM25 in response.results
+
+    def test_run_experiment_skips_preprocess_when_disabled(
+        self,
+        mock_embed_service: Mock,
+        mock_opensearch_client: Mock,
+    ) -> None:
+        retriever = Retriever(
+            embed_service=mock_embed_service,
+            client=mock_opensearch_client,
+            preprocess=False,
+        )
+        request = RetrieveExperimentRequest(
+            query="I am tired",
+            modes=[RetrievalMode.BM25],
+        )
+
+        response = retriever.run_experiment(request)
+
+        body = mock_opensearch_client.query.call_args.args[1]
+        assert body["query"]["match"]["keyword_text"]["query"] == "I am tired"
+        assert response.query == "I am tired"
+
+    def test_run_experiment_empty_modes_logs_warning(
+        self,
+        retriever: Retriever,
+        caplog: pytest.LogCaptureFixture,
+    ) -> None:
+        request = RetrieveExperimentRequest(query="fever", modes=[])
+
+        response = retriever.run_experiment(request)
+
+        assert response.results == {}
+        assert response.modes_run == []
+        assert "empty modes list" in caplog.text
