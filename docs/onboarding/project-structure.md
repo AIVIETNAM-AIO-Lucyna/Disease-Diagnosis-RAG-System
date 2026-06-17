@@ -1,6 +1,6 @@
 # Project structure
 
-> **Version:** 2026-06-11
+> **Version:** 2026-06-17
 > **See also:** [Development philosophy](./development-philosophy.md), [Roadmap](./roadmap-and-refactors.md)
 
 ## Repository layout
@@ -37,6 +37,13 @@ disease-diagnosis-rag-system/
 │           ├── pipeline.py        # RAGService orchestration
 │           └── schemas.py         # Retrieval request/response DTOs
 ├── pyproject.toml
+├── tests/                         # pytest suite (mocked OpenSearch + BGE)
+│   ├── conftest.py
+│   └── rag/
+│       ├── conftest.py
+│       └── retrieve.py            # Retriever unit tests
+├── notebooks/
+│   └── example.ipynb              # Retrieval walkthrough (BM25 / k-NN / hybrid)
 ├── README.md
 └── .env                           # Local secrets (not in git)
 ```
@@ -109,9 +116,11 @@ Used for search pipeline bodies, mapping responses, and raw search responses.
 
 Domain-specific retrieval DTOs:
 
-- **Requests:** `Bm25RetrieveRequest`, `VectorRetrieveRequest`, `HybridRetrieveRequest` — each builds OpenSearch Query DSL via `to_search_body()`
+- **Requests:** `Bm25RetrieveRequest`, `VectorRetrieveRequest`, `HybridRetrieveRequest` — each builds OpenSearch Query DSL via `to_search_body()`. Vector/hybrid requests carry an optional `embedding`; the retriever sets it before calling `to_search_body()`.
+- **Experiment request:** `RetrieveExperimentRequest` — shared query, optional fixed `embedding`, `modes` list
 - **Production response:** `RetrieveResult` — `hits` + optional `took_ms`
-- **Experiment response:** `ExperimentModeResult`, `ExperimentCompareResponse` — adds mode, totals, optional debug body
+- **Experiment response:** `ExperimentCompareResponse` — `results: dict[RetrievalMode, ExperimentModeResult]` plus `modes_run` helper
+- **Internal:** `SearchExecution`, `PreprocessableRequest` TypeVar — used by `Retriever` execute helpers
 
 ### `src/services/rag/` modules
 
@@ -119,7 +128,7 @@ Domain-specific retrieval DTOs:
 |--------|--------|-------|
 | `schemas.py` | Done | Retrieval — request/response DTOs |
 | `preprocess.py` | Done | Retrieval — query normalization + synonyms |
-| `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, experiments |
+| `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, `run_experiment()` |
 | `pipeline.py` | Partial | Retrieval — `RAGService.query()` only |
 | `ingest.py` | Stub | Data team — `DiseaseDocument`, `BulkIngestRequest` |
 
@@ -137,10 +146,22 @@ See [DDXPlus index mapping](../ddxplus-index-mapping.md) for full field referenc
 ## Data flow: retrieval
 
 1. Caller builds a `HybridRetrieveRequest` (or BM25 / vector variant)
-2. `BGEInferenceService.embed_query()` produces a 384-dim vector with the BGE search prefix
-3. Request schema builds OpenSearch Query DSL
-4. `OpenSearchClient.query()` runs search; hybrid passes `search_pipeline=hybrid-rrf`
-5. Hits are normalized into `RetrieveHit` → `RetrieveResult`
+2. `Retriever` optionally preprocesses the query (`preprocess.py`)
+3. For vector/hybrid: `Retriever` sets `request.embedding` (caller-supplied or `BGEInferenceService.embed_query()` with the BGE search prefix)
+4. Request schema builds OpenSearch Query DSL via `to_search_body()`
+5. `OpenSearchClient.query()` runs search; hybrid passes `search_pipeline=hybrid-rrf`
+6. Hits are normalized into `RetrieveHit` → `RetrieveResult`
+
+For `run_experiment()`, the retriever preprocesses once, sets a shared `embedding` on the experiment request when k-NN/hybrid modes run, then delegates to the same `_execute_*` helpers used by `search_*`.
+
+## Tests
+
+| Path | Scope |
+|------|--------|
+| `tests/rag/retrieve.py` | `Retriever` helpers, search modes, experiment runner |
+| `tests/rag/conftest.py` | Mocked BGE + OpenSearch fixtures |
+
+Run: `uv sync --extra dev && uv run pytest tests/rag` (no live cluster required).
 
 ## Schema organization rationale
 
@@ -150,5 +171,6 @@ RAG domain models live under `src/services/rag/` so OpenSearch infrastructure st
 
 | Date | Change |
 |------|--------|
+| 2026-06-17 | Documented tests/, embedding-on-request flow, `RetrievalMode` experiment results |
 | 2026-06-11 | Documented DDXPlus mapping and migration |
 | 2026-06-09 | Initial structure guide |
