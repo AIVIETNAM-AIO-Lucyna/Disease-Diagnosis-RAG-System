@@ -24,6 +24,40 @@ uv run python -m src.migrations.migrate_ddxplus_index upgrade
 
 See [Getting started](./docs/onboarding/getting-started.md) for detailed setup and verification steps.
 
+## Testing (before commit)
+
+Install dev dependencies once (includes `pytest`):
+
+```bash
+uv sync --extra dev
+```
+
+Run the full test suite from the project root:
+
+```bash
+uv run pytest
+```
+
+Run only RAG service tests:
+
+```bash
+uv run pytest tests/rag
+```
+
+Tests use mocked OpenSearch and embedding services — no `.env` or live cluster required.
+
+Before pushing, also run pre-commit hooks (lint, format, lockfile check):
+
+```bash
+uv run pre-commit run --all-files
+```
+
+Install hooks once so they run automatically on `git commit`:
+
+```bash
+uv run pre-commit install
+```
+
 ## Documentation
 
 Read these guides **once** when joining the project:
@@ -51,5 +85,6 @@ Documentation uses **date-based versions** (`YYYY-MM-DD`), not semver. Update th
 
 | Date | Change |
 |------|--------|
+| 2026-06-17 | Added testing and pre-commit guidance before commit |
 | 2026-06-11 | Consolidated to single README; added DDXPlus mapping and migration |
 | 2026-06-09 | Initial retrieval implementation |
