@@ -5,6 +5,7 @@ description = "Disease symptom prediction RAG system (AIO Module 1)"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
+    "structlog>=24.4.0",
     "pydantic-settings==2.14.1",
     "sentence-transformers>=3.0.0",
     "opensearch-py==3.2.0",

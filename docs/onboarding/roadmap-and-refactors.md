@@ -1,6 +1,6 @@
 # Roadmap and refactors
 
-> **Version:** 2026-06-11
+> **Version:** 2026-06-17
 > **See also:** [Getting started](./getting-started.md), [Project structure](./project-structure.md)
 
 MVP status, planned features, and structural changes we may make as the project matures.
@@ -30,7 +30,9 @@ This document is the **authoritative source** for project status. Other docs lin
 | OpenSearch client (sync) | Done | `src/db/vector_db/opensearch.py` |
 | OpenSearch wire/response schemas | Done | `src/schemas/` |
 | BGE query embedding | Done | `BGEInferenceService` |
-| Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + experiment runner |
+| Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + `run_experiment()` |
+| Retrieval unit tests | Done | `tests/rag/retrieve.py` (mocked OpenSearch + BGE) |
+| Example notebook | Done | `notebooks/example.ipynb` |
 | Slim retrieval responses | Done | `RetrieveResult` vs `ExperimentModeResult` |
 | Query preprocessing (retrieval) | Done | `preprocess.py` — used by `Retriever` |
 | Batch ingestion | **Todo** | Stub in `ingest.py`; see [DDXPlus index mapping](../ddxplus-index-mapping.md) |
@@ -38,7 +40,6 @@ This document is the **authoritative source** for project status. Other docs lin
 | Qwen3 8B generation | **Todo** | Prompt + local inference |
 | FastAPI HTTP layer | **Todo** | Symptom query endpoint |
 | Full pipeline wiring | **Todo** | ingest → rerank → generate in `pipeline.py` |
-| Automated tests | **Todo** | `tests/` directory configured, no tests yet |
 
 ### Phase 2 — Production scaling (future)
 
@@ -93,9 +94,9 @@ stays the single data-access path for migrations and API alike.
 
 Stay with Option A until file count or import cycles force a split.
 
-### 4. Experiment CLI / notebook
+### 4. Experiment notebook
 
-Optional thin CLI or Jupyter examples under `examples/` for `run_experiment()` — keeps service layer free of print/debug code.
+`notebooks/example.ipynb` walks through preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, and optional OpenSearch body debug. Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
 
 ## What we are not planning (MVP scope)
 
@@ -108,6 +109,7 @@ Optional thin CLI or Jupyter examples under `examples/` for `run_experiment()` �
 
 | Date | Change |
 |------|--------|
+| 2026-06-17 | Marked retrieval tests and example notebook done; removed stale "no tests" row |
 | 2026-06-11 | Merged duplicate architecture diagrams into one section |
 | 2026-06-11 | DDXPlus mapping and migration marked done; ingest guide linked |
 | 2026-06-09 | Initial roadmap reflecting services/ layout and RetrieveResult split |
