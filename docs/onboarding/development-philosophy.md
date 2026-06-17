@@ -1,6 +1,6 @@
 # Development philosophy
 
-> **Version:** 2026-06-11
+> **Version:** 2026-06-17
 > **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
@@ -43,7 +43,7 @@ class ORSBaseModel:
     def from_opensearch(cls, raw): ...
 ```
 
-RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expose `to_search_body()`; responses are slim and purpose-specific.
+RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expose `to_search_body()`; responses are slim and purpose-specific. Vector/hybrid requests store the query vector on `embedding`; the retriever sets it before building the search body.
 
 **Rule:** If it crosses a network boundary (OpenSearch, LLM API), it gets an explicit schema.
 
@@ -58,9 +58,9 @@ The team compares retrieval strategies before locking the pipeline:
 - `search_bm25()` — lexical baseline
 - `search_vector()` — semantic baseline
 - `search_hybrid()` — BM25 + k-NN + RRF (MVP default)
-- `run_experiment()` — side-by-side comparison
+- `run_experiment()` — side-by-side comparison; results keyed by `RetrievalMode`
 
-Production callers use slim `RetrieveResult`. Debug metadata stays on experiment types only.
+Production callers use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`).
 
 ### 7. OpenSearch does search; the app does AI
 
@@ -99,9 +99,9 @@ Every IO path (OpenSearch, model load, file read) should surface meaningful erro
 | Topic | Convention |
 |-------|------------|
 | Python | 3.10+, type hints on public APIs |
-| Formatting | Follow PEP 8; project may add ruff later |
+| Formatting | ruff + pre-commit (see README) |
 | Docstrings | Module + public class/method; Args/Returns for non-obvious params |
-| Tests | `tests/` with pytest; add tests for non-trivial behavior |
+| Tests | `tests/` with pytest; mock external IO (OpenSearch, models) in service tests |
 | Commits | Focus on *why*; only commit when asked |
 
 ## Sync client, async routes
@@ -124,11 +124,13 @@ Before opening a PR, verify:
 - [ ] Settings used instead of new magic strings
 - [ ] No secrets in code or docs
 - [ ] Backward compatibility considered for public service methods
+- [ ] Tests added or updated for non-trivial behavior (`uv run pytest`)
 - [ ] Edge cases and failure modes handled or documented
 
 ## Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-06-17 | Embedding-on-request pattern; retrieval tests; ruff/pre-commit |
 | 2026-06-11 | Streamlined document; removed duplicate project description |
 | 2026-06-09 | Initial philosophy doc |

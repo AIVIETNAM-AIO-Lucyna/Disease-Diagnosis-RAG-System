@@ -14,6 +14,14 @@ def fake_embedding(dim: int = settings.EMBEDDING_DIM) -> list[float]:
     return [0.1] * dim
 
 
+def knn_vector_from_search_body(body: dict[str, Any]) -> list[float]:
+    """Extract the k-NN vector from a vector or hybrid search body."""
+    query = body["query"]
+    if "knn" in query:
+        return query["knn"]["embedding"]["vector"]
+    return query["hybrid"]["queries"][1]["knn"]["embedding"]["vector"]
+
+
 def make_search_response(
     *,
     took: int = 12,
