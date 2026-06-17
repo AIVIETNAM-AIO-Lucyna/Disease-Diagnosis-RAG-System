@@ -54,7 +54,7 @@ class Bm25RetrieveRequest(RetrieveBaseRequest):
 
 
 class VectorRetrieveRequest(RetrieveBaseRequest):
-    """k-NN vector search on ``embedding`` (384-dim cosine)."""
+    """k-NN vector search on ``embedding`` (settings.EMBEDDING_DIM-dim cosine)."""
 
     field: str = "embedding"
     knn_k: int | None = None
@@ -66,8 +66,8 @@ class VectorRetrieveRequest(RetrieveBaseRequest):
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "VectorRetrieveRequest":
-        if self.embedding is not None and len(self.embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(self.embedding)}"
+        if self.embedding is not None and len(self.embedding) != settings.EMBEDDING_DIM:
+            msg = f"embedding must be settings.EMBEDDING_DIM-dimensional, got {len(self.embedding)}"
             raise ValueError(msg)
         return self
 
@@ -75,8 +75,8 @@ class VectorRetrieveRequest(RetrieveBaseRequest):
         return self.knn_k or self.top_k
 
     def to_search_body(self, embedding: list[float]) -> dict[str, Any]:
-        if len(embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(embedding)}"
+        if len(embedding) != settings.EMBEDDING_DIM:
+            msg = f"embedding must be settings.EMBEDDING_DIM-dimensional, got {len(embedding)}"
             raise ValueError(msg)
 
         body: dict[str, Any] = {
@@ -118,8 +118,8 @@ class HybridRetrieveRequest(RetrieveBaseRequest):
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "HybridRetrieveRequest":
-        if self.embedding is not None and len(self.embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(self.embedding)}"
+        if self.embedding is not None and len(self.embedding) != settings.EMBEDDING_DIM:
+            msg = f"embedding must be settings.EMBEDDING_DIM-dimensional, got {len(self.embedding)}"
             raise ValueError(msg)
         return self
 
@@ -127,8 +127,8 @@ class HybridRetrieveRequest(RetrieveBaseRequest):
         return self.knn_k or self.top_k
 
     def to_search_body(self, embedding: list[float]) -> dict[str, Any]:
-        if len(embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(embedding)}"
+        if len(embedding) != settings.EMBEDDING_DIM:
+            msg = f"embedding must be settings.EMBEDDING_DIM-dimensional, got {len(embedding)}"
             raise ValueError(msg)
 
         body: dict[str, Any] = {

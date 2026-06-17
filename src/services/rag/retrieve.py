@@ -70,7 +70,7 @@ class Retriever:
         results: dict[str, ExperimentModeResult] = {}
 
         for mode in request.modes:
-            if mode is RetrievalMode.BM25:
+            if mode == RetrievalMode.BM25:
                 bm25 = request.bm25_request()
                 body = bm25.to_search_body()
                 response = self._client.query(request.index_name, body)
@@ -80,7 +80,7 @@ class Retriever:
                     opensearch_body=body if request.include_opensearch_body else None,
                 )
 
-            elif mode is RetrievalMode.KNN:
+            elif mode == RetrievalMode.KNN:
                 vector = request.vector_request()
                 embedding = self._embed_service.embed_query(vector.query)
                 body = vector.to_search_body(embedding)
@@ -91,7 +91,7 @@ class Retriever:
                     opensearch_body=body if request.include_opensearch_body else None,
                 )
 
-            elif mode is RetrievalMode.HYBRID:
+            elif mode == RetrievalMode.HYBRID:
                 hybrid = request.hybrid_request()
                 embedding = self._embed_service.embed_query(hybrid.query)
                 body = hybrid.to_search_body(embedding)
@@ -110,7 +110,8 @@ class Retriever:
             else:
                 continue
 
-            results[mode.value] = mode_result
+            mode_key = mode if isinstance(mode, str) else mode.value
+            results[mode_key] = mode_result
 
         return ExperimentCompareResponse(
             query=request.query,
