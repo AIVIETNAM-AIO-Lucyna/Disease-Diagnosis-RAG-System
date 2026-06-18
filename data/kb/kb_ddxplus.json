@@ -1,6 +1,9 @@
 [
   {
     "doc_id": "J93",
+    "icd10_codes": [
+      "J93"
+    ],
     "disease": "Spontaneous pneumothorax",
     "symptoms": [
       "pain present",
@@ -31,6 +34,9 @@
   },
   {
     "doc_id": "G44.009",
+    "icd10_codes": [
+      "G44.009"
+    ],
     "disease": "Cluster headache",
     "symptoms": [
       "pain present",
@@ -47,17 +53,20 @@
     "antecedents": [
       "family members been diagnosed with cluster headaches",
       "drink alcohol excessively",
-      "take medication that dilates your blood vessels",
+      "medication that dilates your blood vessels",
       "recent international travel"
     ],
     "severity": 3,
-    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, your eyes produce excessive tears, nasal congestion / runny nose, weakness/paralysis in one or more of your limbs or in your face. Risk factors: family members been diagnosed with cluster headaches, drink alcohol excessively, take medication that dilates your blood vessels, recent international travel.",
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, your eyes produce excessive tears, nasal congestion / runny nose, weakness/paralysis in one or more of your limbs or in your face. Risk factors: family members been diagnosed with cluster headaches, drink alcohol excessively, medication that dilates your blood vessels, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Cluster headache pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location your eyes produce excessive tears nasal congestion / runny nose weakness/paralysis in one or more of your limbs or in your face family members been diagnosed with cluster headaches drink alcohol excessively take medication that dilates your blood vessels recent international travel",
+    "keyword_text": "Cluster headache pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location your eyes produce excessive tears nasal congestion / runny nose weakness/paralysis in one or more of your limbs or in your face family members been diagnosed with cluster headaches drink alcohol excessively medication that dilates your blood vessels recent international travel",
     "embedding": []
   },
   {
     "doc_id": "K22.3",
+    "icd10_codes": [
+      "K22.3"
+    ],
     "disease": "Boerhaave",
     "symptoms": [
       "pain present",
@@ -84,6 +93,9 @@
   },
   {
     "doc_id": "S22.9",
+    "icd10_codes": [
+      "S22.9"
+    ],
     "disease": "Spontaneous rib fracture",
     "symptoms": [
       "pain present",
@@ -114,6 +126,9 @@
   },
   {
     "doc_id": "K21",
+    "icd10_codes": [
+      "K21"
+    ],
     "disease": "GERD",
     "symptoms": [
       "burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth",
@@ -132,7 +147,7 @@
     ],
     "antecedents": [
       "significantly overweight compared to people of the same height as you",
-      "think you are pregnant",
+      "pregnant",
       "asthma",
       "drink alcohol excessively",
       "smoke cigarettes",
@@ -140,13 +155,16 @@
       "recent international travel"
     ],
     "severity": 3,
-    "description": "Condition characterized by: burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth, cough, symptoms that get worse after eating, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, are your symptoms worse when lying down and alleviated while sitting up, thrown up blood or something resembling coffee beans, stools that were black. Risk factors: significantly overweight compared to people of the same height as you, think you are pregnant, asthma, drink alcohol excessively, smoke cigarettes, hiatal hernia, recent international travel.",
+    "description": "Condition characterized by: burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth, cough, symptoms that get worse after eating, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, are your symptoms worse when lying down and alleviated while sitting up, thrown up blood or something resembling coffee beans, stools that were black. Risk factors: significantly overweight compared to people of the same height as you, pregnant, asthma, drink alcohol excessively, smoke cigarettes, hiatal hernia, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "GERD burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth cough symptoms that get worse after eating pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location are your symptoms worse when lying down and alleviated while sitting up thrown up blood or something resembling coffee beans stools that were black significantly overweight compared to people of the same height as you think you are pregnant asthma drink alcohol excessively smoke cigarettes hiatal hernia recent international travel",
+    "keyword_text": "GERD burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth cough symptoms that get worse after eating pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location are your symptoms worse when lying down and alleviated while sitting up thrown up blood or something resembling coffee beans stools that were black significantly overweight compared to people of the same height as you pregnant asthma drink alcohol excessively smoke cigarettes hiatal hernia recent international travel",
     "embedding": []
   },
   {
     "doc_id": "B20",
+    "icd10_codes": [
+      "B20"
+    ],
     "disease": "HIV (initial infection)",
     "symptoms": [
       "fever",
@@ -189,6 +207,9 @@
   },
   {
     "doc_id": "D64.9",
+    "icd10_codes": [
+      "D64.9"
+    ],
     "disease": "Anemia",
     "symptoms": [
       "slightly dizzy or lightheaded",
@@ -212,20 +233,23 @@
       "poor diet",
       "diagnosis of anemia",
       "family members who have been diagnosed with anemia",
-      "think you are pregnant",
+      "pregnant",
       "chronic kidney failure",
       "bmi less than 18.5",
       "taking any new oral anticoagulants",
       "recent international travel"
     ],
     "severity": 4,
-    "description": "Condition characterized by: slightly dizzy or lightheaded, constantly feel fatigued, so tired that you are unable to do your usual activities, shortness of breath or difficulty breathing in a significant way, skin much paler than usual, lightheaded and dizzy, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, light red blood or blood clots in your stool, stools that were black, very abundant or very long menstruation periods. Risk factors: poor diet, diagnosis of anemia, family members who have been diagnosed with anemia, think you are pregnant, chronic kidney failure, bmi less than 18.5, taking any new oral anticoagulants, recent international travel.",
+    "description": "Condition characterized by: slightly dizzy or lightheaded, constantly feel fatigued, so tired that you are unable to do your usual activities, shortness of breath or difficulty breathing in a significant way, skin much paler than usual, lightheaded and dizzy, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, light red blood or blood clots in your stool, stools that were black, very abundant or very long menstruation periods. Risk factors: poor diet, diagnosis of anemia, family members who have been diagnosed with anemia, pregnant, chronic kidney failure, bmi less than 18.5, taking any new oral anticoagulants, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Anemia slightly dizzy or lightheaded constantly feel fatigued so tired that you are unable to do your usual activities shortness of breath or difficulty breathing in a significant way skin much paler than usual lightheaded and dizzy pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location light red blood or blood clots in your stool stools that were black very abundant or very long menstruation periods poor diet diagnosis of anemia family members who have been diagnosed with anemia think you are pregnant chronic kidney failure bmi less than 18.5 taking any new oral anticoagulants recent international travel",
+    "keyword_text": "Anemia slightly dizzy or lightheaded constantly feel fatigued so tired that you are unable to do your usual activities shortness of breath or difficulty breathing in a significant way skin much paler than usual lightheaded and dizzy pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location light red blood or blood clots in your stool stools that were black very abundant or very long menstruation periods poor diet diagnosis of anemia family members who have been diagnosed with anemia pregnant chronic kidney failure bmi less than 18.5 taking any new oral anticoagulants recent international travel",
     "embedding": []
   },
   {
     "doc_id": "J02.9",
+    "icd10_codes": [
+      "J02.9"
+    ],
     "disease": "Viral pharyngitis",
     "symptoms": [
       "pain present",
@@ -256,6 +280,9 @@
   },
   {
     "doc_id": "K40",
+    "icd10_codes": [
+      "K40"
+    ],
     "disease": "Inguinal hernia",
     "symptoms": [
       "pain present",
@@ -291,6 +318,9 @@
   },
   {
     "doc_id": "G70.0",
+    "icd10_codes": [
+      "G70.0"
+    ],
     "disease": "Myasthenia gravis",
     "symptoms": [
       "difficulty swallowing, or have a feeling of discomfort/blockage when swallowing",
@@ -315,6 +345,9 @@
   },
   {
     "doc_id": "A37",
+    "icd10_codes": [
+      "A37"
+    ],
     "disease": "Whooping cough",
     "symptoms": [
       "vomit after coughing",
@@ -336,6 +369,9 @@
   },
   {
     "doc_id": "T78.0",
+    "icd10_codes": [
+      "T78.0"
+    ],
     "disease": "Anaphylaxis",
     "symptoms": [
       "in contact with or ate something that you have an allergy to",
@@ -377,6 +413,9 @@
   },
   {
     "doc_id": "J05.1",
+    "icd10_codes": [
+      "J05.1"
+    ],
     "disease": "Epiglottitis",
     "symptoms": [
       "pain present",
@@ -410,6 +449,9 @@
   },
   {
     "doc_id": "G61.0",
+    "icd10_codes": [
+      "G61.0"
+    ],
     "disease": "Guillain-Barré syndrome",
     "symptoms": [
       "weakness in both arms and/or both legs",
@@ -419,20 +461,23 @@
       "numbness, loss of sensation or tingling in the feet",
       "weakness or paralysis on one side of the face, which may still be present or completely resolved",
       "weakness/paralysis in one or more of your limbs or in your face",
-      "currently"
+      "numbness, loss of sensitivity or tingling anywhere on your body"
     ],
     "antecedents": [
       "viral infection",
       "recent international travel"
     ],
     "severity": 2,
-    "description": "Condition characterized by: weakness in both arms and/or both legs, shortness of breath or difficulty breathing in a significant way, weakness in your facial muscles and/or eyes, numbness, loss of sensation or tingling, in both arms and legs and around your mouth, numbness, loss of sensation or tingling in the feet, weakness or paralysis on one side of the face, which may still be present or completely resolved, weakness/paralysis in one or more of your limbs or in your face, currently. Risk factors: viral infection, recent international travel.",
+    "description": "Condition characterized by: weakness in both arms and/or both legs, shortness of breath or difficulty breathing in a significant way, weakness in your facial muscles and/or eyes, numbness, loss of sensation or tingling, in both arms and legs and around your mouth, numbness, loss of sensation or tingling in the feet, weakness or paralysis on one side of the face, which may still be present or completely resolved, weakness/paralysis in one or more of your limbs or in your face, numbness, loss of sensitivity or tingling anywhere on your body. Risk factors: viral infection, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Guillain-Barré syndrome weakness in both arms and/or both legs shortness of breath or difficulty breathing in a significant way weakness in your facial muscles and/or eyes numbness, loss of sensation or tingling, in both arms and legs and around your mouth numbness, loss of sensation or tingling in the feet weakness or paralysis on one side of the face, which may still be present or completely resolved weakness/paralysis in one or more of your limbs or in your face currently viral infection recent international travel",
+    "keyword_text": "Guillain-Barré syndrome weakness in both arms and/or both legs shortness of breath or difficulty breathing in a significant way weakness in your facial muscles and/or eyes numbness, loss of sensation or tingling, in both arms and legs and around your mouth numbness, loss of sensation or tingling in the feet weakness or paralysis on one side of the face, which may still be present or completely resolved weakness/paralysis in one or more of your limbs or in your face numbness, loss of sensitivity or tingling anywhere on your body viral infection recent international travel",
     "embedding": []
   },
   {
     "doc_id": "J04.0",
+    "icd10_codes": [
+      "J04.0"
+    ],
     "disease": "Acute laryngitis",
     "symptoms": [
       "the tone of your voice has become deeper, softer or hoarse",
@@ -461,6 +506,9 @@
   },
   {
     "doc_id": "J05.0",
+    "icd10_codes": [
+      "J05.0"
+    ],
     "disease": "Croup",
     "symptoms": [
       "high pitched sound when breathing in",
@@ -484,6 +532,9 @@
   },
   {
     "doc_id": "I47.1",
+    "icd10_codes": [
+      "I47.1"
+    ],
     "disease": "PSVT",
     "symptoms": [
       "your heart is beating fast, irregularly",
@@ -514,6 +565,9 @@
   },
   {
     "doc_id": "I48.91",
+    "icd10_codes": [
+      "I48.91"
+    ],
     "disease": "Atrial fibrillation",
     "symptoms": [
       "your heart is beating fast, irregularly",
@@ -541,6 +595,9 @@
   },
   {
     "doc_id": "J47",
+    "icd10_codes": [
+      "J47"
+    ],
     "disease": "Bronchiectasis",
     "symptoms": [
       "cough",
@@ -552,7 +609,7 @@
       "of asian descent",
       "cystic fibrosis",
       "pneumonia",
-      "suffer from crohn’s disease or ulcerative colitis",
+      "crohn’s disease or ulcerative colitis",
       "rheumatoid arthritis",
       "immunosuppressed",
       "asthma",
@@ -560,13 +617,16 @@
       "recent international travel"
     ],
     "severity": 3,
-    "description": "Condition characterized by: cough, cough that produces colored or more abundant sputum than usual, coughing up blood, shortness of breath or difficulty breathing in a significant way. Risk factors: of asian descent, cystic fibrosis, pneumonia, suffer from crohn’s disease or ulcerative colitis, rheumatoid arthritis, immunosuppressed, asthma, chronic obstructive pulmonary disease, recent international travel.",
+    "description": "Condition characterized by: cough, cough that produces colored or more abundant sputum than usual, coughing up blood, shortness of breath or difficulty breathing in a significant way. Risk factors: of asian descent, cystic fibrosis, pneumonia, crohn’s disease or ulcerative colitis, rheumatoid arthritis, immunosuppressed, asthma, chronic obstructive pulmonary disease, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Bronchiectasis cough cough that produces colored or more abundant sputum than usual coughing up blood shortness of breath or difficulty breathing in a significant way of asian descent cystic fibrosis pneumonia suffer from crohn’s disease or ulcerative colitis rheumatoid arthritis immunosuppressed asthma chronic obstructive pulmonary disease recent international travel",
+    "keyword_text": "Bronchiectasis cough cough that produces colored or more abundant sputum than usual coughing up blood shortness of breath or difficulty breathing in a significant way of asian descent cystic fibrosis pneumonia crohn’s disease or ulcerative colitis rheumatoid arthritis immunosuppressed asthma chronic obstructive pulmonary disease recent international travel",
     "embedding": []
   },
   {
     "doc_id": "J30",
+    "icd10_codes": [
+      "J30"
+    ],
     "disease": "Allergic sinusitis",
     "symptoms": [
       "cough",
@@ -590,6 +650,9 @@
   },
   {
     "doc_id": "B57",
+    "icd10_codes": [
+      "B57"
+    ],
     "disease": "Chagas",
     "symptoms": [
       "fever",
@@ -620,6 +683,9 @@
   },
   {
     "doc_id": "T61.1",
+    "icd10_codes": [
+      "T61.1"
+    ],
     "disease": "Scombroid food poisoning",
     "symptoms": [
       "lightheaded and dizzy",
@@ -650,6 +716,9 @@
   },
   {
     "doc_id": "I51.4",
+    "icd10_codes": [
+      "I51.4"
+    ],
     "disease": "Myocarditis",
     "symptoms": [
       "new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today",
@@ -679,6 +748,9 @@
   },
   {
     "doc_id": "J38.5",
+    "icd10_codes": [
+      "J38.5"
+    ],
     "disease": "Larygospasm",
     "symptoms": [
       "high pitched sound when breathing in"
@@ -699,6 +771,9 @@
   },
   {
     "doc_id": "G24.02",
+    "icd10_codes": [
+      "G24.02"
+    ],
     "disease": "Acute dystonic reactions",
     "symptoms": [
       "suffocating for a very short time associated with inability to breathe or speak",
@@ -724,6 +799,9 @@
   },
   {
     "doc_id": "R60.0",
+    "icd10_codes": [
+      "R60.0"
+    ],
     "disease": "Localized edema",
     "symptoms": [
       "shortness of breath or difficulty breathing in a significant way",
@@ -744,8 +822,8 @@
       "surgery to remove lymph nodes",
       "endocrine disease or a hormone dysfunction",
       "deep vein thrombosis",
-      "take a calcium channel blockers",
-      "take corticosteroids",
+      "calcium channel blockers",
+      "corticosteroids",
       "kidney problem resulting in an inability to retain proteins",
       "liver cirrhosis",
       "heart failure",
@@ -755,13 +833,16 @@
       "recent international travel"
     ],
     "severity": 4,
-    "description": "Condition characterized by: shortness of breath or difficulty breathing in a significant way, swelling location, swelling in one or more areas of your body, are your symptoms worse when lying down and alleviated while sitting up, bouts of choking or shortness of breath that wake you up at night, have you gained weight recently, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location. Risk factors: surgery to remove lymph nodes, endocrine disease or a hormone dysfunction, deep vein thrombosis, take a calcium channel blockers, take corticosteroids, kidney problem resulting in an inability to retain proteins, liver cirrhosis, heart failure, issue with one of your heart valves, obstructive sleep apnea, anti-inflammatory drugs, recent international travel.",
+    "description": "Condition characterized by: shortness of breath or difficulty breathing in a significant way, swelling location, swelling in one or more areas of your body, are your symptoms worse when lying down and alleviated while sitting up, bouts of choking or shortness of breath that wake you up at night, have you gained weight recently, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location. Risk factors: surgery to remove lymph nodes, endocrine disease or a hormone dysfunction, deep vein thrombosis, calcium channel blockers, corticosteroids, kidney problem resulting in an inability to retain proteins, liver cirrhosis, heart failure, issue with one of your heart valves, obstructive sleep apnea, anti-inflammatory drugs, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Localized edema shortness of breath or difficulty breathing in a significant way swelling location swelling in one or more areas of your body are your symptoms worse when lying down and alleviated while sitting up bouts of choking or shortness of breath that wake you up at night have you gained weight recently pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location surgery to remove lymph nodes endocrine disease or a hormone dysfunction deep vein thrombosis take a calcium channel blockers take corticosteroids kidney problem resulting in an inability to retain proteins liver cirrhosis heart failure issue with one of your heart valves obstructive sleep apnea anti-inflammatory drugs recent international travel",
+    "keyword_text": "Localized edema shortness of breath or difficulty breathing in a significant way swelling location swelling in one or more areas of your body are your symptoms worse when lying down and alleviated while sitting up bouts of choking or shortness of breath that wake you up at night have you gained weight recently pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location surgery to remove lymph nodes endocrine disease or a hormone dysfunction deep vein thrombosis calcium channel blockers corticosteroids kidney problem resulting in an inability to retain proteins liver cirrhosis heart failure issue with one of your heart valves obstructive sleep apnea anti-inflammatory drugs recent international travel",
     "embedding": []
   },
   {
     "doc_id": "M32",
+    "icd10_codes": [
+      "M32"
+    ],
     "disease": "SLE",
     "symptoms": [
       "pain present",
@@ -799,6 +880,9 @@
   },
   {
     "doc_id": "A15",
+    "icd10_codes": [
+      "A15"
+    ],
     "disease": "Tuberculosis",
     "symptoms": [
       "cough",
@@ -811,19 +895,22 @@
       "drink alcohol excessively",
       "using intravenous drugs",
       "infected with the human immunodeficiency virus",
-      "take corticosteroids",
+      "corticosteroids",
       "diabetes",
       "bmi less than 18.5",
       "recent international travel"
     ],
     "severity": 3,
-    "description": "Condition characterized by: cough, coughing up blood, shortness of breath or difficulty breathing in a significant way, fever, involuntary weight loss over the last 3 months. Risk factors: drink alcohol excessively, using intravenous drugs, infected with the human immunodeficiency virus, take corticosteroids, diabetes, bmi less than 18.5, recent international travel.",
+    "description": "Condition characterized by: cough, coughing up blood, shortness of breath or difficulty breathing in a significant way, fever, involuntary weight loss over the last 3 months. Risk factors: drink alcohol excessively, using intravenous drugs, infected with the human immunodeficiency virus, corticosteroids, diabetes, bmi less than 18.5, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Tuberculosis cough coughing up blood shortness of breath or difficulty breathing in a significant way fever involuntary weight loss over the last 3 months drink alcohol excessively using intravenous drugs infected with the human immunodeficiency virus take corticosteroids diabetes bmi less than 18.5 recent international travel",
+    "keyword_text": "Tuberculosis cough coughing up blood shortness of breath or difficulty breathing in a significant way fever involuntary weight loss over the last 3 months drink alcohol excessively using intravenous drugs infected with the human immunodeficiency virus corticosteroids diabetes bmi less than 18.5 recent international travel",
     "embedding": []
   },
   {
     "doc_id": "I20.0",
+    "icd10_codes": [
+      "I20.0"
+    ],
     "disease": "Unstable angina",
     "symptoms": [
       "symptoms that are increased with physical exertion but alleviated with rest",
@@ -861,6 +948,9 @@
   },
   {
     "doc_id": "I20.9",
+    "icd10_codes": [
+      "I20.9"
+    ],
     "disease": "Stable angina",
     "symptoms": [
       "symptoms that are increased with physical exertion but alleviated with rest",
@@ -894,6 +984,9 @@
   },
   {
     "doc_id": "A98.4",
+    "icd10_codes": [
+      "A98.4"
+    ],
     "disease": "Ebola",
     "symptoms": [
       "unusual bleeding or bruising related to your consultation today",
@@ -920,6 +1013,9 @@
   },
   {
     "doc_id": "H66.90",
+    "icd10_codes": [
+      "H66.90"
+    ],
     "disease": "Acute otitis media",
     "symptoms": [
       "pain present",
@@ -947,6 +1043,9 @@
   },
   {
     "doc_id": "F41",
+    "icd10_codes": [
+      "F41"
+    ],
     "disease": "Panic attack",
     "symptoms": [
       "your heart is beating fast, irregularly",
@@ -954,7 +1053,7 @@
       "pain present",
       "pain related to consultation",
       "anxious",
-      "currently",
+      "numbness, loss of sensitivity or tingling anywhere on your body",
       "significantly increased sweating",
       "shortness of breath or difficulty breathing in a significant way",
       "pain radiation",
@@ -969,24 +1068,27 @@
       "fear of dying"
     ],
     "antecedents": [
-      "suffer from chronic anxiety",
+      "chronic anxiety",
       "depression",
       "drink alcohol excessively",
       "do any members of your immediate family have a psychiatric illness",
       "head trauma",
       "asthma",
       "migraine or is a member of your family known to have migraines",
-      "suffer from fibromyalgia",
+      "fibromyalgia",
       "recent international travel"
     ],
     "severity": 5,
-    "description": "Condition characterized by: your heart is beating fast, irregularly, like you are choking or suffocating, pain present, pain related to consultation, anxious, currently, significantly increased sweating, shortness of breath or difficulty breathing in a significant way, pain radiation, pain character, pain onset speed, pain intensity, pain location, nauseous, lightheaded and dizzy, like you are detached from your own body or your surroundings, numbness, loss of sensation or tingling, in both arms and legs and around your mouth, fear of dying. Risk factors: suffer from chronic anxiety, depression, drink alcohol excessively, do any members of your immediate family have a psychiatric illness, head trauma, asthma, migraine or is a member of your family known to have migraines, suffer from fibromyalgia, recent international travel.",
+    "description": "Condition characterized by: your heart is beating fast, irregularly, like you are choking or suffocating, pain present, pain related to consultation, anxious, numbness, loss of sensitivity or tingling anywhere on your body, significantly increased sweating, shortness of breath or difficulty breathing in a significant way, pain radiation, pain character, pain onset speed, pain intensity, pain location, nauseous, lightheaded and dizzy, like you are detached from your own body or your surroundings, numbness, loss of sensation or tingling, in both arms and legs and around your mouth, fear of dying. Risk factors: chronic anxiety, depression, drink alcohol excessively, do any members of your immediate family have a psychiatric illness, head trauma, asthma, migraine or is a member of your family known to have migraines, fibromyalgia, recent international travel.",
     "source": "ddxplus",
-    "keyword_text": "Panic attack your heart is beating fast, irregularly like you are choking or suffocating pain present pain related to consultation anxious currently significantly increased sweating shortness of breath or difficulty breathing in a significant way pain radiation pain character pain onset speed pain intensity pain location nauseous lightheaded and dizzy like you are detached from your own body or your surroundings numbness, loss of sensation or tingling, in both arms and legs and around your mouth fear of dying suffer from chronic anxiety depression drink alcohol excessively do any members of your immediate family have a psychiatric illness head trauma asthma migraine or is a member of your family known to have migraines suffer from fibromyalgia recent international travel",
+    "keyword_text": "Panic attack your heart is beating fast, irregularly like you are choking or suffocating pain present pain related to consultation anxious numbness, loss of sensitivity or tingling anywhere on your body significantly increased sweating shortness of breath or difficulty breathing in a significant way pain radiation pain character pain onset speed pain intensity pain location nauseous lightheaded and dizzy like you are detached from your own body or your surroundings numbness, loss of sensation or tingling, in both arms and legs and around your mouth fear of dying chronic anxiety depression drink alcohol excessively do any members of your immediate family have a psychiatric illness head trauma asthma migraine or is a member of your family known to have migraines fibromyalgia recent international travel",
     "embedding": []
   },
   {
     "doc_id": "J45",
+    "icd10_codes": [
+      "J45"
+    ],
     "disease": "Bronchospasm / acute asthma exacerbation",
     "symptoms": [
       "cough",
@@ -1013,6 +1115,9 @@
   },
   {
     "doc_id": "J40",
+    "icd10_codes": [
+      "J40"
+    ],
     "disease": "Bronchitis",
     "symptoms": [
       "are your symptoms more prominent at night",
@@ -1045,6 +1150,9 @@
   },
   {
     "doc_id": "J44.1",
+    "icd10_codes": [
+      "J44.1"
+    ],
     "disease": "Acute COPD exacerbation / infection",
     "symptoms": [
       "cough",
@@ -1071,6 +1179,9 @@
   },
   {
     "doc_id": "I26",
+    "icd10_codes": [
+      "I26"
+    ],
     "disease": "Pulmonary embolism",
     "symptoms": [
       "pain present",
@@ -1093,16 +1204,19 @@
       "surgery within the last month",
       "unable to move or get up for more than 3 consecutive days within the last 4 weeks",
       "recent international travel",
-      "currently take hormones"
+      "hormones"
     ],
     "severity": 2,
-    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, swelling location, swelling in one or more areas of your body, lose consciousness, coughing up blood, pain that is increased when you breathe in deeply, shortness of breath or difficulty breathing in a significant way. Risk factors: active cancer, deep vein thrombosis, surgery within the last month, unable to move or get up for more than 3 consecutive days within the last 4 weeks, recent international travel, currently take hormones.",
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, swelling location, swelling in one or more areas of your body, lose consciousness, coughing up blood, pain that is increased when you breathe in deeply, shortness of breath or difficulty breathing in a significant way. Risk factors: active cancer, deep vein thrombosis, surgery within the last month, unable to move or get up for more than 3 consecutive days within the last 4 weeks, recent international travel, hormones.",
     "source": "ddxplus",
-    "keyword_text": "Pulmonary embolism pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location swelling location swelling in one or more areas of your body lose consciousness coughing up blood pain that is increased when you breathe in deeply shortness of breath or difficulty breathing in a significant way active cancer deep vein thrombosis surgery within the last month unable to move or get up for more than 3 consecutive days within the last 4 weeks recent international travel currently take hormones",
+    "keyword_text": "Pulmonary embolism pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location swelling location swelling in one or more areas of your body lose consciousness coughing up blood pain that is increased when you breathe in deeply shortness of breath or difficulty breathing in a significant way active cancer deep vein thrombosis surgery within the last month unable to move or get up for more than 3 consecutive days within the last 4 weeks recent international travel hormones",
     "embedding": []
   },
   {
     "doc_id": "J06.9",
+    "icd10_codes": [
+      "J06.9"
+    ],
     "disease": "URTI",
     "symptoms": [
       "pain present",
@@ -1136,6 +1250,9 @@
   },
   {
     "doc_id": "J11.1",
+    "icd10_codes": [
+      "J11.1"
+    ],
     "disease": "Influenza",
     "symptoms": [
       "rash location",
@@ -1175,7 +1292,11 @@
     "embedding": []
   },
   {
-    "doc_id": "J17, J18",
+    "doc_id": "J18",
+    "icd10_codes": [
+      "J17",
+      "J18"
+    ],
     "disease": "Pneumonia",
     "symptoms": [
       "pain that is increased when you breathe in deeply",
@@ -1228,6 +1349,9 @@
   },
   {
     "doc_id": "J01",
+    "icd10_codes": [
+      "J01"
+    ],
     "disease": "Acute rhinosinusitis",
     "symptoms": [
       "pain present",
@@ -1263,6 +1387,9 @@
   },
   {
     "doc_id": "J32",
+    "icd10_codes": [
+      "J32"
+    ],
     "disease": "Chronic rhinosinusitis",
     "symptoms": [
       "pain present",
@@ -1296,6 +1423,9 @@
   },
   {
     "doc_id": "J21",
+    "icd10_codes": [
+      "J21"
+    ],
     "disease": "Bronchiolitis",
     "symptoms": [
       "cough",
@@ -1322,6 +1452,9 @@
   },
   {
     "doc_id": "C34",
+    "icd10_codes": [
+      "C34"
+    ],
     "disease": "Pulmonary neoplasm",
     "symptoms": [
       "pain present",
@@ -1353,6 +1486,9 @@
   },
   {
     "doc_id": "I21",
+    "icd10_codes": [
+      "I21"
+    ],
     "disease": "Possible NSTEMI / STEMI",
     "symptoms": [
       "loss of appetite",
@@ -1389,6 +1525,9 @@
   },
   {
     "doc_id": "D86",
+    "icd10_codes": [
+      "D86"
+    ],
     "disease": "Sarcoidosis",
     "symptoms": [
       "rash location",
@@ -1425,6 +1564,9 @@
   },
   {
     "doc_id": "C25",
+    "icd10_codes": [
+      "C25"
+    ],
     "disease": "Pancreatic neoplasm",
     "symptoms": [
       "pain present",
@@ -1465,6 +1607,9 @@
   },
   {
     "doc_id": "J81.0",
+    "icd10_codes": [
+      "J81.0"
+    ],
     "disease": "Acute pulmonary edema",
     "symptoms": [
       "symptoms that are increased with physical exertion but alleviated with rest",
@@ -1499,6 +1644,9 @@
   },
   {
     "doc_id": "I30",
+    "icd10_codes": [
+      "I30"
+    ],
     "disease": "Pericarditis",
     "symptoms": [
       "pain that is increased when you breathe in deeply",

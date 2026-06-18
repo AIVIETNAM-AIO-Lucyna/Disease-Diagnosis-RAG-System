@@ -1,6 +1,9 @@
 [
   {
     "doc_id": "J93",
+    "icd10_codes": [
+      "J93"
+    ],
     "disease": "Spontaneous pneumothorax",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -31,6 +34,9 @@
   },
   {
     "doc_id": "G44.009",
+    "icd10_codes": [
+      "G44.009"
+    ],
     "disease": "Cluster headache",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -58,6 +64,9 @@
   },
   {
     "doc_id": "K22.3",
+    "icd10_codes": [
+      "K22.3"
+    ],
     "disease": "Boerhaave",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -84,6 +93,9 @@
   },
   {
     "doc_id": "S22.9",
+    "icd10_codes": [
+      "S22.9"
+    ],
     "disease": "Spontaneous rib fracture",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -114,6 +126,9 @@
   },
   {
     "doc_id": "K21",
+    "icd10_codes": [
+      "K21"
+    ],
     "disease": "GERD",
     "symptoms": [
       "Do you have a burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth?",
@@ -147,6 +162,9 @@
   },
   {
     "doc_id": "B20",
+    "icd10_codes": [
+      "B20"
+    ],
     "disease": "HIV (initial infection)",
     "symptoms": [
       "Do you have a fever (either felt or measured with a thermometer)?",
@@ -189,6 +207,9 @@
   },
   {
     "doc_id": "D64.9",
+    "icd10_codes": [
+      "D64.9"
+    ],
     "disease": "Anemia",
     "symptoms": [
       "Do you feel slightly dizzy or lightheaded?",
@@ -226,6 +247,9 @@
   },
   {
     "doc_id": "J02.9",
+    "icd10_codes": [
+      "J02.9"
+    ],
     "disease": "Viral pharyngitis",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -256,6 +280,9 @@
   },
   {
     "doc_id": "K40",
+    "icd10_codes": [
+      "K40"
+    ],
     "disease": "Inguinal hernia",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -291,6 +318,9 @@
   },
   {
     "doc_id": "G70.0",
+    "icd10_codes": [
+      "G70.0"
+    ],
     "disease": "Myasthenia gravis",
     "symptoms": [
       "Do you have difficulty swallowing, or have a feeling of discomfort/blockage when swallowing?",
@@ -315,6 +345,9 @@
   },
   {
     "doc_id": "A37",
+    "icd10_codes": [
+      "A37"
+    ],
     "disease": "Whooping cough",
     "symptoms": [
       "Did you vomit after coughing?",
@@ -336,6 +369,9 @@
   },
   {
     "doc_id": "T78.0",
+    "icd10_codes": [
+      "T78.0"
+    ],
     "disease": "Anaphylaxis",
     "symptoms": [
       "Have you been in contact with or ate something that you have an allergy to?",
@@ -377,6 +413,9 @@
   },
   {
     "doc_id": "J05.1",
+    "icd10_codes": [
+      "J05.1"
+    ],
     "disease": "Epiglottitis",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -410,6 +449,9 @@
   },
   {
     "doc_id": "G61.0",
+    "icd10_codes": [
+      "G61.0"
+    ],
     "disease": "Guillain-Barré syndrome",
     "symptoms": [
       "Do you feel weakness in both arms and/or both legs?",
@@ -433,6 +475,9 @@
   },
   {
     "doc_id": "J04.0",
+    "icd10_codes": [
+      "J04.0"
+    ],
     "disease": "Acute laryngitis",
     "symptoms": [
       "Have you noticed that the tone of your voice has become deeper, softer or hoarse?",
@@ -461,6 +506,9 @@
   },
   {
     "doc_id": "J05.0",
+    "icd10_codes": [
+      "J05.0"
+    ],
     "disease": "Croup",
     "symptoms": [
       "Have you noticed a high pitched sound when breathing in?",
@@ -484,6 +532,9 @@
   },
   {
     "doc_id": "I47.1",
+    "icd10_codes": [
+      "I47.1"
+    ],
     "disease": "PSVT",
     "symptoms": [
       "Do you feel your heart is beating fast (racing), irregularly (missing a beat) or do you feel palpitations?",
@@ -514,6 +565,9 @@
   },
   {
     "doc_id": "I48.91",
+    "icd10_codes": [
+      "I48.91"
+    ],
     "disease": "Atrial fibrillation",
     "symptoms": [
       "Do you feel your heart is beating fast (racing), irregularly (missing a beat) or do you feel palpitations?",
@@ -541,6 +595,9 @@
   },
   {
     "doc_id": "J47",
+    "icd10_codes": [
+      "J47"
+    ],
     "disease": "Bronchiectasis",
     "symptoms": [
       "Do you have a cough?",
@@ -567,6 +624,9 @@
   },
   {
     "doc_id": "J30",
+    "icd10_codes": [
+      "J30"
+    ],
     "disease": "Allergic sinusitis",
     "symptoms": [
       "Do you have a cough?",
@@ -590,6 +650,9 @@
   },
   {
     "doc_id": "B57",
+    "icd10_codes": [
+      "B57"
+    ],
     "disease": "Chagas",
     "symptoms": [
       "Do you have a fever (either felt or measured with a thermometer)?",
@@ -620,6 +683,9 @@
   },
   {
     "doc_id": "T61.1",
+    "icd10_codes": [
+      "T61.1"
+    ],
     "disease": "Scombroid food poisoning",
     "symptoms": [
       "Do you feel lightheaded and dizzy or do you feel like you are about to faint?",
@@ -650,6 +716,9 @@
   },
   {
     "doc_id": "I51.4",
+    "icd10_codes": [
+      "I51.4"
+    ],
     "disease": "Myocarditis",
     "symptoms": [
       "Have you noticed any new fatigue, generalized and vague discomfort, diffuse (widespread) muscle aches or a change in your general well-being related to your consultation today?",
@@ -679,6 +748,9 @@
   },
   {
     "doc_id": "J38.5",
+    "icd10_codes": [
+      "J38.5"
+    ],
     "disease": "Larygospasm",
     "symptoms": [
       "Have you noticed a high pitched sound when breathing in?"
@@ -699,6 +771,9 @@
   },
   {
     "doc_id": "G24.02",
+    "icd10_codes": [
+      "G24.02"
+    ],
     "disease": "Acute dystonic reactions",
     "symptoms": [
       "Have you ever felt like you were suffocating for a very short time associated with inability to breathe or speak?",
@@ -724,6 +799,9 @@
   },
   {
     "doc_id": "R60.0",
+    "icd10_codes": [
+      "R60.0"
+    ],
     "disease": "Localized edema",
     "symptoms": [
       "Are you experiencing shortness of breath or difficulty breathing in a significant way?",
@@ -762,6 +840,9 @@
   },
   {
     "doc_id": "M32",
+    "icd10_codes": [
+      "M32"
+    ],
     "disease": "SLE",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -799,6 +880,9 @@
   },
   {
     "doc_id": "A15",
+    "icd10_codes": [
+      "A15"
+    ],
     "disease": "Tuberculosis",
     "symptoms": [
       "Do you have a cough?",
@@ -824,6 +908,9 @@
   },
   {
     "doc_id": "I20.0",
+    "icd10_codes": [
+      "I20.0"
+    ],
     "disease": "Unstable angina",
     "symptoms": [
       "Do you have symptoms that are increased with physical exertion but alleviated with rest?",
@@ -861,6 +948,9 @@
   },
   {
     "doc_id": "I20.9",
+    "icd10_codes": [
+      "I20.9"
+    ],
     "disease": "Stable angina",
     "symptoms": [
       "Do you have symptoms that are increased with physical exertion but alleviated with rest?",
@@ -894,6 +984,9 @@
   },
   {
     "doc_id": "A98.4",
+    "icd10_codes": [
+      "A98.4"
+    ],
     "disease": "Ebola",
     "symptoms": [
       "Have you noticed any unusual bleeding or bruising related to your consultation today?",
@@ -920,6 +1013,9 @@
   },
   {
     "doc_id": "H66.90",
+    "icd10_codes": [
+      "H66.90"
+    ],
     "disease": "Acute otitis media",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -947,6 +1043,9 @@
   },
   {
     "doc_id": "F41",
+    "icd10_codes": [
+      "F41"
+    ],
     "disease": "Panic attack",
     "symptoms": [
       "Do you feel your heart is beating fast (racing), irregularly (missing a beat) or do you feel palpitations?",
@@ -987,6 +1086,9 @@
   },
   {
     "doc_id": "J45",
+    "icd10_codes": [
+      "J45"
+    ],
     "disease": "Bronchospasm / acute asthma exacerbation",
     "symptoms": [
       "Do you have a cough?",
@@ -1013,6 +1115,9 @@
   },
   {
     "doc_id": "J40",
+    "icd10_codes": [
+      "J40"
+    ],
     "disease": "Bronchitis",
     "symptoms": [
       "Are your symptoms more prominent at night?",
@@ -1045,6 +1150,9 @@
   },
   {
     "doc_id": "J44.1",
+    "icd10_codes": [
+      "J44.1"
+    ],
     "disease": "Acute COPD exacerbation / infection",
     "symptoms": [
       "Do you have a cough?",
@@ -1071,6 +1179,9 @@
   },
   {
     "doc_id": "I26",
+    "icd10_codes": [
+      "I26"
+    ],
     "disease": "Pulmonary embolism",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -1103,6 +1214,9 @@
   },
   {
     "doc_id": "J06.9",
+    "icd10_codes": [
+      "J06.9"
+    ],
     "disease": "URTI",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -1136,6 +1250,9 @@
   },
   {
     "doc_id": "J11.1",
+    "icd10_codes": [
+      "J11.1"
+    ],
     "disease": "Influenza",
     "symptoms": [
       "Where is the affected region located?",
@@ -1175,7 +1292,11 @@
     "embedding": []
   },
   {
-    "doc_id": "J17, J18",
+    "doc_id": "J18",
+    "icd10_codes": [
+      "J17",
+      "J18"
+    ],
     "disease": "Pneumonia",
     "symptoms": [
       "Do you have pain that is increased when you breathe in deeply?",
@@ -1228,6 +1349,9 @@
   },
   {
     "doc_id": "J01",
+    "icd10_codes": [
+      "J01"
+    ],
     "disease": "Acute rhinosinusitis",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -1263,6 +1387,9 @@
   },
   {
     "doc_id": "J32",
+    "icd10_codes": [
+      "J32"
+    ],
     "disease": "Chronic rhinosinusitis",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -1296,6 +1423,9 @@
   },
   {
     "doc_id": "J21",
+    "icd10_codes": [
+      "J21"
+    ],
     "disease": "Bronchiolitis",
     "symptoms": [
       "Do you have a cough?",
@@ -1322,6 +1452,9 @@
   },
   {
     "doc_id": "C34",
+    "icd10_codes": [
+      "C34"
+    ],
     "disease": "Pulmonary neoplasm",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -1353,6 +1486,9 @@
   },
   {
     "doc_id": "I21",
+    "icd10_codes": [
+      "I21"
+    ],
     "disease": "Possible NSTEMI / STEMI",
     "symptoms": [
       "Have you recently had a loss of appetite or do you get full more quickly then usually?",
@@ -1389,6 +1525,9 @@
   },
   {
     "doc_id": "D86",
+    "icd10_codes": [
+      "D86"
+    ],
     "disease": "Sarcoidosis",
     "symptoms": [
       "Where is the affected region located?",
@@ -1425,6 +1564,9 @@
   },
   {
     "doc_id": "C25",
+    "icd10_codes": [
+      "C25"
+    ],
     "disease": "Pancreatic neoplasm",
     "symptoms": [
       "Do you feel pain somewhere?",
@@ -1465,6 +1607,9 @@
   },
   {
     "doc_id": "J81.0",
+    "icd10_codes": [
+      "J81.0"
+    ],
     "disease": "Acute pulmonary edema",
     "symptoms": [
       "Do you have symptoms that are increased with physical exertion but alleviated with rest?",
@@ -1499,6 +1644,9 @@
   },
   {
     "doc_id": "I30",
+    "icd10_codes": [
+      "I30"
+    ],
     "disease": "Pericarditis",
     "symptoms": [
       "Do you have pain that is increased when you breathe in deeply?",
