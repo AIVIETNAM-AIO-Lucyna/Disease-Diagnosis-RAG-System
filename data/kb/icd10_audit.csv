@@ -32,7 +32,7 @@ Myocarditis,I51.4,I51.4,1,I51.4,2,,
 Pancreatic neoplasm,c25,C25,1,C25,3,Y,
 Panic attack,f41,F41,1,F41,5,Y,
 Pericarditis,I30,I30,1,I30,4,,
-Pneumonia,"j17, j18",J17|J18,2,J17,3,Y,Y
+Pneumonia,"j17, j18",J17|J18,2,J18,3,Y,Y
 Possible NSTEMI / STEMI,I21,I21,1,I21,1,,
 PSVT,I47.1,I47.1,1,I47.1,2,,
 Pulmonary embolism,i26,I26,1,I26,2,Y,
