@@ -1,7 +1,7 @@
 # Getting started
 
-> **Version:** 2026-06-11  
-> **Audience:** New contributors  
+> **Version:** 2026-06-11
+> **Audience:** New contributors
 > **Next:** [Project structure](./project-structure.md)
 
 ## Prerequisites

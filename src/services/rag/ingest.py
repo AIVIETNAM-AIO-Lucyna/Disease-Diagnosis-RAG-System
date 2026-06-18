@@ -87,9 +87,7 @@ class Ingestion:
             for record in records
         ]
 
-        embeddings = self._embed_service.embed_documents(
-            embed_texts
-        )
+        embeddings = self._embed_service.embed_documents(embed_texts)
 
         documents = [
             self._build_document(record, embedding)
@@ -100,17 +98,14 @@ class Ingestion:
         ]
 
         request = BulkIngestRequest(
-            index_name=index_name
-            or settings.RETRIEVE_INDEX_ALIAS,
+            index_name=index_name or settings.RETRIEVE_INDEX_ALIAS,
             documents=documents,
         )
 
-        self._client.bulk(
-            request.to_bulk_actions()
-        )
+        self._client.bulk(request.to_bulk_actions())
 
         return len(documents)
-    
+
     @staticmethod
     def _build_embed_text(
         disease: str,
@@ -119,17 +114,29 @@ class Ingestion:
     ) -> str:
         symptom_str = ", ".join(symptoms)
 
-        return (
-            f"Disease: {disease}. "
-            f"Symptoms: {symptom_str}. "
-            f"{description}"
-        )
-    
+        return f"Disease: {disease}. " f"Symptoms: {symptom_str}. " f"{description}"
+
+    REQUIRED_FIELDS = (
+        "doc_id",
+        "disease",
+        "symptoms",
+        "keyword_text",
+        "severity",
+        "source",
+    )
+
     def _build_document(
         self,
         record: dict[str, Any],
         embedding: list[float],
     ) -> DiseaseDocument:
+        missing_fields = [
+            field for field in self.REQUIRED_FIELDS if field not in record
+        ]
+
+        if missing_fields:
+            raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
+
         return DiseaseDocument(
             doc_id=record["doc_id"],
             disease=record["disease"],
