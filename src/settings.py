@@ -30,7 +30,10 @@ class Settings(BaseSettings):
         default="bge-small-en-v1.5",  # english model, version 1.5
         description="The name of the embedding model to use for vector search",
     )
-
+    EMBEDDING_DIM: int = Field(
+        default=384,
+        description="The dimension of the embedding vector",
+    )
     # PATH
     PATH_TO_INDICES: str = Field(
         default="indices",

@@ -3,7 +3,9 @@
 from typing import Any
 
 from src.db.vector_db.opensearch import OpenSearchClient, get_opensearch_client
+from src.logging import get_logger
 from src.schemas import SearchResponse
+from src.schemas.opensearch_responses import TotalHits
 from src.services.ai_inference.bge.service import BGEInferenceService
 from src.services.rag.preprocess import preprocess_query
 from src.services.rag.schemas import (
@@ -11,10 +13,12 @@ from src.services.rag.schemas import (
     ExperimentCompareResponse,
     ExperimentModeResult,
     HybridRetrieveRequest,
+    PreprocessableRequest,
     RetrievalMode,
     RetrieveExperimentRequest,
     RetrieveHit,
     RetrieveResult,
+    SearchExecution,
     VectorRetrieveRequest,
 )
 from src.settings import settings
@@ -33,30 +37,19 @@ class Retriever:
         self._client = client or get_opensearch_client()
         self._embed_service = embed_service
         self._preprocess = preprocess
+        self._logger = get_logger(__name__)
 
     def search_bm25(self, request: Bm25RetrieveRequest) -> RetrieveResult:
         request = self._maybe_preprocess_request(request)
-        body = request.to_search_body()
-        response = self._client.query(request.index_name, body)
-        return self._to_retrieve_result(response)
+        return self._execute_bm25(request).result
 
     def search_vector(self, request: VectorRetrieveRequest) -> RetrieveResult:
         request = self._maybe_preprocess_request(request)
-        embedding = request.embedding or self._embed_service.embed_query(request.query)
-        body = request.to_search_body(embedding)
-        response = self._client.query(request.index_name, body)
-        return self._to_retrieve_result(response)
+        return self._execute_vector(request).result
 
     def search_hybrid(self, request: HybridRetrieveRequest) -> RetrieveResult:
         request = self._maybe_preprocess_request(request)
-        embedding = request.embedding or self._embed_service.embed_query(request.query)
-        body = request.to_search_body(embedding)
-        response = self._client.query(
-            request.index_name,
-            body,
-            search_pipeline=request.search_pipeline,
-        )
-        return self._to_retrieve_result(response)
+        return self._execute_hybrid(request).result
 
     def run_experiment(
         self, request: RetrieveExperimentRequest
@@ -67,50 +60,31 @@ class Retriever:
                 update={"query": preprocess_query(request.query)}
             )
 
-        results: dict[str, ExperimentModeResult] = {}
+        if not request.modes:
+            self._logger.warning("run_experiment called with an empty modes list")
+
+        request = self._ensure_experiment_embedding(request)
+        results: dict[RetrievalMode, ExperimentModeResult] = {}
 
         for mode in request.modes:
-            if mode is RetrievalMode.BM25:
-                bm25 = request.bm25_request()
-                body = bm25.to_search_body()
-                response = self._client.query(request.index_name, body)
-                mode_result = self._to_experiment_mode_result(
-                    mode=mode,
-                    response=response,
-                    opensearch_body=body if request.include_opensearch_body else None,
-                )
-
-            elif mode is RetrievalMode.KNN:
-                vector = request.vector_request()
-                embedding = self._embed_service.embed_query(vector.query)
-                body = vector.to_search_body(embedding)
-                response = self._client.query(request.index_name, body)
-                mode_result = self._to_experiment_mode_result(
-                    mode=mode,
-                    response=response,
-                    opensearch_body=body if request.include_opensearch_body else None,
-                )
-
-            elif mode is RetrievalMode.HYBRID:
-                hybrid = request.hybrid_request()
-                embedding = self._embed_service.embed_query(hybrid.query)
-                body = hybrid.to_search_body(embedding)
-                response = self._client.query(
-                    request.index_name,
-                    body,
-                    search_pipeline=hybrid.search_pipeline,
-                )
-                mode_result = self._to_experiment_mode_result(
-                    mode=mode,
-                    response=response,
-                    search_pipeline=hybrid.search_pipeline,
-                    opensearch_body=body if request.include_opensearch_body else None,
-                )
-
+            if mode == RetrievalMode.BM25:
+                execution = self._execute_bm25(request.bm25_request())
+            elif mode == RetrievalMode.KNN:
+                execution = self._execute_vector(request.vector_request())
+            elif mode == RetrievalMode.HYBRID:
+                execution = self._execute_hybrid(request.hybrid_request())
             else:
                 continue
 
-            results[mode.value] = mode_result
+            mode_key = self._normalize_mode(mode)
+            results[mode_key] = self._to_experiment_mode_result(
+                mode=mode_key,
+                response=execution.response,
+                search_pipeline=execution.search_pipeline,
+                opensearch_body=(
+                    execution.body if request.include_opensearch_body else None
+                ),
+            )
 
         return ExperimentCompareResponse(
             query=request.query,
@@ -125,10 +99,77 @@ class Retriever:
             HybridRetrieveRequest(query=query, index_name=index_name)
         )
 
-    def _maybe_preprocess_request(self, request: Any) -> Any:
+    def _execute_bm25(self, request: Bm25RetrieveRequest) -> SearchExecution:
+        body = request.to_search_body()
+        response = self._client.query(request.index_name, body)
+        return SearchExecution(
+            result=self._to_retrieve_result(response),
+            response=response,
+            body=body,
+        )
+
+    def _execute_vector(self, request: VectorRetrieveRequest) -> SearchExecution:
+        request = self._ensure_request_embedding(request)
+        body = request.to_search_body()
+        response = self._client.query(request.index_name, body)
+        return SearchExecution(
+            result=self._to_retrieve_result(response),
+            response=response,
+            body=body,
+        )
+
+    def _execute_hybrid(self, request: HybridRetrieveRequest) -> SearchExecution:
+        request = self._ensure_request_embedding(request)
+        body = request.to_search_body()
+        response = self._client.query(
+            request.index_name,
+            body,
+            search_pipeline=request.search_pipeline,
+        )
+        return SearchExecution(
+            result=self._to_retrieve_result(response),
+            response=response,
+            body=body,
+            search_pipeline=request.search_pipeline,
+        )
+
+    def _ensure_experiment_embedding(
+        self, request: RetrieveExperimentRequest
+    ) -> RetrieveExperimentRequest:
+        """Set ``request.embedding`` once when vector/hybrid modes need a query vector."""
+        if request.embedding is not None:
+            return request
+
+        needs_embedding = any(
+            mode == RetrievalMode.KNN or mode == RetrievalMode.HYBRID
+            for mode in request.modes
+        )
+        if not needs_embedding:
+            return request
+
+        return request.model_copy(
+            update={"embedding": self._embed_service.embed_query(request.query)}
+        )
+
+    def _ensure_request_embedding(
+        self, request: VectorRetrieveRequest | HybridRetrieveRequest
+    ) -> VectorRetrieveRequest | HybridRetrieveRequest:
+        if request.embedding is not None:
+            return request
+        return request.model_copy(
+            update={"embedding": self._embed_service.embed_query(request.query)}
+        )
+
+    def _maybe_preprocess_request(
+        self, request: PreprocessableRequest
+    ) -> PreprocessableRequest:
         if not self._preprocess:
             return request
         return request.model_copy(update={"query": preprocess_query(request.query)})
+
+    @staticmethod
+    def _normalize_mode(mode: RetrievalMode | str) -> RetrievalMode:
+        return mode if isinstance(mode, RetrievalMode) else RetrievalMode(mode)
 
     @staticmethod
     def _build_hits(response: SearchResponse) -> list[RetrieveHit]:
@@ -153,7 +194,9 @@ class Retriever:
     @staticmethod
     def _total_hits(response: SearchResponse) -> int:
         total = response.hits.total
-        return total.value if hasattr(total, "value") else int(total)
+        if isinstance(total, TotalHits):
+            return total.value
+        return int(total)
 
     @classmethod
     def _to_retrieve_result(cls, response: SearchResponse) -> RetrieveResult:

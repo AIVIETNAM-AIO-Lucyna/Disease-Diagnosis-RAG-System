@@ -1,10 +1,12 @@
 """Retrieval request/response schemas for step-by-step RAG search experiments."""
 
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Literal
+from typing import Any, Literal, TypeVar
 
 from pydantic import Field, model_validator
 
+from src.schemas import SearchResponse
 from src.schemas.base import ORSBaseModel, RWSBaseModel
 from src.settings import settings
 
@@ -54,7 +56,7 @@ class Bm25RetrieveRequest(RetrieveBaseRequest):
 
 
 class VectorRetrieveRequest(RetrieveBaseRequest):
-    """k-NN vector search on ``embedding`` (384-dim cosine)."""
+    """k-NN vector search on ``embedding`` (settings.EMBEDDING_DIM-dim cosine)."""
 
     field: str = "embedding"
     knn_k: int | None = None
@@ -66,17 +68,17 @@ class VectorRetrieveRequest(RetrieveBaseRequest):
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "VectorRetrieveRequest":
-        if self.embedding is not None and len(self.embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(self.embedding)}"
+        if self.embedding is not None and len(self.embedding) != settings.EMBEDDING_DIM:
+            msg = f"embedding must be settings.EMBEDDING_DIM-dimensional, got {len(self.embedding)}"
             raise ValueError(msg)
         return self
 
     def resolved_k(self) -> int:
         return self.knn_k or self.top_k
 
-    def to_search_body(self, embedding: list[float]) -> dict[str, Any]:
-        if len(embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(embedding)}"
+    def to_search_body(self) -> dict[str, Any]:
+        if self.embedding is None:
+            msg = "embedding must be set before building the search body"
             raise ValueError(msg)
 
         body: dict[str, Any] = {
@@ -85,7 +87,7 @@ class VectorRetrieveRequest(RetrieveBaseRequest):
             "query": {
                 "knn": {
                     self.field: {
-                        "vector": embedding,
+                        "vector": self.embedding,
                         "k": self.resolved_k(),
                     }
                 }
@@ -118,17 +120,17 @@ class HybridRetrieveRequest(RetrieveBaseRequest):
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "HybridRetrieveRequest":
-        if self.embedding is not None and len(self.embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(self.embedding)}"
+        if self.embedding is not None and len(self.embedding) != settings.EMBEDDING_DIM:
+            msg = f"embedding must be settings.EMBEDDING_DIM-dimensional, got {len(self.embedding)}"
             raise ValueError(msg)
         return self
 
     def resolved_k(self) -> int:
         return self.knn_k or self.top_k
 
-    def to_search_body(self, embedding: list[float]) -> dict[str, Any]:
-        if len(embedding) != 384:
-            msg = f"embedding must be 384-dimensional, got {len(embedding)}"
+    def to_search_body(self) -> dict[str, Any]:
+        if self.embedding is None:
+            msg = "embedding must be set before building the search body"
             raise ValueError(msg)
 
         body: dict[str, Any] = {
@@ -148,7 +150,7 @@ class HybridRetrieveRequest(RetrieveBaseRequest):
                         {
                             "knn": {
                                 self.vector_field: {
-                                    "vector": embedding,
+                                    "vector": self.embedding,
                                     "k": self.resolved_k(),
                                 }
                             }
@@ -160,6 +162,14 @@ class HybridRetrieveRequest(RetrieveBaseRequest):
         if self.explain:
             body["explain"] = True
         return body
+
+
+PreprocessableRequest = TypeVar(
+    "PreprocessableRequest",
+    Bm25RetrieveRequest,
+    VectorRetrieveRequest,
+    HybridRetrieveRequest,
+)
 
 
 class RetrieveExperimentRequest(RWSBaseModel):
@@ -179,11 +189,25 @@ class RetrieveExperimentRequest(RWSBaseModel):
         ]
     )
     source_fields: list[str] = Field(default_factory=_default_source_fields)
+    embedding: list[float] | None = Field(
+        default=None,
+        description="Optional fixed vector shared across vector/hybrid modes.",
+    )
     include_opensearch_body: bool = Field(
         default=False,
         description="Include raw OpenSearch request bodies in each result (debug).",
     )
     explain: bool = False
+
+    @model_validator(mode="after")
+    def validate_embedding_dimension(self) -> "RetrieveExperimentRequest":
+        if self.embedding is not None and len(self.embedding) != settings.EMBEDDING_DIM:
+            msg = (
+                f"embedding must be {settings.EMBEDDING_DIM}-dimensional, "
+                f"got {len(self.embedding)}"
+            )
+            raise ValueError(msg)
+        return self
 
     def bm25_request(self) -> Bm25RetrieveRequest:
         return Bm25RetrieveRequest(
@@ -201,6 +225,7 @@ class RetrieveExperimentRequest(RWSBaseModel):
             index_name=self.index_name,
             source_fields=self.source_fields,
             explain=self.explain,
+            embedding=self.embedding,
         )
 
     def hybrid_request(self) -> HybridRetrieveRequest:
@@ -211,6 +236,7 @@ class RetrieveExperimentRequest(RWSBaseModel):
             source_fields=self.source_fields,
             search_pipeline=self.search_pipeline,
             explain=self.explain,
+            embedding=self.embedding,
         )
 
 
@@ -235,6 +261,16 @@ class RetrieveResult(ORSBaseModel):
     took_ms: int | None = None
 
 
+@dataclass(frozen=True)
+class SearchExecution:
+    """Result of a single OpenSearch retrieval call before response mapping."""
+
+    result: RetrieveResult
+    response: SearchResponse
+    body: dict[str, Any]
+    search_pipeline: str | None = None
+
+
 class ExperimentModeResult(ORSBaseModel):
     """Single-mode result with experiment and optional debug metadata."""
 
@@ -252,8 +288,8 @@ class ExperimentCompareResponse(ORSBaseModel):
     query: str
     top_k: int
     index_name: str
-    results: dict[str, ExperimentModeResult]
+    results: dict[RetrievalMode, ExperimentModeResult]
 
     @property
     def modes_run(self) -> list[str]:
-        return list(self.results.keys())
+        return [mode.value for mode in self.results]
