@@ -2,11 +2,13 @@
 
 from typing import Any
 
-from src.db.vector_db.opensearch import OpenSearchClient, get_opensearch_client
+from src.db.vector_db.opensearch import OpenSearchClient
 from src.logging import get_logger
 from src.schemas import SearchResponse
 from src.schemas.opensearch_responses import TotalHits
-from src.services.ai_inference.bge.service import BGEInferenceService
+from src.services.inference.embeddings.service import TextEmbeddingService
+from src.services.inference.reranker.service import RerankerService
+from src.services.rag.exceptions import RerankerNotConfigured
 from src.services.rag.preprocess import preprocess_query
 from src.services.rag.schemas import (
     Bm25RetrieveRequest,
@@ -29,13 +31,14 @@ class Retriever:
 
     def __init__(
         self,
-        embed_service: BGEInferenceService,
-        client: OpenSearchClient | None = None,
-        *,
+        client: OpenSearchClient,
+        embed_service: TextEmbeddingService,
+        rerank_service: RerankerService,
         preprocess: bool = True,
     ) -> None:
-        self._client = client or get_opensearch_client()
+        self._client = client
         self._embed_service = embed_service
+        self._rerank_service = rerank_service
         self._preprocess = preprocess
         self._logger = get_logger(__name__)
 
@@ -98,6 +101,31 @@ class Retriever:
         return self.search_hybrid(
             HybridRetrieveRequest(query=query, index_name=index_name)
         )
+
+    def rerank(
+        self,
+        query: str,
+        result: RetrieveResult,
+        top_k: int,
+    ) -> RetrieveResult:
+        """Rerank retrieval hits with the cross-encoder and return top_k hits."""
+        if self._rerank_service is None:
+            raise RerankerNotConfigured()
+
+        if not result.hits:
+            return result
+
+        passages = [hit.passage_text for hit in result.hits]
+        ranked = self._rerank_service.rerank(query, passages, top_k=top_k)
+
+        reranked_hits: list[RetrieveHit] = []
+        for new_rank, (original_index, score) in enumerate(ranked, start=1):
+            hit = result.hits[original_index].model_copy(
+                update={"rank": new_rank, "score": score}
+            )
+            reranked_hits.append(hit)
+
+        return result.model_copy(update={"hits": reranked_hits})
 
     def _execute_bm25(self, request: Bm25RetrieveRequest) -> SearchExecution:
         body = request.to_search_body()

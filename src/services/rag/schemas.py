@@ -27,7 +27,7 @@ class RetrieveBaseRequest(RWSBaseModel):
     """Shared fields for all retrieval test requests."""
 
     query: str = Field(..., min_length=1)
-    top_k: int = Field(default=20, ge=1, le=100)
+    top_k: int = Field(default=settings.RETRIEVE_TOP_K, ge=1, le=100)
     index_name: str = Field(default_factory=lambda: settings.RETRIEVE_INDEX_ALIAS)
     source_fields: list[str] = Field(default_factory=_default_source_fields)
     explain: bool = False
@@ -252,6 +252,18 @@ class RetrieveHit(ORSBaseModel):
     severity: int | None = None
     description: str | None = None
     source: str | None = None
+
+    @property
+    def passage_text(self) -> str:
+        """Build symptom-first passage text for cross-encoder reranking."""
+        disease = self.disease or self.doc_id or "Unknown disease"
+        parts = [f"Disease: {disease}."]
+        if self.symptoms:
+            symptom_str = ", ".join(self.symptoms)
+            parts.append(f"Symptoms: {symptom_str}.")
+        if self.description:
+            parts.append(self.description)
+        return " ".join(parts)
 
 
 class RetrieveResult(ORSBaseModel):

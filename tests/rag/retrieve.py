@@ -155,10 +155,12 @@ class TestRetrieverSearch:
         self,
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
+        mock_rerank_service: Mock,
     ) -> None:
         retriever = Retriever(
-            embed_service=mock_embed_service,
             client=mock_opensearch_client,
+            embed_service=mock_embed_service,
+            rerank_service=mock_rerank_service,
             preprocess=False,
         )
         request = Bm25RetrieveRequest(query="I am tired")
@@ -240,6 +242,15 @@ class TestRetrieverSearch:
         assert index_name == settings.RETRIEVE_INDEX_ALIAS
         mock_embed_service.embed_query.assert_called_once_with("fever cough")
         assert len(result.hits) == 1
+
+    def test_retrieve_does_not_call_reranker(
+        self,
+        retriever_with_rerank: Retriever,
+        mock_rerank_service: Mock,
+    ) -> None:
+        retriever_with_rerank.retrieve("fever cough")
+
+        mock_rerank_service.rerank.assert_not_called()
 
 
 class TestRetrieverExperiment:
@@ -384,10 +395,12 @@ class TestRetrieverExperiment:
         self,
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
+        mock_rerank_service: Mock,
     ) -> None:
         retriever = Retriever(
-            embed_service=mock_embed_service,
             client=mock_opensearch_client,
+            embed_service=mock_embed_service,
+            rerank_service=mock_rerank_service,
             preprocess=False,
         )
         request = RetrieveExperimentRequest(
