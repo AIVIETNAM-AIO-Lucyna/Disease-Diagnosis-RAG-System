@@ -111,7 +111,7 @@ def build_keyword_text(disease: str, symptoms: list[str], antecedents: list[str]
 
 
 def build_embed_text(disease: str, symptoms: list[str], antecedents: list[str]) -> str:
-    """Embedding source text — symptom-first, NO synthesized description.
+    """Embedding source text — disease + symptoms + antecedents (NO synthesized description).
 
     Per Form 4 (ICD-10 & Severity reference) the document embedding is generated
     from disease + symptoms + antecedents only. `description` is team-synthesized
