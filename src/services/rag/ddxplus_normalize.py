@@ -101,7 +101,8 @@ def choose_canonical_doc_id(codes: list[str]) -> str:
     """Pick the canonical doc_id for a (possibly multi-code) condition."""
     if not codes:
         return ""
-    return CANONICAL_DOC_ID_OVERRIDES.get(tuple(codes), codes[0])
+    key = tuple(sorted(codes))
+    return CANONICAL_DOC_ID_OVERRIDES.get(key, codes[0])
 
 
 def build_keyword_text(disease: str, symptoms: list[str], antecedents: list[str]) -> str:
