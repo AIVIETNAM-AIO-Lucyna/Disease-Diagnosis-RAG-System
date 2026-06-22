@@ -40,15 +40,30 @@ class TestRetrieverHelpers:
         assert hit.description == "Example description"
         assert hit.source == "ddxplus"
 
-    def test_build_hits_handles_missing_source(self) -> None:
+    def test_build_hits_skips_hits_with_missing_source(self) -> None:
         response = make_search_response(
             hits=[{"_index": "diseases", "_id": "x", "_score": 0.5, "_source": None}]
         )
 
         hits = Retriever._build_hits(response)
 
-        assert hits[0].doc_id is None
-        assert hits[0].disease is None
+        assert hits == []
+
+    def test_build_hits_skips_hits_with_incomplete_source(self) -> None:
+        response = make_search_response(
+            hits=[
+                {
+                    "_index": "diseases",
+                    "_id": "x",
+                    "_score": 0.5,
+                    "_source": {"doc_id": "G70.0", "disease": "Myasthenia gravis"},
+                }
+            ]
+        )
+
+        hits = Retriever._build_hits(response)
+
+        assert hits == []
 
     @pytest.mark.parametrize(
         ("total", "expected"),

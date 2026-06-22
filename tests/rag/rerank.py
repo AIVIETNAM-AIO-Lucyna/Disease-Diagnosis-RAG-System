@@ -16,7 +16,10 @@ def _sample_hit(
     doc_id: str = "G70.0",
     disease: str = "Myasthenia gravis",
     symptoms: list[str] | None = None,
-    description: str | None = "Example description",
+    antecedents: list[str] | None = None,
+    severity: int = 1,
+    description: str = "Example description",
+    source: str = "ddxplus",
 ) -> RetrieveHit:
     return RetrieveHit(
         rank=rank,
@@ -24,7 +27,10 @@ def _sample_hit(
         doc_id=doc_id,
         disease=disease,
         symptoms=symptoms if symptoms is not None else ["fatigue", "muscle weakness"],
+        antecedents=antecedents if antecedents is not None else [],
+        severity=severity,
         description=description,
+        source=source,
     )
 
 
@@ -42,16 +48,6 @@ class TestRetrieveHitPassageText:
         hit = _sample_hit(symptoms=[])
 
         assert hit.passage_text == "Disease: Myasthenia gravis. Example description"
-
-    def test_falls_back_to_doc_id_when_disease_missing(self) -> None:
-        hit = _sample_hit(disease=None, symptoms=[], description=None)
-
-        assert hit.passage_text == "Disease: G70.0."
-
-    def test_falls_back_to_unknown_when_no_identifiers(self) -> None:
-        hit = RetrieveHit(rank=1, score=1.0)
-
-        assert hit.passage_text == "Disease: Unknown disease."
 
 
 class TestRetrieverRerank:
@@ -86,6 +82,37 @@ class TestRetrieverRerank:
         assert reranked.hits[1].doc_id == "A"
         assert reranked.hits[1].rank == 2
         assert reranked.hits[1].score == 0.5
+
+    def test_rerank_preprocesses_query_by_default(
+        self,
+        retriever_with_rerank: Retriever,
+        mock_rerank_service: Mock,
+    ) -> None:
+        result = RetrieveResult(hits=[_sample_hit()], took_ms=12)
+
+        retriever_with_rerank.rerank("I am tired", result, top_k=1)
+
+        query = mock_rerank_service.rerank.call_args.args[0]
+        assert query == "i am fatigue"
+
+    def test_rerank_skips_preprocess_when_disabled(
+        self,
+        mock_embed_service: Mock,
+        mock_opensearch_client: Mock,
+        mock_rerank_service: Mock,
+    ) -> None:
+        retriever = Retriever(
+            client=mock_opensearch_client,
+            embed_service=mock_embed_service,
+            rerank_service=mock_rerank_service,
+            preprocess=False,
+        )
+        result = RetrieveResult(hits=[_sample_hit()], took_ms=12)
+
+        retriever.rerank("I am tired", result, top_k=1)
+
+        query = mock_rerank_service.rerank.call_args.args[0]
+        assert query == "I am tired"
 
     def test_rerank_returns_empty_result_unchanged(
         self,

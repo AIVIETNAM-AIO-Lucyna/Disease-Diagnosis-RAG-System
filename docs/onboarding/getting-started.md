@@ -1,6 +1,6 @@
 # Getting started
 
-> **Version:** 2026-06-20
+> **Version:** 2026-06-22
 > **Audience:** New contributors
 > **Next:** [Project structure](./project-structure.md)
 
@@ -76,11 +76,15 @@ See [DDXPlus index mapping](../ddxplus-index-mapping.md) for field schema and in
 ### 4. Verify retrieval (after documents are indexed)
 
 ```python
+from src.db.vector_db.opensearch import get_opensearch_client
 from src.services.inference.embeddings.service import TextEmbeddingService
 from src.services.rag import Retriever
 from src.services.rag.schemas import HybridRetrieveRequest
 
-retriever = Retriever(embed_service=TextEmbeddingService())
+retriever = Retriever(
+    client=get_opensearch_client(),
+    embed_service=TextEmbeddingService(),
+)
 result = retriever.search_hybrid(HybridRetrieveRequest(query="fever cough fatigue"))
 print(result.hits)
 ```
@@ -142,6 +146,7 @@ Tests mock OpenSearch, BGE, and reranker — no `.env` or indexed documents requ
 
 | Date | Change |
 |------|--------|
+| 2026-06-22 | Fixed `Retriever` examples to pass required OpenSearch `client` |
 | 2026-06-20 | Added reranker settings, `RAGService.query()` example, reranker in test note |
 | 2026-06-17 | Added test commands; `RetrievalMode` experiment result keys |
 | 2026-06-11 | Fixed Retriever import; aligned setup with `.env.example` |

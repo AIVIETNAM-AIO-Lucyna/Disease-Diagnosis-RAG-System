@@ -1,6 +1,6 @@
 # Project structure
 
-> **Version:** 2026-06-20
+> **Version:** 2026-06-22
 > **See also:** [Development philosophy](./development-philosophy.md), [Roadmap](./roadmap-and-refactors.md)
 
 ## Repository layout
@@ -128,7 +128,7 @@ Domain-specific retrieval DTOs:
 - **Requests:** `Bm25RetrieveRequest`, `VectorRetrieveRequest`, `HybridRetrieveRequest` — each builds OpenSearch Query DSL via `to_search_body()`. Vector/hybrid requests carry an optional `embedding`; the retriever sets it before calling `to_search_body()`.
 - **Experiment request:** `RetrieveExperimentRequest` — shared query, optional fixed `embedding`, `modes` list
 - **Production response:** `RetrieveResult` — `hits` + optional `took_ms`
-- **Hit model:** `RetrieveHit` — normalized `_source` fields plus `passage_text` property for reranker/LLM input
+- **Hit model:** `RetrieveHit` — requires `doc_id`, `disease`, `severity`, and `source`; optional `symptoms`, `antecedents`, `description`. Incomplete OpenSearch hits are skipped in `_build_hits`. `passage_text` builds symptom-first reranker input.
 - **Experiment response:** `ExperimentCompareResponse` — `results: dict[RetrievalMode, ExperimentModeResult]` plus `modes_run` helper
 - **Internal:** `SearchExecution`, `PreprocessableRequest` TypeVar — used by `Retriever` execute helpers
 
@@ -138,7 +138,7 @@ Domain-specific retrieval DTOs:
 |--------|--------|-------|
 | `schemas.py` | Done | Retrieval — request/response DTOs |
 | `preprocess.py` | Done | Retrieval — query normalization + synonyms |
-| `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, `run_experiment()`, `rerank()` |
+| `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, `run_experiment()`, `rerank()`. Constructor: `Retriever(client, embed_service, rerank_service=None, preprocess=True)` |
 | `pipeline.py` | Partial | Production — `RAGService.query()` (retrieve → rerank); generate pending |
 | `exceptions.py` | Done | Domain errors (e.g. `RerankerNotConfigured`) |
 | `ingest.py` | Stub | Data team — `DiseaseDocument`, `BulkIngestRequest` |
@@ -161,14 +161,14 @@ See [DDXPlus index mapping](../ddxplus-index-mapping.md) for full field referenc
 3. For vector/hybrid: `Retriever` sets `request.embedding` (caller-supplied or `TextEmbeddingService.embed_query()` with the BGE search prefix)
 4. Request schema builds OpenSearch Query DSL via `to_search_body()`
 5. `OpenSearchClient.query()` runs search; hybrid passes `search_pipeline=hybrid-rrf`
-6. Hits are normalized into `RetrieveHit` → `RetrieveResult`
+6. Hits with complete required `_source` fields are normalized into `RetrieveHit` → `RetrieveResult`; incomplete documents are skipped
 
 For `run_experiment()`, the retriever preprocesses once, sets a shared `embedding` on the experiment request when k-NN/hybrid modes run, then delegates to the same `_execute_*` helpers used by `search_*`. Experiment paths do **not** rerank.
 
 ## Data flow: production query (`RAGService.query`)
 
-1. `Retriever.retrieve()` — hybrid search, default `RETRIEVE_TOP_K` (20)
-2. `Retriever.rerank()` — cross-encoder scores each hit's `passage_text`, keeps `RERANK_TOP_K` (5)
+1. `Retriever.retrieve()` — hybrid search, default `RETRIEVE_TOP_K` (20); query preprocessed when `preprocess=True`
+2. `Retriever.rerank()` — same query string preprocessed the same way; cross-encoder scores each hit's `passage_text`, keeps `RERANK_TOP_K` (5)
 3. Returns `RetrieveResult` with updated `rank` and cross-encoder `score`
 
 Low-level `search_*` and `run_experiment()` remain retrieval-only for A/B testing.
@@ -192,6 +192,7 @@ RAG domain models live under `src/services/rag/` so OpenSearch infrastructure st
 
 | Date | Change |
 |------|--------|
+| 2026-06-22 | Documented `Retriever` constructor, hit validation, rerank query preprocessing |
 | 2026-06-20 | Documented reranker service, production pipeline, tests, and `passage_text` |
 | 2026-06-17 | Documented tests/, embedding-on-request flow, `RetrievalMode` experiment results |
 | 2026-06-11 | Documented DDXPlus mapping and migration |

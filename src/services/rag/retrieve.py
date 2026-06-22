@@ -1,6 +1,8 @@
 """Retrieval: BM25, k-NN, and hybrid+RRF search."""
 
-from typing import Any
+from typing import Any, Optional
+
+from pydantic import ValidationError
 
 from src.db.vector_db.opensearch import OpenSearchClient
 from src.logging import get_logger
@@ -33,7 +35,7 @@ class Retriever:
         self,
         client: OpenSearchClient,
         embed_service: TextEmbeddingService,
-        rerank_service: RerankerService,
+        rerank_service: Optional[RerankerService] = None,
         preprocess: bool = True,
     ) -> None:
         self._client = client
@@ -114,6 +116,9 @@ class Retriever:
 
         if not result.hits:
             return result
+
+        if self._preprocess:
+            query = preprocess_query(query)
 
         passages = [hit.passage_text for hit in result.hits]
         ranked = self._rerank_service.rerank(query, passages, top_k=top_k)
@@ -202,21 +207,33 @@ class Retriever:
     @staticmethod
     def _build_hits(response: SearchResponse) -> list[RetrieveHit]:
         hits: list[RetrieveHit] = []
-        for rank, hit in enumerate(response.hits.hits, start=1):
-            source = hit.source or {}
-            hits.append(
-                RetrieveHit(
-                    rank=rank,
-                    score=hit.score,
-                    doc_id=source.get("doc_id"),
-                    disease=source.get("disease"),
-                    symptoms=source.get("symptoms"),
-                    antecedents=source.get("antecedents"),
-                    severity=source.get("severity"),
-                    description=source.get("description"),
-                    source=source.get("source"),
+        rank = 0
+        for hit in response.hits.hits:
+            source = hit.source
+            if source is None:
+                continue
+
+            required_fields = ("doc_id", "disease", "severity", "source")
+            if any(source.get(field) in (None, "") for field in required_fields):
+                continue
+
+            rank += 1
+            try:
+                hits.append(
+                    RetrieveHit(
+                        rank=rank,
+                        score=hit.score,
+                        doc_id=source["doc_id"],
+                        disease=source["disease"],
+                        symptoms=source.get("symptoms") or [],
+                        antecedents=source.get("antecedents") or [],
+                        severity=source["severity"],
+                        description=source.get("description") or "",
+                        source=source["source"],
+                    )
                 )
-            )
+            except ValidationError:
+                rank -= 1
         return hits
 
     @staticmethod

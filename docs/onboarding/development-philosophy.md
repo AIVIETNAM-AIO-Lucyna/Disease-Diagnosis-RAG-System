@@ -1,6 +1,6 @@
 # Development philosophy
 
-> **Version:** 2026-06-20
+> **Version:** 2026-06-22
 > **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
@@ -62,7 +62,7 @@ The team compares retrieval strategies before locking the pipeline:
 
 Production callers use `RAGService.query()` (retrieve → rerank) or compose `Retriever.retrieve()` + `Retriever.rerank()` explicitly. Experiment and low-level `search_*` APIs stay retrieval-only.
 
-Production responses use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`). After rerank, `RetrieveHit.score` is the cross-encoder score; `RetrieveHit.passage_text` builds symptom-first text for reranking.
+Production responses use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`). `_build_hits` drops OpenSearch documents missing required fields (`doc_id`, `disease`, `severity`, `source`). After rerank, `RetrieveHit.score` is the cross-encoder score; `RetrieveHit.passage_text` builds symptom-first text for reranking (disease + optional symptoms + description).
 
 ### 7. OpenSearch does search; the app does AI
 
@@ -133,6 +133,7 @@ Before opening a PR, verify:
 
 | Date | Change |
 |------|--------|
+| 2026-06-22 | Documented hit validation and `passage_text` shape |
 | 2026-06-20 | Documented production rerank path and `RetrieveHit.passage_text` |
 | 2026-06-17 | Embedding-on-request pattern; retrieval tests; ruff/pre-commit |
 | 2026-06-11 | Streamlined document; removed duplicate project description |

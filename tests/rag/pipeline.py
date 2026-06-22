@@ -31,6 +31,9 @@ class TestRAGService:
                     score=1.42,
                     doc_id="G70.0",
                     disease="Myasthenia gravis",
+                    symptoms=["fatigue"],
+                    severity=1,
+                    source="ddxplus",
                 )
             ],
             took_ms=12,
@@ -42,6 +45,9 @@ class TestRAGService:
                     score=0.99,
                     doc_id="G70.0",
                     disease="Myasthenia gravis",
+                    symptoms=["fatigue"],
+                    severity=1,
+                    source="ddxplus",
                 )
             ],
             took_ms=12,
