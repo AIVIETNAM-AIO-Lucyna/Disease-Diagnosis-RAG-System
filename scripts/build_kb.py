@@ -63,20 +63,27 @@ def build(embed: bool = False) -> None:
     log.append(f"- conditions source: `{SRC_CONDITIONS.name}` ({len(conditions)} conditions)")
     log.append(f"- evidences source: `{SRC_EVIDENCES.name}` ({len(evidences)} evidences)\n")
 
-    raw_icds = [c.get("icd10-id", "") for c in conditions.values()]
+    conds = list(conditions.values())
+    raw_icds = [c.get("icd10-id", "") for c in conds]
     norm_icds = [normalize_icd10(x) for x in raw_icds]
     case_fixed = [(r, n) for r, n in zip(raw_icds, norm_icds) if r != n]
-    dup_icds = [k for k, v in Counter(norm_icds).items() if v > 1]
+    canonical_doc_ids = [
+        choose_canonical_doc_id(split_icd10_codes(c.get("icd10-id")))
+        for c in conds
+    ]
+    empty_doc_ids = [i for i, doc_id in enumerate(canonical_doc_ids) if not doc_id]
+    duplicate_doc_ids = [k for k, v in Counter(canonical_doc_ids).items() if k and v > 1]
     log.append("## ICD-10 normalization")
     log.append(f"- codes normalized (case/whitespace changed): {len(case_fixed)}")
     if case_fixed:
         log.append("  - " + ", ".join(f"`{r}`->`{n}`" for r, n in case_fixed))
-    log.append(f"- duplicate ICD-10 after normalization: {dup_icds if dup_icds else 'none'}\n")
+    log.append(f"- canonical doc_id empty: {empty_doc_ids if empty_doc_ids else 'none'}")
+    log.append(f"- duplicate canonical doc_id: {duplicate_doc_ids if duplicate_doc_ids else 'none'}\n")
 
     docs_norm: list[dict] = []
     docs_raw: list[dict] = []
 
-    for cond in conditions.values():
+    for cond in conds:
         disease = cond["cond-name-eng"]
         icd10_codes = split_icd10_codes(cond.get("icd10-id"))
         doc_id = choose_canonical_doc_id(icd10_codes)
