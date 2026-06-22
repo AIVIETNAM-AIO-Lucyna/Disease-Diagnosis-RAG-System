@@ -1,10 +1,8 @@
 """Retrieval request/response schemas for step-by-step RAG search experiments."""
 
-from typing import Any
-
 from dataclasses import dataclass
 from enum import Enum
-from typing import Literal, TypeVar
+from typing import Any, Literal, TypeVar
 
 from pydantic import Field, model_validator
 
@@ -295,3 +293,70 @@ class ExperimentCompareResponse(ORSBaseModel):
     @property
     def modes_run(self) -> list[str]:
         return [mode.value for mode in self.results]
+
+
+class IngestRecord(RWSBaseModel):
+    doc_id: str = Field(..., min_length=1)
+    disease: str = Field(..., min_length=1)
+
+    symptoms: list[str]
+
+    keyword_text: str = Field(..., min_length=1)
+
+    severity: int = Field(..., ge=1, le=5)
+
+    source: str = Field(..., min_length=1)
+
+    antecedents: list[str] = Field(default_factory=list)
+
+    description: str = ""
+
+
+class DiseaseDocument(RWSBaseModel):
+    """OpenSearch disease document for idempotent bulk upsert."""
+
+    doc_id: str = Field(..., min_length=1)
+    disease: str = Field(..., min_length=1)
+    symptoms: list[str]
+    antecedents: list[str] = Field(default_factory=list)
+    keyword_text: str = Field(..., min_length=1)
+    embedding: list[float]
+    severity: int = Field(..., ge=1, le=5)
+    description: str = ""
+    source: str = Field(..., min_length=1)
+
+    @model_validator(mode="after")
+    def validate_embedding_dimension(self) -> "DiseaseDocument":
+        if len(self.embedding) != settings.EMBEDDING_DIM:
+            msg = (
+                f"embedding must be {settings.EMBEDDING_DIM}-dimensional, "
+                f"got {len(self.embedding)}"
+            )
+            raise ValueError(msg)
+        return self
+
+    def to_bulk_action(self, index_name: str) -> dict[str, Any]:
+        return {
+            "_index": index_name,
+            "_id": self.doc_id,
+            **self.to_dict(),
+        }
+
+
+class BulkIngestRequest(RWSBaseModel):
+    """Bulk upsert request for disease documents."""
+
+    index_name: str = Field(
+        default_factory=lambda: settings.RETRIEVE_INDEX_ALIAS
+    )
+
+    documents: list[DiseaseDocument] = Field(
+        ...,
+        min_length=1,
+    )
+
+    def to_bulk_actions(self) -> list[dict[str, Any]]:
+        return [
+            doc.to_bulk_action(self.index_name)
+            for doc in self.documents
+        ]
