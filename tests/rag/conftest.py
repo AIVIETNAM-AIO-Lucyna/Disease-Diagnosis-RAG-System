@@ -80,8 +80,45 @@ def mock_opensearch_client() -> Mock:
 
 
 @pytest.fixture
-def retriever(mock_embed_service: Mock, mock_opensearch_client: Mock) -> Retriever:
+def mock_rerank_service() -> Mock:
+    service = Mock()
+    service.rerank.return_value = [(0, 0.9)]
+    return service
+
+
+@pytest.fixture
+def retriever(
+    mock_embed_service: Mock,
+    mock_opensearch_client: Mock,
+    mock_rerank_service: Mock,
+) -> Retriever:
     return Retriever(
-        embed_service=mock_embed_service,
         client=mock_opensearch_client,
+        embed_service=mock_embed_service,
+        rerank_service=mock_rerank_service,
+    )
+
+
+@pytest.fixture
+def retriever_without_rerank(
+    mock_embed_service: Mock,
+    mock_opensearch_client: Mock,
+) -> Retriever:
+    return Retriever(
+        client=mock_opensearch_client,
+        embed_service=mock_embed_service,
+        rerank_service=None,
+    )
+
+
+@pytest.fixture
+def retriever_with_rerank(
+    mock_embed_service: Mock,
+    mock_opensearch_client: Mock,
+    mock_rerank_service: Mock,
+) -> Retriever:
+    return Retriever(
+        client=mock_opensearch_client,
+        embed_service=mock_embed_service,
+        rerank_service=mock_rerank_service,
     )

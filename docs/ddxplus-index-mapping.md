@@ -1,7 +1,7 @@
 # DDXPlus index mapping guide
 
-> **Version:** 2026-06-11 
-> **Audience:** Data / ingest team  
+> **Version:** 2026-06-11
+> **Audience:** Data / ingest team
 > **Dataset:** DDXPlus Design A (49-condition knowledge base)
 
 This guide describes the OpenSearch index schema for the DDXPlus knowledge base, how to prepare documents for bulk ingest, and how to apply the index migration.

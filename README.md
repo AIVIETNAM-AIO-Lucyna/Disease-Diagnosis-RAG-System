@@ -9,7 +9,7 @@
 
 ## Current status
 
-Retrieval (BM25, k-NN, hybrid + RRF) is implemented with unit tests in `tests/rag/`. Ingestion, reranking, generation, and HTTP API are **Todo**.
+Retrieval (BM25, k-NN, hybrid + RRF) and cross-encoder reranking (`bge-reranker-base`) are implemented with unit tests in `tests/rag/`. Ingestion, LLM generation, and HTTP API are **Todo**.
 
 See [Roadmap](./docs/onboarding/roadmap-and-refactors.md) for full MVP status.
 
@@ -85,6 +85,7 @@ Documentation uses **date-based versions** (`YYYY-MM-DD`), not semver. Update th
 
 | Date | Change |
 |------|--------|
+| 2026-06-20 | Document reranker service and RAGService retrieve → rerank pipeline |
 | 2026-06-17 | Note retrieval unit tests; onboarding docs synced with refactored Retriever |
 | 2026-06-17 | Added testing and pre-commit guidance before commit |
 | 2026-06-11 | Consolidated to single README; added DDXPlus mapping and migration |

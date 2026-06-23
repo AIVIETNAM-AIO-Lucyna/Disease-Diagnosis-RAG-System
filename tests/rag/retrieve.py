@@ -40,15 +40,30 @@ class TestRetrieverHelpers:
         assert hit.description == "Example description"
         assert hit.source == "ddxplus"
 
-    def test_build_hits_handles_missing_source(self) -> None:
+    def test_build_hits_skips_hits_with_missing_source(self) -> None:
         response = make_search_response(
             hits=[{"_index": "diseases", "_id": "x", "_score": 0.5, "_source": None}]
         )
 
         hits = Retriever._build_hits(response)
 
-        assert hits[0].doc_id is None
-        assert hits[0].disease is None
+        assert hits == []
+
+    def test_build_hits_skips_hits_with_incomplete_source(self) -> None:
+        response = make_search_response(
+            hits=[
+                {
+                    "_index": "diseases",
+                    "_id": "x",
+                    "_score": 0.5,
+                    "_source": {"doc_id": "G70.0", "disease": "Myasthenia gravis"},
+                }
+            ]
+        )
+
+        hits = Retriever._build_hits(response)
+
+        assert hits == []
 
     @pytest.mark.parametrize(
         ("total", "expected"),
@@ -155,10 +170,12 @@ class TestRetrieverSearch:
         self,
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
+        mock_rerank_service: Mock,
     ) -> None:
         retriever = Retriever(
-            embed_service=mock_embed_service,
             client=mock_opensearch_client,
+            embed_service=mock_embed_service,
+            rerank_service=mock_rerank_service,
             preprocess=False,
         )
         request = Bm25RetrieveRequest(query="I am tired")
@@ -240,6 +257,15 @@ class TestRetrieverSearch:
         assert index_name == settings.RETRIEVE_INDEX_ALIAS
         mock_embed_service.embed_query.assert_called_once_with("fever cough")
         assert len(result.hits) == 1
+
+    def test_retrieve_does_not_call_reranker(
+        self,
+        retriever_with_rerank: Retriever,
+        mock_rerank_service: Mock,
+    ) -> None:
+        retriever_with_rerank.retrieve("fever cough")
+
+        mock_rerank_service.rerank.assert_not_called()
 
 
 class TestRetrieverExperiment:
@@ -384,10 +410,12 @@ class TestRetrieverExperiment:
         self,
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
+        mock_rerank_service: Mock,
     ) -> None:
         retriever = Retriever(
-            embed_service=mock_embed_service,
             client=mock_opensearch_client,
+            embed_service=mock_embed_service,
+            rerank_service=mock_rerank_service,
             preprocess=False,
         )
         request = RetrieveExperimentRequest(

@@ -1,6 +1,6 @@
 # Development philosophy
 
-> **Version:** 2026-06-17
+> **Version:** 2026-06-22
 > **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
@@ -25,8 +25,8 @@ The system is **not** a clinical diagnostic tool. The LLM summarizes retrieved d
 |-------|---------------|------------------|
 | `db/vector_db/` | settings, OpenSearch schemas | Embedding logic, prompt construction |
 | `schemas/` (OpenSearch) | base models only | RAG business rules |
-| `services/rag/` | db, ai_inference, rag schemas | Raw OpenSearch client calls scattered in handlers |
-| `services/ai_inference/` | settings | OpenSearch queries |
+| `services/rag/` | db, inference, rag schemas | Raw OpenSearch client calls scattered in handlers |
+| `services/inference/` | settings | OpenSearch queries |
 
 Keep **prompt construction**, **model invocation**, and **post-processing** in separate modules.
 
@@ -60,7 +60,9 @@ The team compares retrieval strategies before locking the pipeline:
 - `search_hybrid()` — BM25 + k-NN + RRF (MVP default)
 - `run_experiment()` — side-by-side comparison; results keyed by `RetrievalMode`
 
-Production callers use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`).
+Production callers use `RAGService.query()` (retrieve → rerank) or compose `Retriever.retrieve()` + `Retriever.rerank()` explicitly. Experiment and low-level `search_*` APIs stay retrieval-only.
+
+Production responses use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`). `_build_hits` drops OpenSearch documents missing required fields (`doc_id`, `disease`, `severity`, `source`). After rerank, `RetrieveHit.score` is the cross-encoder score; `RetrieveHit.passage_text` builds symptom-first text for reranking (disease + optional symptoms + description).
 
 ### 7. OpenSearch does search; the app does AI
 
@@ -131,6 +133,8 @@ Before opening a PR, verify:
 
 | Date | Change |
 |------|--------|
+| 2026-06-22 | Documented hit validation and `passage_text` shape |
+| 2026-06-20 | Documented production rerank path and `RetrieveHit.passage_text` |
 | 2026-06-17 | Embedding-on-request pattern; retrieval tests; ruff/pre-commit |
 | 2026-06-11 | Streamlined document; removed duplicate project description |
 | 2026-06-09 | Initial philosophy doc |

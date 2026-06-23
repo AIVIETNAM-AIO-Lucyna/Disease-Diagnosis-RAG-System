@@ -1,6 +1,6 @@
 # Roadmap and refactors
 
-> **Version:** 2026-06-17
+> **Version:** 2026-06-20
 > **See also:** [Getting started](./getting-started.md), [Project structure](./project-structure.md)
 
 MVP status, planned features, and structural changes we may make as the project matures.
@@ -29,17 +29,18 @@ This document is the **authoritative source** for project status. Other docs lin
 | Search pipeline `hybrid-rrf` (RRF) | Done | `src/migrations/init_db.py` |
 | OpenSearch client (sync) | Done | `src/db/vector_db/opensearch.py` |
 | OpenSearch wire/response schemas | Done | `src/schemas/` |
-| BGE query embedding | Done | `BGEInferenceService` |
+| BGE query embedding | Done | `TextEmbeddingService` |
 | Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + `run_experiment()` |
-| Retrieval unit tests | Done | `tests/rag/retrieve.py` (mocked OpenSearch + BGE) |
+| Retrieval unit tests | Done | `tests/rag/` (mocked OpenSearch, BGE, reranker) |
 | Example notebook | Done | `notebooks/example.ipynb` |
 | Slim retrieval responses | Done | `RetrieveResult` vs `ExperimentModeResult` |
 | Query preprocessing (retrieval) | Done | `preprocess.py` — used by `Retriever` |
+| bge-reranker-base reranking | Done | `RerankerService`, `Retriever.rerank()` |
+| Retrieve → rerank pipeline wiring | Done | `RAGService.query()` — hybrid top 20 → rerank top 5 |
 | Batch ingestion | **Todo** | Stub in `ingest.py`; see [DDXPlus index mapping](../ddxplus-index-mapping.md) |
-| bge-reranker-base reranking | **Todo** | `services/ai_inference/reranker/` |
 | Qwen3 8B generation | **Todo** | Prompt + local inference |
 | FastAPI HTTP layer | **Todo** | Symptom query endpoint |
-| Full pipeline wiring | **Todo** | ingest → rerank → generate in `pipeline.py` |
+| Full pipeline wiring | **Todo** | ingest → generate in `pipeline.py` |
 
 ### Phase 2 — Production scaling (future)
 
@@ -56,20 +57,20 @@ This document is the **authoritative source** for project status. Other docs lin
 
 | Item | Status |
 | --- | --- |
-| Lazy model download on first `BGEInferenceService` use | Done |
+| Lazy model download on first `TextEmbeddingService` use | Done |
 | OpenSearch `bulk()` API (generic, no domain logic) | Done |
 | Split `services/rag/` into modules | Done |
 | Ingestion implementation | Other dev — stub in `ingest.py` |
 
 ## Likely refactors (evaluate when needed)
 
-### 1. Expand `services/ai_inference/`
+### 1. Expand `services/inference/`
 
 ```
-services/ai_inference/
-  bge/service.py        # embeddings (done)
-  reranker/service.py   # cross-encoder (planned)
-  llm/service.py        # Qwen3 generation (planned)
+services/inference/
+  embeddings/service.py  # text embeddings (done)
+  reranker/service.py      # cross-encoder (done)
+  llm/service.py           # Qwen3 generation (planned)
 ```
 
 Shared concern: model path resolution, lazy loading, device selection.
@@ -96,7 +97,7 @@ Stay with Option A until file count or import cycles force a split.
 
 ### 4. Experiment notebook
 
-`notebooks/example.ipynb` walks through preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, and optional OpenSearch body debug. Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
+`notebooks/example.ipynb` walks through preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, composable rerank (`Retriever.rerank()`), and the production `RAGService.query()` path. Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
 
 ## What we are not planning (MVP scope)
 
@@ -109,6 +110,8 @@ Stay with Option A until file count or import cycles force a split.
 
 | Date | Change |
 |------|--------|
+| 2026-06-20 | Renamed `ai_inference/` → `inference/`; `TextEmbeddingService`, `RerankerService` |
+| 2026-06-20 | Marked reranker and retrieve → rerank pipeline done |
 | 2026-06-17 | Marked retrieval tests and example notebook done; removed stale "no tests" row |
 | 2026-06-11 | Merged duplicate architecture diagrams into one section |
 | 2026-06-11 | DDXPlus mapping and migration marked done; ingest guide linked |

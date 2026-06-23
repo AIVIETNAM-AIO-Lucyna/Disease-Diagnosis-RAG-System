@@ -1,6 +1,6 @@
 # Project structure
 
-> **Version:** 2026-06-17
+> **Version:** 2026-06-22
 > **See also:** [Development philosophy](./development-philosophy.md), [Roadmap](./roadmap-and-refactors.md)
 
 ## Repository layout
@@ -27,23 +27,28 @@ disease-diagnosis-rag-system/
 │   │   ├── init_db.py             # Index + alias + search pipeline bootstrap
 │   │   └── migrate_ddxplus_index.py
 │   └── services/
-│       ├── ai_inference/
-│       │   └── bge/
-│       │       └── service.py     # BGE query embedding
+│       ├── inference/
+│       │   ├── embeddings/
+│       │   │   └── service.py     # Text query + document embedding
+│       │   └── reranker/
+│       │       └── service.py     # Cross-encoder reranker
 │       └── rag/
 │           ├── preprocess.py      # Query normalization + synonyms
 │           ├── ingest.py          # Document views + bulk upsert (stub)
-│           ├── retrieve.py        # Retriever (BM25 / k-NN / hybrid)
-│           ├── pipeline.py        # RAGService orchestration
+│           ├── retrieve.py        # Retriever (BM25 / k-NN / hybrid / rerank)
+│           ├── pipeline.py        # RAGService (retrieve → rerank)
+│           ├── exceptions.py      # RAG domain exceptions
 │           └── schemas.py         # Retrieval request/response DTOs
 ├── pyproject.toml
-├── tests/                         # pytest suite (mocked OpenSearch + BGE)
+├── tests/                         # pytest suite (mocked OpenSearch + models)
 │   ├── conftest.py
 │   └── rag/
 │       ├── conftest.py
-│       └── retrieve.py            # Retriever unit tests
+│       ├── retrieve.py            # Retriever unit tests
+│       ├── rerank.py              # Rerank + RetrieveHit.passage_text tests
+│       └── pipeline.py            # RAGService unit tests
 ├── notebooks/
-│   └── example.ipynb              # Retrieval walkthrough (BM25 / k-NN / hybrid)
+│   └── example.ipynb              # Retrieval + rerank walkthrough
 ├── README.md
 └── .env                           # Local secrets (not in git)
 ```
@@ -54,7 +59,8 @@ disease-diagnosis-rag-system/
 flowchart TD
     subgraph app [Application layer]
         RAG[RAGService / future API]
-        BGE[BGEInferenceService]
+        Embed[TextEmbeddingService]
+        Reranker[RerankerService]
     end
 
     subgraph services [Service layer]
@@ -74,14 +80,17 @@ flowchart TD
     end
 
     RAG --> Retriever
-    Retriever --> BGE
+    Retriever --> Embed
+    Retriever --> Reranker
     Retriever --> OS
     Retriever --> RSchemas
     OS --> OSchemas
     OS --> Aiven
-    BGE --> HF
+    Embed --> HF
+    Reranker --> HF
     Settings --> OS
-    Settings --> BGE
+    Settings --> Embed
+    Settings --> Reranker
 ```
 
 | Layer | Path | Responsibility |
@@ -90,8 +99,8 @@ flowchart TD
 | **DB / vector store** | `src/db/vector_db/` | Thin OpenSearch client; no business logic |
 | **OpenSearch schemas** | `src/schemas/` | Parse/serialize OpenSearch API bodies (RWS / ORS) |
 | **RAG schemas** | `src/services/rag/schemas.py` | Retrieval requests, slim `RetrieveResult`, experiment DTOs |
-| **AI inference** | `src/services/ai_inference/` | Model loading and embedding (BGE today; reranker later) |
-| **RAG service** | `src/services/rag/` | Retrieval orchestration, future ingest/rerank/generate |
+| **Inference** | `src/services/inference/` | Text embeddings and cross-encoder reranker |
+| **RAG service** | `src/services/rag/` | Retrieval, rerank orchestration; future ingest/generate |
 | **Migrations** | `src/migrations/` | Idempotent index/pipeline setup scripts |
 | **Index definitions** | `indices/` | JSON mappings versioned in git |
 
@@ -119,6 +128,7 @@ Domain-specific retrieval DTOs:
 - **Requests:** `Bm25RetrieveRequest`, `VectorRetrieveRequest`, `HybridRetrieveRequest` — each builds OpenSearch Query DSL via `to_search_body()`. Vector/hybrid requests carry an optional `embedding`; the retriever sets it before calling `to_search_body()`.
 - **Experiment request:** `RetrieveExperimentRequest` — shared query, optional fixed `embedding`, `modes` list
 - **Production response:** `RetrieveResult` — `hits` + optional `took_ms`
+- **Hit model:** `RetrieveHit` — requires `doc_id`, `disease`, `severity`, and `source`; optional `symptoms`, `antecedents`, `description`. Incomplete OpenSearch hits are skipped in `_build_hits`. `passage_text` builds symptom-first reranker input.
 - **Experiment response:** `ExperimentCompareResponse` — `results: dict[RetrievalMode, ExperimentModeResult]` plus `modes_run` helper
 - **Internal:** `SearchExecution`, `PreprocessableRequest` TypeVar — used by `Retriever` execute helpers
 
@@ -128,8 +138,9 @@ Domain-specific retrieval DTOs:
 |--------|--------|-------|
 | `schemas.py` | Done | Retrieval — request/response DTOs |
 | `preprocess.py` | Done | Retrieval — query normalization + synonyms |
-| `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, `run_experiment()` |
-| `pipeline.py` | Partial | Retrieval — `RAGService.query()` only |
+| `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, `run_experiment()`, `rerank()`. Constructor: `Retriever(client, embed_service, rerank_service=None, preprocess=True)` |
+| `pipeline.py` | Partial | Production — `RAGService.query()` (retrieve → rerank); generate pending |
+| `exceptions.py` | Done | Domain errors (e.g. `RerankerNotConfigured`) |
 | `ingest.py` | Stub | Data team — `DiseaseDocument`, `BulkIngestRequest` |
 
 ### Index mappings (`indices/diseases/`)
@@ -147,19 +158,29 @@ See [DDXPlus index mapping](../ddxplus-index-mapping.md) for full field referenc
 
 1. Caller builds a `HybridRetrieveRequest` (or BM25 / vector variant)
 2. `Retriever` optionally preprocesses the query (`preprocess.py`)
-3. For vector/hybrid: `Retriever` sets `request.embedding` (caller-supplied or `BGEInferenceService.embed_query()` with the BGE search prefix)
+3. For vector/hybrid: `Retriever` sets `request.embedding` (caller-supplied or `TextEmbeddingService.embed_query()` with the BGE search prefix)
 4. Request schema builds OpenSearch Query DSL via `to_search_body()`
 5. `OpenSearchClient.query()` runs search; hybrid passes `search_pipeline=hybrid-rrf`
-6. Hits are normalized into `RetrieveHit` → `RetrieveResult`
+6. Hits with complete required `_source` fields are normalized into `RetrieveHit` → `RetrieveResult`; incomplete documents are skipped
 
-For `run_experiment()`, the retriever preprocesses once, sets a shared `embedding` on the experiment request when k-NN/hybrid modes run, then delegates to the same `_execute_*` helpers used by `search_*`.
+For `run_experiment()`, the retriever preprocesses once, sets a shared `embedding` on the experiment request when k-NN/hybrid modes run, then delegates to the same `_execute_*` helpers used by `search_*`. Experiment paths do **not** rerank.
+
+## Data flow: production query (`RAGService.query`)
+
+1. `Retriever.retrieve()` — hybrid search, default `RETRIEVE_TOP_K` (20); query preprocessed when `preprocess=True`
+2. `Retriever.rerank()` — same query string preprocessed the same way; cross-encoder scores each hit's `passage_text`, keeps `RERANK_TOP_K` (5)
+3. Returns `RetrieveResult` with updated `rank` and cross-encoder `score`
+
+Low-level `search_*` and `run_experiment()` remain retrieval-only for A/B testing.
 
 ## Tests
 
 | Path | Scope |
 |------|--------|
 | `tests/rag/retrieve.py` | `Retriever` helpers, search modes, experiment runner |
-| `tests/rag/conftest.py` | Mocked BGE + OpenSearch fixtures |
+| `tests/rag/rerank.py` | `RetrieveHit.passage_text`, `Retriever.rerank()` |
+| `tests/rag/pipeline.py` | `RAGService.query()` retrieve → rerank wiring |
+| `tests/rag/conftest.py` | Mocked embedding, reranker, and OpenSearch fixtures |
 
 Run: `uv sync --extra dev && uv run pytest tests/rag` (no live cluster required).
 
@@ -171,6 +192,8 @@ RAG domain models live under `src/services/rag/` so OpenSearch infrastructure st
 
 | Date | Change |
 |------|--------|
+| 2026-06-22 | Documented `Retriever` constructor, hit validation, rerank query preprocessing |
+| 2026-06-20 | Documented reranker service, production pipeline, tests, and `passage_text` |
 | 2026-06-17 | Documented tests/, embedding-on-request flow, `RetrievalMode` experiment results |
 | 2026-06-11 | Documented DDXPlus mapping and migration |
 | 2026-06-09 | Initial structure guide |

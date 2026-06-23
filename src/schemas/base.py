@@ -22,3 +22,14 @@ class RWSBaseModel(BaseModel):
 
     def to_dict(self) -> dict[str, Any]:
         return self.model_dump(exclude_none=True, mode="json")
+
+
+class CustomException(Exception):
+    """Application-level exception with a stable default message."""
+
+    message: str = "An error occurred"
+
+    def __init__(self, message: str | None = None) -> None:
+        resolved = message if message is not None else type(self).message
+        super().__init__(resolved)
+        self.message = resolved
