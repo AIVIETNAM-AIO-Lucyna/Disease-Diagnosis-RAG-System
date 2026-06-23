@@ -69,3 +69,64 @@ def normalize_symptom_phrase(question: str) -> str:
     s = re.sub(r"^(been|had|a|an|the|any|with|that|to)\b\s*", "", s).strip()
     s = re.sub(r"\s+", " ", s).strip(" ,;:")
     return s or question.strip().lower()
+
+
+# ---------------------------------------------------------------------------
+# Shared KB/ingest builders (single source of truth for KB build AND ingest).
+# Previously duplicated inside scripts/build_kb.py; centralized here so the KB
+# artifact and the query/ingest path can never drift apart.
+# ---------------------------------------------------------------------------
+
+
+def normalize_icd10(code: str) -> str:
+    return (code or "").strip().upper()
+
+
+# Conditions whose source ICD-10 string carries >1 code but where the codes are
+# NOT interchangeable. Pin the canonical doc_id explicitly so the choice is
+# auditable. J18 = "Pneumonia, organism unspecified" (stand-alone) is preferred
+# over J17 = "Pneumonia in diseases classified elsewhere" (a secondary code that
+# must not stand alone). All codes are still retained in `icd10_codes`.
+CANONICAL_DOC_ID_OVERRIDES: dict[tuple[str, ...], str] = {
+    ("J17", "J18"): "J18",
+}
+
+
+def split_icd10_codes(raw: str) -> list[str]:
+    """Split a raw ICD-10 string into trimmed, upper-cased codes."""
+    return [normalize_icd10(c) for c in str(raw or "").split(",") if c.strip()]
+
+
+def choose_canonical_doc_id(codes: list[str]) -> str:
+    """Pick the canonical doc_id for a (possibly multi-code) condition."""
+    if not codes:
+        return ""
+    key = tuple(sorted(codes))
+    return CANONICAL_DOC_ID_OVERRIDES.get(key, codes[0])
+
+
+def build_keyword_text(disease: str, symptoms: list[str], antecedents: list[str]) -> str:
+    """BM25 lexical field: disease + symptoms + antecedents (NO description)."""
+    return " ".join([disease, *symptoms, *antecedents])
+
+
+def build_embed_text(disease: str, symptoms: list[str], antecedents: list[str]) -> str:
+    """Embedding source text — disease + symptoms + antecedents (NO synthesized description).
+
+    Per Form 4 (ICD-10 & Severity reference) the document embedding is generated
+    from disease + symptoms + antecedents only. `description` is team-synthesized
+    (it does NOT exist in release_conditions.json) and is reserved as a separate
+    indexed field for Phase-2 LLM context. Including it here would skew the doc
+    vector away from the symptom-only patient-query distribution.
+    """
+    symptom_str = ", ".join(symptoms)
+    antecedent_str = ", ".join(antecedents)
+    return f"Disease: {disease}. Symptoms: {symptom_str}. Antecedents: {antecedent_str}."
+
+
+def build_description(symptoms: list[str], antecedents: list[str]) -> str:
+    """Synthesized description — Phase-2 LLM context only (indexed, not embedded)."""
+    desc = f"Condition characterized by: {', '.join(symptoms)}."
+    if antecedents:
+        desc += f" Risk factors: {', '.join(antecedents)}."
+    return desc
