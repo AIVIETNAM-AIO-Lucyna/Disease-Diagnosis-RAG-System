@@ -10,8 +10,8 @@ from src.settings import settings
 BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 
 
-class BGEInferenceService:
-    """Service for embedding queries and documents using the BGE model."""
+class TextEmbeddingService:
+    """Embed queries and documents using the configured text embedding model."""
 
     _model: ClassVar[SentenceTransformer | None] = None
     _lock: ClassVar[threading.Lock] = threading.Lock()
