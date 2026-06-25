@@ -196,7 +196,7 @@ GET /diseases/_count
 | Document | Location |
 |----------|----------|
 | Phase 1 review — dataset & eval design | [`AIO_MedPharmBioNexus_Phase1_Review-ThNg-June.10.2026_corrected.pdf`](./AIO_MedPharmBioNexus_Phase1_Review-ThNg-June.10.2026_corrected.pdf) |
-| Technical proposal (architecture, three logical views) | [`technical-proposal.tex`](./technical-proposal.tex) |
+| Technical proposal (architecture, three logical views) | [`Technical Proposal.pdf`](./Technical%20Proposal.pdf) |
 | Project README | [`README.md`](../README.md) |
 
 ## Changelog

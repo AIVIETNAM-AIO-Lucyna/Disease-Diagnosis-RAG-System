@@ -21,3 +21,4 @@ __pycache__
 
 # Models directories
 models/*
+notebooks/models/
