@@ -1,11 +1,24 @@
-import os
+from pathlib import Path
 
 from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _resolve_project_path(path: str) -> Path:
+    """Resolve ``path`` against ``PROJECT_ROOT`` when it is relative."""
+    resolved = Path(path)
+    if resolved.is_absolute():
+        return resolved
+    return PROJECT_ROOT / resolved
+
 
 class Settings(BaseSettings):
-    model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = ConfigDict(
+        env_file=str(PROJECT_ROOT / ".env"),
+        env_file_encoding="utf-8",
+    )
 
     # OpenSearch
     OPENSEARCH_HOST: str = Field(..., description="The host of the OpenSearch instance")
@@ -19,7 +32,7 @@ class Settings(BaseSettings):
 
     PATH_TO_MODELS: str = Field(
         default="models",
-        description="The path to the models",
+        description="Path to the models directory, relative to the project root",
     )
     # Vector search
     EMBEDDING_MODEL_REPO_ID: str = Field(
@@ -52,7 +65,7 @@ class Settings(BaseSettings):
     # PATH
     PATH_TO_INDICES: str = Field(
         default="indices",
-        description="The path to the indices",
+        description="Path to the indices directory, relative to the project root",
     )
     CURRENT_INDEX_MAPPING: str = Field(
         default="diseases/ddxplus_mapping.json",
@@ -86,14 +99,28 @@ class Settings(BaseSettings):
         ],
         description="OpenSearch _source fields returned by retrieval queries",
     )
+    INGEST_BATCH_SIZE: int = Field(
+        default=100,
+        ge=1,
+        le=1000,
+        description="Number of records to embed and bulk index per batch",
+    )
+
+    @property
+    def models_dir(self) -> Path:
+        return _resolve_project_path(self.PATH_TO_MODELS)
+
+    @property
+    def indices_dir(self) -> Path:
+        return _resolve_project_path(self.PATH_TO_INDICES)
 
     @property
     def embedding_model_path(self) -> str:
-        return os.path.join(self.PATH_TO_MODELS, self.EMBEDDING_MODEL)
+        return str(self.models_dir / self.EMBEDDING_MODEL)
 
     @property
     def reranker_model_path(self) -> str:
-        return os.path.join(self.PATH_TO_MODELS, self.RERANKER_MODEL)
+        return str(self.models_dir / self.RERANKER_MODEL)
 
 
 settings = Settings()

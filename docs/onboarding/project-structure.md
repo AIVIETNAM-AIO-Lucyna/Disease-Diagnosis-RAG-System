@@ -34,7 +34,7 @@ disease-diagnosis-rag-system/
 │       │       └── service.py     # Cross-encoder reranker
 │       └── rag/
 │           ├── preprocess.py      # Query normalization + synonyms
-│           ├── ingest.py          # Document views + bulk upsert (stub)
+│           ├── ingest.py          # Normalize, embed, bulk upsert
 │           ├── retrieve.py        # Retriever (BM25 / k-NN / hybrid / rerank)
 │           ├── pipeline.py        # RAGService (retrieve → rerank)
 │           ├── exceptions.py      # RAG domain exceptions
@@ -46,9 +46,10 @@ disease-diagnosis-rag-system/
 │       ├── conftest.py
 │       ├── retrieve.py            # Retriever unit tests
 │       ├── rerank.py              # Rerank + RetrieveHit.passage_text tests
+│       ├── ingest.py              # Ingestion unit tests
 │       └── pipeline.py            # RAGService unit tests
 ├── notebooks/
-│   └── example.ipynb              # Retrieval + rerank walkthrough
+│   └── walkthrough.ipynb          # Ingest + retrieval + rerank walkthrough
 ├── README.md
 └── .env                           # Local secrets (not in git)
 ```
@@ -141,7 +142,7 @@ Domain-specific retrieval DTOs:
 | `retrieve.py` | Done | Retrieval — BM25, k-NN, hybrid, `run_experiment()`, `rerank()`. Constructor: `Retriever(client, embed_service, rerank_service=None, preprocess=True)` |
 | `pipeline.py` | Partial | Production — `RAGService.query()` (retrieve → rerank); generate pending |
 | `exceptions.py` | Done | Domain errors (e.g. `RerankerNotConfigured`) |
-| `ingest.py` | Stub | Data team — `DiseaseDocument`, `BulkIngestRequest` |
+| `ingest.py` | Done | Data team — `Ingestion`, `DiseaseDocument`, chunked bulk upsert |
 
 ### Index mappings (`indices/diseases/`)
 

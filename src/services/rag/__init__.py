@@ -3,11 +3,11 @@
 from src.services.rag.pipeline import RAGService
 from src.services.rag.preprocess import preprocess_query
 from src.services.rag.retrieve import Retriever
-from src.services.rag.schemas import IngestRecord
+from src.services.rag.schemas import DiseaseDocument
 
 __all__ = [
     "RAGService",
     "Retriever",
     "preprocess_query",
-    "IngestRecord",
+    "DiseaseDocument",
 ]

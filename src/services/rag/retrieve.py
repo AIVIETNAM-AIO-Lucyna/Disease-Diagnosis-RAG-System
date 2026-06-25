@@ -206,6 +206,7 @@ class Retriever:
 
     @staticmethod
     def _build_hits(response: SearchResponse) -> list[RetrieveHit]:
+        logger = get_logger(__name__)
         hits: list[RetrieveHit] = []
         rank = 0
         for hit in response.hits.hits:
@@ -232,8 +233,13 @@ class Retriever:
                         source=source["source"],
                     )
                 )
-            except ValidationError:
+            except ValidationError as exc:
                 rank -= 1
+                logger.warning(
+                    "skipping_invalid_hit",
+                    error=str(exc),
+                    doc_id=source.get("doc_id"),
+                )
         return hits
 
     @staticmethod

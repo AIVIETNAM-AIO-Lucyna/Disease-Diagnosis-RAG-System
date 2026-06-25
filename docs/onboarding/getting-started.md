@@ -113,7 +113,7 @@ result = rag.query("fever cough fatigue")
 print(result.hits)  # scores are cross-encoder scores after rerank
 ```
 
-Interactive walkthrough: [`notebooks/example.ipynb`](../../notebooks/example.ipynb) (run `uv sync --extra dev`).
+Interactive walkthrough: [`notebooks/walkthrough.ipynb`](../../notebooks/walkthrough.ipynb) (run `uv sync --extra dev`).
 
 ### 5. Run tests (before commit)
 
