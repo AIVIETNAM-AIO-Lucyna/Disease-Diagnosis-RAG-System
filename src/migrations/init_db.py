@@ -26,16 +26,18 @@ SEARCH_PIPELINE = SearchPipeline(
         ),
     ],
 )
-PATH_TO_INIT_MAPPING = f"{settings.PATH_TO_INDICES}/diseases/init_mapping.json"
+PATH_TO_INIT_MAPPING = settings.indices_dir / "diseases/init_mapping.json"
 
 
 def upgrade() -> None:
     client = get_opensearch_client()
+    with open(PATH_TO_INIT_MAPPING, encoding="utf-8") as mapping_file:
+        mappings = json.load(mapping_file)
     client.create_index(
         "init_diseases",
         {
             "settings": {"index": {"knn": True}},
-            "mappings": json.load(open(PATH_TO_INIT_MAPPING)),
+            "mappings": mappings,
         },
     )
     client.create_alias("diseases", "init_diseases")

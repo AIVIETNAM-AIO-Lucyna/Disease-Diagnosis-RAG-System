@@ -9,7 +9,7 @@
 
 ## Current status
 
-Retrieval (BM25, k-NN, hybrid + RRF) and cross-encoder reranking (`bge-reranker-base`) are implemented with unit tests in `tests/rag/`. Ingestion, LLM generation, and HTTP API are **Todo**.
+Retrieval (BM25, k-NN, hybrid + RRF), cross-encoder reranking (`bge-reranker-base`), and batch ingestion are implemented with unit tests in `tests/rag/`. LLM generation and HTTP API are **Todo**.
 
 See [Roadmap](./docs/onboarding/roadmap-and-refactors.md) for full MVP status.
 
@@ -23,6 +23,8 @@ uv run python -m src.migrations.migrate_ddxplus_index upgrade
 ```
 
 See [Getting started](./docs/onboarding/getting-started.md) for detailed setup and verification steps.
+
+End-to-end demo: [`notebooks/walkthrough.ipynb`](./notebooks/walkthrough.ipynb) (ingest → retrieve → rerank).
 
 ## Testing (before commit)
 
@@ -74,7 +76,7 @@ Read these guides **once** when joining the project:
 | Document | Audience |
 |----------|----------|
 | [DDXPlus index mapping](./docs/ddxplus-index-mapping.md) | Data team — field schema, ingest workflow |
-| [`technical-proposal.tex`](./docs/technical-proposal.tex) | All — original architecture design |
+| [`Technical Proposal.pdf`](./docs/Technical Proposal.pdf) | All — original architecture design |
 | [`indices/diseases/ddxplus_mapping.json`](./indices/diseases/ddxplus_mapping.json) | Data team — active OpenSearch mapping |
 
 ### Versioning policy
@@ -85,6 +87,7 @@ Documentation uses **date-based versions** (`YYYY-MM-DD`), not semver. Update th
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | Document batch ingestion (`Ingestion`) and derived `keyword_text` |
 | 2026-06-20 | Document reranker service and RAGService retrieve → rerank pipeline |
 | 2026-06-17 | Note retrieval unit tests; onboarding docs synced with refactored Retriever |
 | 2026-06-17 | Added testing and pre-commit guidance before commit |
