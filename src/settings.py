@@ -30,14 +30,32 @@ class Settings(BaseSettings):
         default="bge-small-en-v1.5",  # english model, version 1.5
         description="The name of the embedding model to use for vector search",
     )
-
+    EMBEDDING_DIM: int = Field(
+        default=384,
+        description="The dimension of the embedding vector",
+    )
+    # Reranker
+    RERANKER_MODEL_REPO_ID: str = Field(
+        default="BAAI/bge-reranker-base",
+        description="The repository ID of the cross-encoder reranker model",
+    )
+    RERANKER_MODEL: str = Field(
+        default="bge-reranker-base",
+        description="The local directory name for the reranker model",
+    )
+    RERANK_TOP_K: int = Field(
+        default=5,
+        ge=1,
+        le=100,
+        description="Number of hits to keep after cross-encoder reranking",
+    )
     # PATH
     PATH_TO_INDICES: str = Field(
         default="indices",
         description="The path to the indices",
     )
     CURRENT_INDEX_MAPPING: str = Field(
-        default="diseases/init_mapping.json",
+        default="diseases/ddxplus_mapping.json",
         description="The path to the current index mapping",
     )
     CURRENT_SEARCH_PIPELINE: str = Field(
@@ -46,6 +64,12 @@ class Settings(BaseSettings):
     )
 
     # Retrieval
+    RETRIEVE_TOP_K: int = Field(
+        default=20,
+        ge=1,
+        le=100,
+        description="Number of hits to keep after retrieval",
+    )
     RETRIEVE_INDEX_ALIAS: str = Field(
         default="diseases",
         description="OpenSearch index alias used for retrieval queries",
@@ -66,6 +90,10 @@ class Settings(BaseSettings):
     @property
     def embedding_model_path(self) -> str:
         return os.path.join(self.PATH_TO_MODELS, self.EMBEDDING_MODEL)
+
+    @property
+    def reranker_model_path(self) -> str:
+        return os.path.join(self.PATH_TO_MODELS, self.RERANKER_MODEL)
 
 
 settings = Settings()

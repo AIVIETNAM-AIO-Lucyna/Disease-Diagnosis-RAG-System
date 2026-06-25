@@ -1,6 +1,6 @@
 # Development philosophy
 
-> **Version:** 2026-06-11  
+> **Version:** 2026-06-22
 > **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
@@ -25,8 +25,8 @@ The system is **not** a clinical diagnostic tool. The LLM summarizes retrieved d
 |-------|---------------|------------------|
 | `db/vector_db/` | settings, OpenSearch schemas | Embedding logic, prompt construction |
 | `schemas/` (OpenSearch) | base models only | RAG business rules |
-| `services/rag/` | db, ai_inference, rag schemas | Raw OpenSearch client calls scattered in handlers |
-| `services/ai_inference/` | settings | OpenSearch queries |
+| `services/rag/` | db, inference, rag schemas | Raw OpenSearch client calls scattered in handlers |
+| `services/inference/` | settings | OpenSearch queries |
 
 Keep **prompt construction**, **model invocation**, and **post-processing** in separate modules.
 
@@ -43,7 +43,7 @@ class ORSBaseModel:
     def from_opensearch(cls, raw): ...
 ```
 
-RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expose `to_search_body()`; responses are slim and purpose-specific.
+RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expose `to_search_body()`; responses are slim and purpose-specific. Vector/hybrid requests store the query vector on `embedding`; the retriever sets it before building the search body.
 
 **Rule:** If it crosses a network boundary (OpenSearch, LLM API), it gets an explicit schema.
 
@@ -58,9 +58,11 @@ The team compares retrieval strategies before locking the pipeline:
 - `search_bm25()` — lexical baseline
 - `search_vector()` — semantic baseline
 - `search_hybrid()` — BM25 + k-NN + RRF (MVP default)
-- `run_experiment()` — side-by-side comparison
+- `run_experiment()` — side-by-side comparison; results keyed by `RetrievalMode`
 
-Production callers use slim `RetrieveResult`. Debug metadata stays on experiment types only.
+Production callers use `RAGService.query()` (retrieve → rerank) or compose `Retriever.retrieve()` + `Retriever.rerank()` explicitly. Experiment and low-level `search_*` APIs stay retrieval-only.
+
+Production responses use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`). `_build_hits` drops OpenSearch documents missing required fields (`doc_id`, `disease`, `severity`, `source`). After rerank, `RetrieveHit.score` is the cross-encoder score; `RetrieveHit.passage_text` builds symptom-first text for reranking (disease + optional symptoms + description).
 
 ### 7. OpenSearch does search; the app does AI
 
@@ -99,17 +101,15 @@ Every IO path (OpenSearch, model load, file read) should surface meaningful erro
 | Topic | Convention |
 |-------|------------|
 | Python | 3.10+, type hints on public APIs |
-| Formatting | Follow PEP 8; project may add ruff later |
+| Formatting | ruff + pre-commit (see README) |
 | Docstrings | Module + public class/method; Args/Returns for non-obvious params |
-| Tests | `tests/` with pytest; add tests for non-trivial behavior |
+| Tests | `tests/` with pytest; mock external IO (OpenSearch, models) in service tests |
 | Commits | Focus on *why*; only commit when asked |
 
-## Sync vs async clients
+## Sync client, async routes
 
-- **`OpenSearchClient` (sync)** — migrations, CLI, notebooks, batch ingest
-- **`AsyncOpenSearchClient` (async)** — future FastAPI routes
-
-Do not mix async client calls inside sync migration scripts.
+- **`OpenSearchClient` (sync)** — single client for migrations, CLI, notebooks, ingest, and retrieval
+- **FastAPI routes** — wrap blocking service calls with `asyncio.to_thread` or `asyncer.asyncify` at the route/service boundary; do not add a parallel async OpenSearch client unless load requires native async I/O
 
 ## Configuration and secrets
 
@@ -126,11 +126,15 @@ Before opening a PR, verify:
 - [ ] Settings used instead of new magic strings
 - [ ] No secrets in code or docs
 - [ ] Backward compatibility considered for public service methods
+- [ ] Tests added or updated for non-trivial behavior (`uv run pytest`)
 - [ ] Edge cases and failure modes handled or documented
 
 ## Changelog
 
 | Date | Change |
 |------|--------|
+| 2026-06-22 | Documented hit validation and `passage_text` shape |
+| 2026-06-20 | Documented production rerank path and `RetrieveHit.passage_text` |
+| 2026-06-17 | Embedding-on-request pattern; retrieval tests; ruff/pre-commit |
 | 2026-06-11 | Streamlined document; removed duplicate project description |
 | 2026-06-09 | Initial philosophy doc |
