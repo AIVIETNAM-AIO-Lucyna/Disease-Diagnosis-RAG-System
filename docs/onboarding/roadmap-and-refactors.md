@@ -1,6 +1,6 @@
 # Roadmap and refactors
 
-> **Version:** 2026-06-20
+> **Version:** 2026-06-25
 > **See also:** [Getting started](./getting-started.md), [Project structure](./project-structure.md)
 
 MVP status, planned features, and structural changes we may make as the project matures.
@@ -32,12 +32,12 @@ This document is the **authoritative source** for project status. Other docs lin
 | BGE query embedding | Done | `TextEmbeddingService` |
 | Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + `run_experiment()` |
 | Retrieval unit tests | Done | `tests/rag/` (mocked OpenSearch, BGE, reranker) |
-| Example notebook | Done | `notebooks/example.ipynb` |
+| Example notebook | Done | `notebooks/walkthrough.ipynb` |
 | Slim retrieval responses | Done | `RetrieveResult` vs `ExperimentModeResult` |
 | Query preprocessing (retrieval) | Done | `preprocess.py` — used by `Retriever` |
 | bge-reranker-base reranking | Done | `RerankerService`, `Retriever.rerank()` |
 | Retrieve → rerank pipeline wiring | Done | `RAGService.query()` — hybrid top 20 → rerank top 5 |
-| Batch ingestion | **Todo** | Stub in `ingest.py`; see [DDXPlus index mapping](../ddxplus-index-mapping.md) |
+| Batch ingestion | Done | `Ingestion` — normalize, embed, chunked bulk upsert |
 | Qwen3 8B generation | **Todo** | Prompt + local inference |
 | FastAPI HTTP layer | **Todo** | Symptom query endpoint |
 | Full pipeline wiring | **Todo** | ingest → generate in `pipeline.py` |
@@ -60,7 +60,7 @@ This document is the **authoritative source** for project status. Other docs lin
 | Lazy model download on first `TextEmbeddingService` use | Done |
 | OpenSearch `bulk()` API (generic, no domain logic) | Done |
 | Split `services/rag/` into modules | Done |
-| Ingestion implementation | Other dev — stub in `ingest.py` |
+| Ingestion implementation | Done | `Ingestion` — normalize, embed, chunked bulk upsert |
 
 ## Likely refactors (evaluate when needed)
 
@@ -97,7 +97,7 @@ Stay with Option A until file count or import cycles force a split.
 
 ### 4. Experiment notebook
 
-`notebooks/example.ipynb` walks through preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, composable rerank (`Retriever.rerank()`), and the production `RAGService.query()` path. Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
+`notebooks/walkthrough.ipynb` walks through ingest, preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, composable rerank (`Retriever.rerank()`), and the production `RAGService.query()` path. Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
 
 ## What we are not planning (MVP scope)
 

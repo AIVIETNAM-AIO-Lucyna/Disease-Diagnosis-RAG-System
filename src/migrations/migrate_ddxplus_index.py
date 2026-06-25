@@ -10,17 +10,19 @@ downgrade_version_uuid = "89f864ff-138b-4847-b9ef-2906d1971fa8"
 LEGACY_INDEX_NAME = "init_diseases"
 DDXPLUS_INDEX_NAME = "ddxplus_diseases"
 ALIAS_NAME = settings.RETRIEVE_INDEX_ALIAS
-PATH_TO_LEGACY_MAPPING = f"{settings.PATH_TO_INDICES}/diseases/init_mapping.json"
-PATH_TO_DDXPLUS_MAPPING = f"{settings.PATH_TO_INDICES}/diseases/ddxplus_mapping.json"
+PATH_TO_LEGACY_MAPPING = settings.indices_dir / "diseases/init_mapping.json"
+PATH_TO_DDXPLUS_MAPPING = settings.indices_dir / "diseases/ddxplus_mapping.json"
 
 
 def upgrade() -> None:
     client = get_opensearch_client()
+    with open(PATH_TO_DDXPLUS_MAPPING, encoding="utf-8") as mapping_file:
+        mappings = json.load(mapping_file)
     client.create_index(
         DDXPLUS_INDEX_NAME,
         {
             "settings": {"index": {"knn": True}},
-            "mappings": json.load(open(PATH_TO_DDXPLUS_MAPPING)),
+            "mappings": mappings,
         },
     )
     client.swap_alias(ALIAS_NAME, DDXPLUS_INDEX_NAME)
@@ -30,11 +32,13 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     client = get_opensearch_client()
+    with open(PATH_TO_LEGACY_MAPPING, encoding="utf-8") as mapping_file:
+        mappings = json.load(mapping_file)
     client.create_index(
         LEGACY_INDEX_NAME,
         {
             "settings": {"index": {"knn": True}},
-            "mappings": json.load(open(PATH_TO_LEGACY_MAPPING)),
+            "mappings": mappings,
         },
     )
     client.swap_alias(ALIAS_NAME, LEGACY_INDEX_NAME)

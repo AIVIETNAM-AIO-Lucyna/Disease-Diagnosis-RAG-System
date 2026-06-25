@@ -1,12 +1,14 @@
 """OpenSearch sync client for index management, search, and ingestion."""
 
-from typing import Any, Dict, List
+import threading
+from typing import Any, ClassVar, Dict, List
 
 from opensearchpy import OpenSearch
 from opensearchpy.exceptions import NotFoundError
 from opensearchpy.helpers import bulk as opensearch_bulk
 
 from src.db.vector_db.base import VectorDB
+from src.logging import get_logger
 from src.schemas import (
     GetMappingResponse,
     IndexListResponse,
@@ -66,10 +68,25 @@ class OpenSearchClient(VectorDB):
     ``asyncer.asyncify``) rather than adding a separate async client here.
     """
 
+    _instance: ClassVar["OpenSearchClient | None"] = None
+    _lock: ClassVar[threading.Lock] = threading.Lock()
+
     def __init__(self) -> None:
         """Initialize an ``OpenSearch`` connection using application settings."""
         super().__init__()
         self.client = OpenSearch(**_opensearch_client_kwargs())
+        self._logger = get_logger(__name__)
+
+    @classmethod
+    def get_client(cls) -> "OpenSearchClient":
+        """Return the shared OpenSearch client instance (singleton)."""
+        if cls._instance is not None:
+            return cls._instance
+
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = cls()
+            return cls._instance
 
     def create_index(
         self, index_name: str, index_configuration: Dict[str, Any]
@@ -221,8 +238,14 @@ class OpenSearchClient(VectorDB):
             raise_on_error=False,
         )
         if errors:
+            preview = errors[:3]
+            self._logger.error(
+                "bulk_request_failed",
+                error_count=len(errors),
+                errors=preview,
+            )
             raise RuntimeError(
-                f"Bulk request failed with {len(errors)} error(s): {errors[0]}"
+                f"Bulk request failed with {len(errors)} error(s): {preview}"
             )
 
     def query(
@@ -250,6 +273,4 @@ class OpenSearchClient(VectorDB):
 
 def get_opensearch_client() -> OpenSearchClient:
     """Return a process-wide singleton OpenSearch client."""
-    if not hasattr(get_opensearch_client, "instance"):
-        get_opensearch_client.instance = OpenSearchClient()
-    return get_opensearch_client.instance
+    return OpenSearchClient.get_client()

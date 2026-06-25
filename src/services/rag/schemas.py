@@ -4,10 +4,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Literal, TypeVar
 
-from pydantic import Field, model_validator
+from pydantic import Field, computed_field, model_validator
 
 from src.schemas import SearchResponse
 from src.schemas.base import ORSBaseModel, RWSBaseModel
+from src.services.rag.preprocess import normalize_symptoms
 from src.settings import settings
 
 MatchOperator = Literal["or", "and"]
@@ -306,39 +307,42 @@ class ExperimentCompareResponse(ORSBaseModel):
         return [mode.value for mode in self.results]
 
 
-class IngestRecord(RWSBaseModel):
-    doc_id: str = Field(..., min_length=1)
-    disease: str = Field(..., min_length=1)
-
-    symptoms: list[str]
-
-    keyword_text: str = Field(..., min_length=1)
-
-    severity: int = Field(..., ge=1, le=5)
-
-    source: str = Field(..., min_length=1)
-
-    antecedents: list[str] = Field(default_factory=list)
-
-    description: str = ""
-
-
 class DiseaseDocument(RWSBaseModel):
-    """OpenSearch disease document for idempotent bulk upsert."""
+    """Disease document for ingestion and OpenSearch bulk upsert.
+
+    Use without ``embedding`` when loading source records; ``Ingestion`` normalizes
+    symptoms/antecedents, embeds ``embed_text``, sets ``embedding``, then bulk-indexes.
+    ``keyword_text`` is always derived for BM25; it is included in bulk payloads via
+    ``to_bulk_action()``.
+    """
 
     doc_id: str = Field(..., min_length=1)
     disease: str = Field(..., min_length=1)
     symptoms: list[str]
-    antecedents: list[str] = Field(default_factory=list)
-    keyword_text: str = Field(..., min_length=1)
-    embedding: list[float]
     severity: int = Field(..., ge=1, le=5)
-    description: str = ""
     source: str = Field(..., min_length=1)
+    antecedents: list[str] = Field(default_factory=list)
+    description: str = ""
+    embedding: list[float] | None = None
+
+    @property
+    def embed_text(self) -> str:
+        symptom_str = ", ".join(normalize_symptoms(self.symptoms))
+        return f"Disease: {self.disease}. Symptoms: {symptom_str}. {self.description}"
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def keyword_text(self) -> str:
+        parts = [
+            self.disease.strip(),
+            *normalize_symptoms(self.symptoms),
+            *normalize_symptoms(self.antecedents),
+        ]
+        return " ".join(part for part in parts if part)
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "DiseaseDocument":
-        if len(self.embedding) != settings.EMBEDDING_DIM:
+        if self.embedding is not None and len(self.embedding) != settings.EMBEDDING_DIM:
             msg = (
                 f"embedding must be {settings.EMBEDDING_DIM}-dimensional, "
                 f"got {len(self.embedding)}"
@@ -347,6 +351,9 @@ class DiseaseDocument(RWSBaseModel):
         return self
 
     def to_bulk_action(self, index_name: str) -> dict[str, Any]:
+        if self.embedding is None:
+            msg = "embedding must be set before building a bulk action"
+            raise ValueError(msg)
         return {
             "_index": index_name,
             "_id": self.doc_id,
@@ -355,19 +362,22 @@ class DiseaseDocument(RWSBaseModel):
 
 
 class BulkIngestRequest(RWSBaseModel):
-    """Bulk upsert request for disease documents."""
+    """Bulk upsert request for indexed disease documents."""
 
-    index_name: str = Field(
-        default_factory=lambda: settings.RETRIEVE_INDEX_ALIAS
-    )
+    index_name: str = Field(default_factory=lambda: settings.RETRIEVE_INDEX_ALIAS)
 
     documents: list[DiseaseDocument] = Field(
         ...,
         min_length=1,
     )
 
+    @model_validator(mode="after")
+    def validate_documents_have_embeddings(self) -> "BulkIngestRequest":
+        missing = [doc.doc_id for doc in self.documents if doc.embedding is None]
+        if missing:
+            msg = f"documents missing embedding: {missing[:3]}"
+            raise ValueError(msg)
+        return self
+
     def to_bulk_actions(self) -> list[dict[str, Any]]:
-        return [
-            doc.to_bulk_action(self.index_name)
-            for doc in self.documents
-        ]
+        return [doc.to_bulk_action(self.index_name) for doc in self.documents]
