@@ -6,6 +6,7 @@ from unittest.mock import Mock
 import pytest
 
 from src.schemas import SearchResponse
+from src.services.rag.preprocess import PreprocessPipeline
 from src.services.rag.retrieve import Retriever
 from src.services.rag.schemas import (
     Bm25RetrieveRequest,
@@ -166,17 +167,31 @@ class TestRetrieverSearch:
         body = mock_opensearch_client.query.call_args.args[1]
         assert body["query"]["match"]["keyword_text"]["query"] == "i am fatigue"
 
+    def test_search_bm25_keeps_free_text_tokens_for_ddxplus_shaped_query(
+        self,
+        retriever: Retriever,
+        mock_opensearch_client: Mock,
+    ) -> None:
+        """Production path does not phrase-strip whole queries (see preprocess_ddxplus_evidence)."""
+        request = Bm25RetrieveRequest(query="Do you have a cough?")
+
+        retriever.search_bm25(request)
+
+        body = mock_opensearch_client.query.call_args.args[1]
+        assert body["query"]["match"]["keyword_text"]["query"] == "do you have a cough"
+
     def test_search_bm25_skips_preprocess_when_disabled(
         self,
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
         mock_rerank_service: Mock,
+        noop_preprocess: PreprocessPipeline,
     ) -> None:
         retriever = Retriever(
             client=mock_opensearch_client,
             embed_service=mock_embed_service,
+            preprocess=noop_preprocess,
             rerank_service=mock_rerank_service,
-            preprocess=False,
         )
         request = Bm25RetrieveRequest(query="I am tired")
 
@@ -411,12 +426,13 @@ class TestRetrieverExperiment:
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
         mock_rerank_service: Mock,
+        noop_preprocess: PreprocessPipeline,
     ) -> None:
         retriever = Retriever(
             client=mock_opensearch_client,
             embed_service=mock_embed_service,
+            preprocess=noop_preprocess,
             rerank_service=mock_rerank_service,
-            preprocess=False,
         )
         request = RetrieveExperimentRequest(
             query="I am tired",

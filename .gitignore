@@ -25,3 +25,4 @@ models/*
 # Data files
 data/kb/*.csv
 release_*_patients_dedup.csv
+data/eval/*

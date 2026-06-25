@@ -33,8 +33,9 @@ This document is the **authoritative source** for project status. Other docs lin
 | Retrieval (BM25 / k-NN / hybrid) | Done | `Retriever` + `run_experiment()` |
 | Retrieval unit tests | Done | `tests/rag/` (mocked OpenSearch, BGE, reranker) |
 | Example notebook | Done | `notebooks/walkthrough.ipynb` |
+| EXP-02 live eval notebook | Done | `notebooks/exp02_live_eval.ipynb` — ingest KB, eval vs offline baselines |
 | Slim retrieval responses | Done | `RetrieveResult` vs `ExperimentModeResult` |
-| Query preprocessing (retrieval) | Done | `preprocess.py` — used by `Retriever` |
+| Query preprocessing (retrieval) | Done | `preprocess.py` — KB text builders + `PreprocessPipeline` (injected into `Retriever`) |
 | bge-reranker-base reranking | Done | `RerankerService`, `Retriever.rerank()` |
 | Retrieve → rerank pipeline wiring | Done | `RAGService.query()` — hybrid top 20 → rerank top 5 |
 | Batch ingestion | Done | `Ingestion` — normalize, embed, chunked bulk upsert |
@@ -97,7 +98,11 @@ Stay with Option A until file count or import cycles force a split.
 
 ### 4. Experiment notebook
 
-`notebooks/walkthrough.ipynb` walks through ingest, preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, composable rerank (`Retriever.rerank()`), and the production `RAGService.query()` path. Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
+`notebooks/walkthrough.ipynb` walks through ingest, preprocessing, BM25 / k-NN / hybrid search, `run_experiment()`, composable rerank (`Retriever.rerank()`), and the production `RAGService.query()` path.
+
+`notebooks/exp02_live_eval.ipynb` ingests `data/kb/kb_ddxplus.json` into live OpenSearch and compares BM25/hybrid Hit@1 against committed EXP-02 baselines (requires DDXPlus eval data under `data/eval/`). Uses batched `embed_queries`, `asyncio.to_thread` for concurrent searches, and `OPENSEARCH_POOL_MAXSIZE` for urllib3 pooling — see [EXP-02 README](../experiments/exp02/README.md#live-notebook-tunables).
+
+Experiment results are keyed by `RetrievalMode` (e.g. `comparison.results[RetrievalMode.HYBRID]`).
 
 ## What we are not planning (MVP scope)
 
@@ -110,6 +115,8 @@ Stay with Option A until file count or import cycles force a split.
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | Documented EXP-02 live eval perf tuning (`EXP02_WORKERS`, `OPENSEARCH_POOL_MAXSIZE`) |
+| 2026-06-25 | Documented EXP-02 live eval notebook; preprocess module split (KB builders + query pipeline) |
 | 2026-06-20 | Renamed `ai_inference/` → `inference/`; `TextEmbeddingService`, `RerankerService` |
 | 2026-06-20 | Marked reranker and retrieve → rerank pipeline done |
 | 2026-06-17 | Marked retrieval tests and example notebook done; removed stale "no tests" row |

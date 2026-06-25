@@ -26,6 +26,8 @@ See [Getting started](./docs/onboarding/getting-started.md) for detailed setup a
 
 End-to-end demo: [`notebooks/walkthrough.ipynb`](./notebooks/walkthrough.ipynb) (ingest → retrieve → rerank).
 
+Live eval vs EXP-02 baselines: [`notebooks/exp02_live_eval.ipynb`](./notebooks/exp02_live_eval.ipynb) (requires DDXPlus patient data under `data/eval/`).
+
 ## Testing (before commit)
 
 Install dev dependencies once (includes `pytest`):
@@ -87,6 +89,8 @@ Documentation uses **date-based versions** (`YYYY-MM-DD`), not semver. Update th
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | Document `OPENSEARCH_POOL_MAXSIZE`, urllib3 pool troubleshooting, EXP-02 eval tunables |
+| 2026-06-25 | Document `OPENSEARCH_TIMEOUT`, EXP-02 live eval notebook; sync onboarding docs with ingest/preprocess API |
 | 2026-06-25 | Document batch ingestion (`Ingestion`) and derived `keyword_text` |
 | 2026-06-20 | Document reranker service and RAGService retrieve → rerank pipeline |
 | 2026-06-17 | Note retrieval unit tests; onboarding docs synced with refactored Retriever |

@@ -1,6 +1,6 @@
 # DDXPlus index mapping guide
 
-> **Version:** 2026-06-11
+> **Version:** 2026-06-25
 > **Audience:** Data / ingest team
 > **Dataset:** DDXPlus Design A (49-condition knowledge base)
 
@@ -97,13 +97,18 @@ Each disease record is projected into three views before indexing (see Technical
 
 ### Embedded text template
 
+Same as ``src.services.rag.preprocess.build_embed_text`` and ``scripts/build_kb.py``:
+
 ```python
-def build_embed_text(disease: str, symptoms: list[str], description: str) -> str:
+def build_embed_text(disease: str, symptoms: list[str], antecedents: list[str]) -> str:
     symptom_str = ", ".join(symptoms)
-    return f"Disease: {disease}. Symptoms: {symptom_str}. {description}"
+    antecedent_str = ", ".join(antecedents)
+    return f"Disease: {disease}. Symptoms: {symptom_str}. Antecedents: {antecedent_str}."
 ```
 
 Embed with `BAAI/bge-small-en-v1.5` **without** the BGE query prefix. L2-normalize before indexing.
+
+Do **not** include `description` in the embedding source — it is synthesized ETL text for LLM context and skews vectors away from symptom-only patient queries.
 
 ### Keyword text template
 
@@ -149,19 +154,31 @@ Bulk upsert with deterministic id: `_id = doc_id`.
 | `release_evidences.json` | Resolve evidence keys to English labels |
 | Patient CSV | **Queries only** — not indexed; `PATHOLOGY` is ground truth |
 
+Patient/eval files are **not committed** (licensed). Download from Figshare and place under `data/eval/`:
+
+- `release_validate_patients` (CSV, unzip from `release_validate_patients.zip`)
+- `release_evidences.json`
+
+The pre-built KB is committed at `data/kb/kb_ddxplus.json` (49 docs). Raw `release_conditions.json` is only needed to regenerate the KB via `scripts/build_kb.py`.
+
 Official sources: [mila-iqia/ddxplus](https://github.com/mila-iqia/ddxplus), [figshare English dataset](https://figshare.com/articles/dataset/DDXPlus_Dataset_English_/22687585).
 
 ## Ingest workflow
 
 ```text
 release_conditions.json + release_evidences.json
-  → resolve symptom / antecedent names
-  → build embed_text, keyword_text, description
-  → BGE doc embed (384-dim, L2-normalized)
-  → bulk upsert into diseases alias (49 docs)
+  → scripts/build_kb.py (or load data/kb/kb_ddxplus.json)
+  → DiseaseDocument records
+  → Ingestion / RAGService.ingest()
+      normalize_symptoms → embed embed_text → bulk upsert (chunked by INGEST_BATCH_SIZE)
+  → diseases alias (49 docs)
 ```
 
-Use [`DiseaseDocument` / `BulkIngestRequest`](../src/services/rag/ingest.py) and `OpenSearchClient.bulk()`. Target alias: `diseases` (default in settings).
+Use [`DiseaseDocument` / `BulkIngestRequest`](../src/services/rag/schemas.py) with [`Ingestion`](../src/services/rag/ingest.py) or [`RAGService.ingest()`](../src/services/rag/pipeline.py). Text builders live in [`preprocess.py`](../src/services/rag/preprocess.py) (`build_embed_text`, `build_keyword_text`, `normalize_symptoms`).
+
+Remote OpenSearch bulk writes may exceed the library default HTTP timeout — set `OPENSEARCH_TIMEOUT=60` (or higher) in `.env`.
+
+Parallel live eval (`notebooks/exp02_live_eval.ipynb`) uses concurrent HTTP searches — set `OPENSEARCH_POOL_MAXSIZE` ≥ `EXP02_WORKERS` (default 16 / 8) to avoid urllib3 `Connection pool is full` warnings. Restart the notebook kernel after changing pool settings.
 
 ## Post-ingest validation
 
@@ -203,5 +220,7 @@ GET /diseases/_count
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | Document `OPENSEARCH_POOL_MAXSIZE` for parallel live eval |
+| 2026-06-25 | Updated ingest workflow (`Ingestion`, `RAGService`, `preprocess.py`); eval data paths; `OPENSEARCH_TIMEOUT` |
 | 2026-06-11 | Linked Phase 1 review PDF |
 | 2026-06-11 | Initial DDXPlus mapping guide (Design A) |
