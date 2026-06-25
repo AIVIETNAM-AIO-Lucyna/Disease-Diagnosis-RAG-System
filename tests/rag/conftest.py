@@ -9,6 +9,9 @@ from src.schemas import SearchResponse
 from src.services.rag.retrieve import Retriever
 from src.settings import settings
 
+from src.services.rag.ingest import Ingestion
+from src.services.rag.schemas import IngestRecord
+
 
 def fake_embedding(dim: int = settings.EMBEDDING_DIM) -> list[float]:
     return [0.1] * dim
@@ -121,4 +124,45 @@ def retriever_with_rerank(
         client=mock_opensearch_client,
         embed_service=mock_embed_service,
         rerank_service=mock_rerank_service,
+    )
+
+
+@pytest.fixture
+def sample_ingest_record() -> IngestRecord:
+    return IngestRecord(
+        doc_id="doc-1",
+        disease="Influenza",
+        symptoms=["fever", "cough"],
+        keyword_text="influenza fever cough",
+        severity=2,
+        source="ddxplus",
+        antecedents=[],
+        description="Example disease",
+    )
+
+
+@pytest.fixture
+def mock_bulk_client() -> Mock:
+    client = Mock()
+    client.bulk.return_value = None
+    return client
+
+
+@pytest.fixture
+def mock_ingest_embed_service() -> Mock:
+    service = Mock()
+    service.embed_documents.return_value = [
+        fake_embedding(),
+    ]
+    return service
+
+
+@pytest.fixture
+def ingestion(
+    mock_ingest_embed_service: Mock,
+    mock_bulk_client: Mock,
+) -> Ingestion:
+    return Ingestion(
+        embed_service=mock_ingest_embed_service,
+        client=mock_bulk_client,
     )
