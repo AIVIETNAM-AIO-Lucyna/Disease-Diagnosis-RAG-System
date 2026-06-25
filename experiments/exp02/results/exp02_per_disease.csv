@@ -1,0 +1,99 @@
+variant,disease,n,hit1,hit1_pct,mrr,affected
+keyword_text,Anemia,6903,6903,100.00,1.0000,True
+keyword_text,Panic attack,3237,3237,100.00,1.0000,True
+keyword_text,Influenza,3590,3590,100.00,1.0000,False
+keyword_text,Boerhaave,2075,2075,100.00,1.0000,False
+keyword_text,Bronchospasm / acute asthma exacerbation,2209,2207,99.91,0.9995,False
+keyword_text,Allergic sinusitis,2136,2136,100.00,1.0000,False
+keyword_text,Acute otitis media,3474,3474,100.00,1.0000,False
+keyword_text,Pulmonary embolism,3725,3724,99.97,0.9998,True
+keyword_text,Viral pharyngitis,8246,8160,98.96,0.9943,False
+keyword_text,Myasthenia gravis,2159,2159,100.00,1.0000,False
+keyword_text,Bronchiectasis,2319,2317,99.91,0.9996,True
+keyword_text,SLE,1579,1547,97.97,0.9890,False
+keyword_text,Bronchitis,3543,3432,96.87,0.9831,False
+keyword_text,Pneumonia,3484,3483,99.97,0.9999,False
+keyword_text,Inguinal hernia,2632,2611,99.20,0.9945,False
+keyword_text,Acute dystonic reactions,3281,3281,100.00,1.0000,False
+keyword_text,Acute rhinosinusitis,1866,926,49.62,0.7481,False
+keyword_text,Pericarditis,3032,3032,100.00,1.0000,False
+keyword_text,Atrial fibrillation,2609,2609,100.00,1.0000,False
+keyword_text,Anaphylaxis,3754,3752,99.95,0.9997,False
+keyword_text,HIV (initial infection),3852,3849,99.92,0.9996,False
+keyword_text,URTI,8656,8464,97.78,0.9888,False
+keyword_text,Chronic rhinosinusitis,2717,2717,100.00,1.0000,False
+keyword_text,Cluster headache,2841,2814,99.05,0.9936,True
+keyword_text,Stable angina,2340,2299,98.25,0.9912,False
+keyword_text,Spontaneous pneumothorax,1405,1405,100.00,1.0000,False
+keyword_text,Acute laryngitis,3407,3380,99.21,0.9960,False
+keyword_text,Pulmonary neoplasm,1891,1891,100.00,1.0000,False
+keyword_text,Myocarditis,1547,1447,93.54,0.9651,False
+keyword_text,Acute pulmonary edema,2500,2500,100.00,1.0000,False
+keyword_text,Unstable angina,2748,2317,84.32,0.9204,False
+keyword_text,Scombroid food poisoning,2250,2250,100.00,1.0000,False
+keyword_text,PSVT,2376,2376,100.00,1.0000,False
+keyword_text,Acute COPD exacerbation / infection,2076,2076,100.00,1.0000,False
+keyword_text,Localized edema,3694,3694,100.00,1.0000,True
+keyword_text,Guillain-Barré syndrome,2557,2557,100.00,1.0000,True
+keyword_text,Possible NSTEMI / STEMI,2943,2942,99.97,0.9998,False
+keyword_text,Pancreatic neoplasm,2582,2579,99.88,0.9994,False
+keyword_text,Larygospasm,668,668,100.00,1.0000,False
+keyword_text,Sarcoidosis,3028,3028,100.00,1.0000,False
+keyword_text,Spontaneous rib fracture,782,782,100.00,1.0000,False
+keyword_text,GERD,3426,3423,99.91,0.9994,True
+keyword_text,Chagas,1124,1124,100.00,1.0000,False
+keyword_text,Croup,267,267,100.00,1.0000,False
+keyword_text,Epiglottitis,2248,2248,100.00,1.0000,False
+keyword_text,Tuberculosis,2007,2007,100.00,1.0000,True
+keyword_text,Whooping cough,545,545,100.00,1.0000,False
+keyword_text,Bronchiolitis,28,28,100.00,1.0000,False
+keyword_text,Ebola,90,90,100.00,1.0000,False
+keyword_text+description,Anemia,6903,6903,100.00,1.0000,True
+keyword_text+description,Panic attack,3237,3237,100.00,1.0000,True
+keyword_text+description,Influenza,3590,3590,100.00,1.0000,False
+keyword_text+description,Boerhaave,2075,2075,100.00,1.0000,False
+keyword_text+description,Bronchospasm / acute asthma exacerbation,2209,2207,99.91,0.9995,False
+keyword_text+description,Allergic sinusitis,2136,2136,100.00,1.0000,False
+keyword_text+description,Acute otitis media,3474,3474,100.00,1.0000,False
+keyword_text+description,Pulmonary embolism,3725,3724,99.97,0.9998,True
+keyword_text+description,Viral pharyngitis,8246,8152,98.86,0.9938,False
+keyword_text+description,Myasthenia gravis,2159,2159,100.00,1.0000,False
+keyword_text+description,Bronchiectasis,2319,2317,99.91,0.9996,True
+keyword_text+description,SLE,1579,1569,99.37,0.9966,False
+keyword_text+description,Bronchitis,3543,3530,99.63,0.9974,False
+keyword_text+description,Pneumonia,3484,3484,100.00,1.0000,False
+keyword_text+description,Inguinal hernia,2632,2611,99.20,0.9948,False
+keyword_text+description,Acute dystonic reactions,3281,3281,100.00,1.0000,False
+keyword_text+description,Acute rhinosinusitis,1866,970,51.98,0.7599,False
+keyword_text+description,Pericarditis,3032,3032,100.00,1.0000,False
+keyword_text+description,Atrial fibrillation,2609,2609,100.00,1.0000,False
+keyword_text+description,Anaphylaxis,3754,3753,99.97,0.9999,False
+keyword_text+description,HIV (initial infection),3852,3851,99.97,0.9999,False
+keyword_text+description,URTI,8656,8563,98.93,0.9945,False
+keyword_text+description,Chronic rhinosinusitis,2717,2717,100.00,1.0000,False
+keyword_text+description,Cluster headache,2841,2814,99.05,0.9937,True
+keyword_text+description,Stable angina,2340,2297,98.16,0.9908,False
+keyword_text+description,Spontaneous pneumothorax,1405,1405,100.00,1.0000,False
+keyword_text+description,Acute laryngitis,3407,3391,99.53,0.9977,False
+keyword_text+description,Pulmonary neoplasm,1891,1891,100.00,1.0000,False
+keyword_text+description,Myocarditis,1547,1447,93.54,0.9657,False
+keyword_text+description,Acute pulmonary edema,2500,2500,100.00,1.0000,False
+keyword_text+description,Unstable angina,2748,2454,89.30,0.9454,False
+keyword_text+description,Scombroid food poisoning,2250,2250,100.00,1.0000,False
+keyword_text+description,PSVT,2376,2376,100.00,1.0000,False
+keyword_text+description,Acute COPD exacerbation / infection,2076,2076,100.00,1.0000,False
+keyword_text+description,Localized edema,3694,3694,100.00,1.0000,True
+keyword_text+description,Guillain-Barré syndrome,2557,2557,100.00,1.0000,True
+keyword_text+description,Possible NSTEMI / STEMI,2943,2943,100.00,1.0000,False
+keyword_text+description,Pancreatic neoplasm,2582,2581,99.96,0.9998,False
+keyword_text+description,Larygospasm,668,668,100.00,1.0000,False
+keyword_text+description,Sarcoidosis,3028,3028,100.00,1.0000,False
+keyword_text+description,Spontaneous rib fracture,782,782,100.00,1.0000,False
+keyword_text+description,GERD,3426,3424,99.94,0.9996,True
+keyword_text+description,Chagas,1124,1124,100.00,1.0000,False
+keyword_text+description,Croup,267,267,100.00,1.0000,False
+keyword_text+description,Epiglottitis,2248,2248,100.00,1.0000,False
+keyword_text+description,Tuberculosis,2007,2007,100.00,1.0000,True
+keyword_text+description,Whooping cough,545,545,100.00,1.0000,False
+keyword_text+description,Bronchiolitis,28,28,100.00,1.0000,False
+keyword_text+description,Ebola,90,90,100.00,1.0000,False
