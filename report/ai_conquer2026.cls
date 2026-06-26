@@ -271,7 +271,7 @@
 % =========================================================
 \newcounter{mycounter}
 \newcommand\showmycounter{\stepcounter{mycounter}\themycounter}
-\newcounter{hinh}
+
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
