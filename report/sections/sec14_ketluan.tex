@@ -1,0 +1,6 @@
+\section{Kết luận (Conclusion)}
+% [NHÁP -- Phụ trách: Nguyễn Văn Thương.]
+
+Nghiên cứu xây dựng một hệ thống RAG hỗ trợ chẩn đoán bệnh trên DDXPlus (49 bệnh, 223 evidences), với KB được chuẩn hoá và kiểm định. Trên toàn bộ tập validate ($n=132{,}448$), bộ số offline (Python thuần) cho Hit@1: BM25 + \textit{description} 98.78\%, Hybrid-RRF 91.95\%, Dense 84.28\%; trường \textit{description} cải thiện đều cả ba. Lần chạy OpenSearch live (mẫu 5k, seed 13) cho kết quả nhất quán, khẳng định bộ offline là mốc tham chiếu đáng tin cậy trước khi đo production đầy đủ.
+
+Kết quả cho thấy với thiết kế đánh giá thiên lexical, BM25 là baseline rất mạnh; đồng thời chỉ ra rằng việc kết luận về dense/hybrid cần một bộ đánh giá sát thực tế hơn. Phase 2 sẽ hoàn thiện pipeline OpenSearch đầy đủ, bổ sung re-ranking và sinh câu trả lời, xây bộ truy vấn ngôn ngữ tự nhiên và các chỉ số Tier-1.5 (ICD-10, MSR) để đánh giá toàn diện và an toàn lâm sàng.

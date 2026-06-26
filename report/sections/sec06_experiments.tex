@@ -1,0 +1,32 @@
+\section{Dữ liệu và thiết lập thí nghiệm (Experiments)}
+% [NHÁP -- Dataset: Hoàng Phước Nguyên & Thương (KB); Thiết lập đánh giá: Thương.]
+
+\subsection{Dataset}
+\begin{itemize}
+\item \textbf{Tên dataset:} DDXPlus~\cite{ddxplus2022} (English), \textbf{phiên bản 2 -- đăng ngày 10/03/2026} trên Figshare; giấy phép CC-BY.
+\item \textbf{Quy mô tri thức:} \textbf{49 bệnh} (\texttt{release\_conditions.json}) và \textbf{223 bằng chứng triệu chứng} (\texttt{release\_evidences.json}); kèm mã ICD-10 và mức độ nặng (severity, thang 1--5, 1 là nặng nhất).
+\item \textbf{Quy mô bệnh nhân:} khoảng 1,3 triệu hồ sơ bệnh nhân tổng hợp (synthetic), chia train/validate/test.
+\item \textbf{KB:} mỗi bệnh là một tài liệu mô tả bằng tập evidence (trường \texttt{keyword\_text}, \texttt{embedding} 384 chiều, \texttt{symptoms}, \texttt{disease}, \texttt{icd10\_codes}, \texttt{severity}).
+\item \textbf{Xử lý dữ liệu (rà soát KB -- PR \#6):} chuẩn hoá token evidence dùng chung normalizer build/query; bổ sung \texttt{icd10\_codes}; sửa Pneumonia J17 $\rightarrow$ J18; tái sinh KB (49 tài liệu, 0 token lệch).
+\item \textbf{Trường \texttt{description}:} mô tả do nhóm tự tổng hợp (ghép chuỗi từ triệu chứng); nhóm thống nhất index đầy đủ các trường trong mapping để Phase 2 (inject ngữ cảnh cho LLM) tái sử dụng được, không phải dựng lại.
+\end{itemize}
+
+\subsection{Chia dữ liệu}
+Sử dụng phân chia gốc train/validate/test của DDXPlus (stratified). KB được xây từ \textit{định nghĩa bệnh}; truy vấn lấy từ \textit{evidences của bệnh nhân}; tên bệnh (nhãn gold) bị loại khỏi truy vấn để tránh rò rỉ thông tin (data leakage). Đánh giá truy xuất offline được thực hiện trên \textbf{toàn bộ tập validate ($n=132{,}448$)}. Nhóm cũng khử trùng dòng trong bộ eval (nhật ký: test 101, validate 75; \texttt{scripts/dedup\_eval.py}, \texttt{data/kb/dedup\_eval\_log.md}).
+
+\subsection{Thiết lập huấn luyện}
+Nghiên cứu \textbf{không fine-tune}; dùng embedding pretrained \texttt{BAAI/bge-small-en-v1.5} (384 chiều, cosine) theo dạng zero-shot.
+
+\subsection{Thiết lập đánh giá và quy ước đối chiếu}
+\begin{itemize}
+\item \textbf{Metric chính:} Hit@1. \textbf{Metric phụ:} Hit@3, Hit@5, MRR@5; Tier-1 còn bổ sung NDCG@5.
+\item \textbf{Chế độ offline (Python thuần):} EXP-01 (BM25 tham chiếu) và EXP-02 (Dense, Hybrid-RRF) chạy trên toàn bộ $n=132{,}448$; Okapi BM25 ($k_1=1.5$, $b=0.75$, tokenizer \texttt{[a-z0-9]+}), tie-break tất định.
+\item \textbf{Chế độ live (OpenSearch):} ingest KB rồi truy xuất qua BM25 + k-NN + search pipeline \texttt{hybrid-rrf}. Lần chạy thử ngày \textbf{25/06/2026} dùng \textbf{mẫu 5.000 bệnh nhân, seed 13} (đồng bộ cách lấy mẫu với EXP-02); lần chạy đầy đủ ($n=132{,}448$, ước tính 30--60 phút) \textbf{đang được Tú thực hiện để hoàn tất đánh giá Phase 1}.
+\item \textbf{Nguyên tắc so sánh:} cùng KB, cùng normalizer, cùng ground truth; chỉ khác hạ tầng. Bảng đối chiếu (mục Kết quả) trình bày song song để đo độ sai khác giữa hai chế độ.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\begin{minipage}{0.92\textwidth}\centering\vspace{1.0cm}\textit{[Chỗ dành cho hình -- cần \textbf{Tú} (hoặc \textbf{Trí}) bổ sung: ảnh chụp OpenSearch Dashboards minh hoạ chỉ mục KB, alias \texttt{diseases} và search pipeline \texttt{hybrid-rrf}.]}\vspace{1.0cm}\end{minipage}}
+\caption{Minh hoạ hạ tầng OpenSearch (do thành viên bổ sung để hoàn tất Phase 1).}
+\end{figure}

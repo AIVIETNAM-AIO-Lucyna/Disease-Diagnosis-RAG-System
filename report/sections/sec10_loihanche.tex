@@ -1,0 +1,42 @@
+\section{Phân tích lỗi và hạn chế}
+% [NHÁP -- Phụ trách: Nguyễn Thị Diễm Hương (phân tích lỗi) & Nguyễn Văn Thương (hạn chế).]
+
+\textbf{Các bệnh khó nhất (offline, biến thể keyword\_text):} một số bệnh có Hit@1 thấp rõ rệt do chồng lấp triệu chứng và mô tả ngắn (Bảng \ref{tab:hard}). Lần chạy OpenSearch live (mẫu 5k) cho cùng xu hướng: Acute rhinosinusitis và Unstable angina vẫn là hai bệnh khó nhất.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Các bệnh có Hit@1 thấp nhất (offline, keyword\_text, $n$ theo từng bệnh).}
+\label{tab:hard}
+\begin{tabular}{lcc}
+\hline
+\textbf{Bệnh} & \textbf{Hit@1} & \textbf{$n$}\\
+\hline
+Acute rhinosinusitis & 49.62\% & 1.866\\
+Unstable angina & 84.32\% & 2.748\\
+Myocarditis & 93.54\% & 1.547\\
+Bronchitis & 96.87\% & 3.543\\
+URTI & 97.78\% & 8.656\\
+SLE & 97.97\% & 1.579\\
+Stable angina & 98.25\% & 2.340\\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Kiểm chứng hồi quy KB (PR \#6):} 9/49 bệnh từng bị ảnh hưởng bởi lệch normalizer (Anemia, Bronchiectasis, Cluster headache, GERD, Guillain-Barré syndrome, Localized edema, Panic attack, Pulmonary embolism, Tuberculosis) sau khi sửa đều đạt 99--100\% Hit@1 -- không gây hồi quy.
+
+\begin{figure}[H]
+\centering
+\fbox{\begin{minipage}{0.92\textwidth}\centering\vspace{1.0cm}\textit{[Chỗ dành cho hình -- cần \textbf{Hương} bổ sung: biểu đồ phân tích lỗi / ma trận nhầm lẫn cho các bệnh chồng lấp triệu chứng (vd Acute rhinosinusitis, Unstable angina).]}\vspace{1.0cm}\end{minipage}}
+\caption{Phân tích lỗi định tính (do QA bổ sung).}
+\end{figure}
+
+\textbf{Hạn chế của nghiên cứu:}
+\begin{itemize}
+\item \textbf{Thiết kế đánh giá thiên lexical:} truy vấn chuẩn hoá trùng KB, có lợi cho BM25; chưa đánh giá trên truy vấn ngôn ngữ tự nhiên/nhiễu.
+\item \textbf{Embedding phổ thông:} \texttt{bge-small-en-v1.5} chưa chuyên biệt cho y khoa.
+\item \textbf{RRF chưa tinh chỉnh trọng số.}
+\item \textbf{Phạm vi OpenSearch:} mới chạy live trên \textbf{mẫu 5.000} (seed 13); lần chạy đầy đủ ($n=132{,}448$, 30--60 phút) còn lại cho Phase 2.
+\item \textbf{Cấu phần chưa triển khai:} re-ranking (A4) và sinh câu trả lời bằng LLM (A5) thuộc Phase 2.
+\item \textbf{Số lần chạy:} báo cáo một lần chạy trên toàn tập do hạn chế tài nguyên; cần bootstrap CI để khẳng định ý nghĩa thống kê.
+\end{itemize}
