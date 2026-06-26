@@ -47,16 +47,34 @@ class TextEmbeddingService:
             return cls._model
 
     def embed_query(self, query: str) -> list[float]:
+        return self.embed_queries([query])[0]
+
+    def embed_queries(
+        self, queries: list[str], *, batch_size: int = 64
+    ) -> list[list[float]]:
+        """Embed search queries with the BGE query prefix (batched, no progress bar)."""
+        if not queries:
+            return []
+
         model = self.get_model()
-        vector = model.encode(
-            [query], normalize_embeddings=True, prompt=BGE_QUERY_PREFIX
-        )[0]
-        return vector.tolist()
+        vectors: list[list[float]] = []
+        for start in range(0, len(queries), batch_size):
+            batch = queries[start : start + batch_size]
+            encoded = model.encode(
+                batch,
+                normalize_embeddings=True,
+                prompt=BGE_QUERY_PREFIX,
+                show_progress_bar=False,
+            )
+            vectors.extend(vector.tolist() for vector in encoded)
+        return vectors
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
 
         model = self.get_model()
-        vectors = model.encode(texts, normalize_embeddings=True)
+        vectors = model.encode(
+            texts, normalize_embeddings=True, show_progress_bar=False
+        )
         return [vector.tolist() for vector in vectors]

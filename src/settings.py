@@ -29,6 +29,18 @@ class Settings(BaseSettings):
     OPENSEARCH_PASSWORD: str = Field(
         ..., description="The password of the OpenSearch instance"
     )
+    OPENSEARCH_TIMEOUT: int = Field(
+        default=60,
+        ge=10,
+        le=600,
+        description="HTTP timeout (seconds) for OpenSearch requests (bulk ingest needs headroom on remote clusters)",
+    )
+    OPENSEARCH_POOL_MAXSIZE: int = Field(
+        default=16,
+        ge=1,
+        le=128,
+        description="urllib3 connection pool size per host (raise for parallel search/eval workers)",
+    )
 
     PATH_TO_MODELS: str = Field(
         default="models",

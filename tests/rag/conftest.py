@@ -6,11 +6,11 @@ from unittest.mock import Mock
 import pytest
 
 from src.schemas import SearchResponse
-from src.services.rag.retrieve import Retriever
-from src.settings import settings
-
 from src.services.rag.ingest import Ingestion
+from src.services.rag.preprocess import PreprocessPipeline
+from src.services.rag.retrieve import Retriever
 from src.services.rag.schemas import DiseaseDocument
+from src.settings import settings
 
 
 def fake_embedding(dim: int = settings.EMBEDDING_DIM) -> list[float]:
@@ -90,14 +90,28 @@ def mock_rerank_service() -> Mock:
 
 
 @pytest.fixture
+def preprocess_pipeline() -> PreprocessPipeline:
+    return PreprocessPipeline()
+
+
+@pytest.fixture
+def noop_preprocess() -> PreprocessPipeline:
+    pipeline = Mock(spec=PreprocessPipeline)
+    pipeline.preprocess_query.side_effect = lambda query: query
+    return pipeline
+
+
+@pytest.fixture
 def retriever(
     mock_embed_service: Mock,
     mock_opensearch_client: Mock,
     mock_rerank_service: Mock,
+    preprocess_pipeline: PreprocessPipeline,
 ) -> Retriever:
     return Retriever(
         client=mock_opensearch_client,
         embed_service=mock_embed_service,
+        preprocess=preprocess_pipeline,
         rerank_service=mock_rerank_service,
     )
 
@@ -106,10 +120,12 @@ def retriever(
 def retriever_without_rerank(
     mock_embed_service: Mock,
     mock_opensearch_client: Mock,
+    preprocess_pipeline: PreprocessPipeline,
 ) -> Retriever:
     return Retriever(
         client=mock_opensearch_client,
         embed_service=mock_embed_service,
+        preprocess=preprocess_pipeline,
         rerank_service=None,
     )
 

@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from src.services.rag.exceptions import RerankerNotConfigured
+from src.services.rag.preprocess import PreprocessPipeline
 from src.services.rag.retrieve import Retriever
 from src.services.rag.schemas import RetrieveHit, RetrieveResult
 
@@ -100,12 +101,13 @@ class TestRetrieverRerank:
         mock_embed_service: Mock,
         mock_opensearch_client: Mock,
         mock_rerank_service: Mock,
+        noop_preprocess: PreprocessPipeline,
     ) -> None:
         retriever = Retriever(
             client=mock_opensearch_client,
             embed_service=mock_embed_service,
+            preprocess=noop_preprocess,
             rerank_service=mock_rerank_service,
-            preprocess=False,
         )
         result = RetrieveResult(hits=[_sample_hit()], took_ms=12)
 

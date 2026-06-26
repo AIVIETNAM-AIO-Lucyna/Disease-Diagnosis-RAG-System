@@ -30,7 +30,9 @@ def main() -> None:
     log: list[str] = ["# Eval-set dedup log — DDXPlus\n"]
     log.append(f"- source: `{SRC}`")
     log.append("- duplicate definition: exact match on ALL columns")
-    log.append("- policy: keep first occurrence, drop the rest, log dropped row indices\n")
+    log.append(
+        "- policy: keep first occurrence, drop the rest, log dropped row indices\n"
+    )
 
     id_hashes: dict[str, set[str]] = {}
 
@@ -39,7 +41,9 @@ def main() -> None:
         id_hashes[split] = set(identity_hash(df))
 
         if split not in EVAL_SPLITS:
-            log.append(f"## {split}: {len(df):,} rows (not an eval split — identity cached for leakage check)\n")
+            log.append(
+                f"## {split}: {len(df):,} rows (not an eval split — identity cached for leakage check)\n"
+            )
             continue
 
         dup_mask = df.duplicated(keep="first")
@@ -62,12 +66,18 @@ def main() -> None:
             log.append("- dropped rows by PATHOLOGY:")
             for path, cnt in by_path.items():
                 cls_size = int((df["PATHOLOGY"] == path).sum())
-                log.append(f"  - {path}: {cnt} dropped / {cls_size:,} in class ({cnt/cls_size*100:.3f}% of class)")
-            log.append(f"- dropped row indices (first 50 of {n_dup}): {dropped_idx[:50]}")
+                log.append(
+                    f"  - {path}: {cnt} dropped / {cls_size:,} in class ({cnt/cls_size*100:.3f}% of class)"
+                )
+            log.append(
+                f"- dropped row indices (first 50 of {n_dup}): {dropped_idx[:50]}"
+            )
         log.append("")
 
     log.append("## Cross-split overlap (leakage check)")
-    log.append("- key: (AGE, SEX, PATHOLOGY, EVIDENCES). Overlap here = same patient in two splits.\n")
+    log.append(
+        "- key: (AGE, SEX, PATHOLOGY, EVIDENCES). Overlap here = same patient in two splits.\n"
+    )
     for a, b in [("train", "validate"), ("train", "test"), ("validate", "test")]:
         ov = id_hashes[a] & id_hashes[b]
         log.append(f"- {a} ∩ {b}: {len(ov):,} overlapping identities")

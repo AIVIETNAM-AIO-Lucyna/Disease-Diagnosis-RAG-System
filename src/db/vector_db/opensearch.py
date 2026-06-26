@@ -31,6 +31,8 @@ def _opensearch_client_kwargs() -> dict[str, Any]:
         "use_ssl": True,
         "verify_certs": True,
         "ssl_show_warn": False,
+        "timeout": settings.OPENSEARCH_TIMEOUT,
+        "pool_maxsize": settings.OPENSEARCH_POOL_MAXSIZE,
     }
 
 
@@ -236,6 +238,7 @@ class OpenSearchClient(VectorDB):
             self.client,
             actions,
             raise_on_error=False,
+            request_timeout=settings.OPENSEARCH_TIMEOUT,
         )
         if errors:
             preview = errors[:3]

@@ -1,6 +1,6 @@
 # Development philosophy
 
-> **Version:** 2026-06-22
+> **Version:** 2026-06-25
 > **See also:** [Project structure](./project-structure.md), [Roadmap](./roadmap-and-refactors.md)
 
 How we build this project — conventions, patterns, and decision rules for contributors.
@@ -49,7 +49,7 @@ RAG-facing DTOs in `services/rag/schemas.py` follow the same idea: requests expo
 
 ### 5. Settings over hardcoding
 
-Index alias, source fields, search pipeline name, model paths, and credentials live in `src/settings.py` and `.env`. Code defaults should match migration scripts.
+Index alias, source fields, search pipeline name, model paths, OpenSearch HTTP timeout, and credentials live in `src/settings.py` and `.env`. Code defaults should match migration scripts.
 
 ### 6. Experiment-friendly retrieval
 
@@ -60,7 +60,7 @@ The team compares retrieval strategies before locking the pipeline:
 - `search_hybrid()` — BM25 + k-NN + RRF (MVP default)
 - `run_experiment()` — side-by-side comparison; results keyed by `RetrievalMode`
 
-Production callers use `RAGService.query()` (retrieve → rerank) or compose `Retriever.retrieve()` + `Retriever.rerank()` explicitly. Experiment and low-level `search_*` APIs stay retrieval-only.
+Production callers use `RAGService.query()` (retrieve → rerank) or compose `Retriever.retrieve()` + `Retriever.rerank()` explicitly. `Retriever` requires an injected `PreprocessPipeline` — no optional bool flag. Experiment and low-level `search_*` APIs stay retrieval-only.
 
 Production responses use slim `RetrieveResult`. Debug metadata stays on experiment types only (`ExperimentModeResult`, optional `opensearch_body`). `_build_hits` drops OpenSearch documents missing required fields (`doc_id`, `disease`, `severity`, `source`). After rerank, `RetrieveHit.score` is the cross-encoder score; `RetrieveHit.passage_text` builds symptom-first text for reranking (disease + optional symptoms + description).
 
@@ -85,6 +85,15 @@ User queries are symptom lists. Searchable text must be **symptom-dense**:
 
 Use `match` on `keyword_text`, not on `keyword`-typed fields.
 
+**Query preprocessing (production vs DDXPlus eval):**
+
+| Path | Method | When |
+|------|--------|------|
+| Production `RAGService.query()` | `PreprocessPipeline.preprocess_query()` — synonyms + per-token normalize | Free-text user symptom input |
+| KB / EXP-02 eval queries | `normalize_symptom_phrase` / `preprocess_ddxplus_evidence()` | Single DDXPlus evidence question strings |
+
+Do not run whole-query DDXPlus phrase normalization on free-text production queries — lead-frame regexes assume one structured question, not multi-symptom prose.
+
 ### 9. Minimal, safe diffs
 
 - Match existing naming and folder conventions
@@ -108,7 +117,7 @@ Every IO path (OpenSearch, model load, file read) should surface meaningful erro
 
 ## Sync client, async routes
 
-- **`OpenSearchClient` (sync)** — single client for migrations, CLI, notebooks, ingest, and retrieval
+- **`OpenSearchClient` (sync)** — single client for migrations, CLI, notebooks, ingest, and retrieval. Uses **urllib3** via `Urllib3HttpConnection`; tune **`OPENSEARCH_POOL_MAXSIZE`** when running parallel searches (see getting started troubleshooting).
 - **FastAPI routes** — wrap blocking service calls with `asyncio.to_thread` or `asyncer.asyncify` at the route/service boundary; do not add a parallel async OpenSearch client unless load requires native async I/O
 
 ## Configuration and secrets
@@ -133,6 +142,8 @@ Before opening a PR, verify:
 
 | Date | Change |
 |------|--------|
+| 2026-06-25 | Documented urllib3 connection pool (`OPENSEARCH_POOL_MAXSIZE`) for parallel eval |
+| 2026-06-25 | Document required `PreprocessPipeline` on `Retriever`; `OPENSEARCH_TIMEOUT` in settings |
 | 2026-06-22 | Documented hit validation and `passage_text` shape |
 | 2026-06-20 | Documented production rerank path and `RetrieveHit.passage_text` |
 | 2026-06-17 | Embedding-on-request pattern; retrieval tests; ruff/pre-commit |

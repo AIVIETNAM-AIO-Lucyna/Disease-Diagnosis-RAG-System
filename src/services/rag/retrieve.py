@@ -11,13 +11,12 @@ from src.schemas.opensearch_responses import TotalHits
 from src.services.inference.embeddings.service import TextEmbeddingService
 from src.services.inference.reranker.service import RerankerService
 from src.services.rag.exceptions import RerankerNotConfigured
-from src.services.rag.preprocess import preprocess_query
+from src.services.rag.preprocess import PreprocessPipeline
 from src.services.rag.schemas import (
     Bm25RetrieveRequest,
     ExperimentCompareResponse,
     ExperimentModeResult,
     HybridRetrieveRequest,
-    PreprocessableRequest,
     RetrievalMode,
     RetrieveExperimentRequest,
     RetrieveHit,
@@ -35,35 +34,40 @@ class Retriever:
         self,
         client: OpenSearchClient,
         embed_service: TextEmbeddingService,
+        preprocess: PreprocessPipeline,
         rerank_service: Optional[RerankerService] = None,
-        preprocess: bool = True,
     ) -> None:
         self._client = client
         self._embed_service = embed_service
-        self._rerank_service = rerank_service
         self._preprocess = preprocess
+        self._rerank_service = rerank_service
         self._logger = get_logger(__name__)
 
     def search_bm25(self, request: Bm25RetrieveRequest) -> RetrieveResult:
-        request = self._maybe_preprocess_request(request)
+        request = request.model_copy(
+            update={"query": self._preprocess.preprocess_query(request.query)}
+        )
         return self._execute_bm25(request).result
 
     def search_vector(self, request: VectorRetrieveRequest) -> RetrieveResult:
-        request = self._maybe_preprocess_request(request)
+        request = request.model_copy(
+            update={"query": self._preprocess.preprocess_query(request.query)}
+        )
         return self._execute_vector(request).result
 
     def search_hybrid(self, request: HybridRetrieveRequest) -> RetrieveResult:
-        request = self._maybe_preprocess_request(request)
+        request = request.model_copy(
+            update={"query": self._preprocess.preprocess_query(request.query)}
+        )
         return self._execute_hybrid(request).result
 
     def run_experiment(
         self, request: RetrieveExperimentRequest
     ) -> ExperimentCompareResponse:
         """Compare BM25, k-NN, and/or hybrid on the same query."""
-        if self._preprocess:
-            request = request.model_copy(
-                update={"query": preprocess_query(request.query)}
-            )
+        request = request.model_copy(
+            update={"query": self._preprocess.preprocess_query(request.query)}
+        )
 
         if not request.modes:
             self._logger.warning("run_experiment called with an empty modes list")
@@ -117,8 +121,7 @@ class Retriever:
         if not result.hits:
             return result
 
-        if self._preprocess:
-            query = preprocess_query(query)
+        query = self._preprocess.preprocess_query(query)
 
         passages = [hit.passage_text for hit in result.hits]
         ranked = self._rerank_service.rerank(query, passages, top_k=top_k)
@@ -192,13 +195,6 @@ class Retriever:
         return request.model_copy(
             update={"embedding": self._embed_service.embed_query(request.query)}
         )
-
-    def _maybe_preprocess_request(
-        self, request: PreprocessableRequest
-    ) -> PreprocessableRequest:
-        if not self._preprocess:
-            return request
-        return request.model_copy(update={"query": preprocess_query(request.query)})
 
     @staticmethod
     def _normalize_mode(mode: RetrievalMode | str) -> RetrievalMode:

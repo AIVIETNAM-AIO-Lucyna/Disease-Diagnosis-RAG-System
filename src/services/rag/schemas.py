@@ -2,13 +2,13 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Literal, TypeVar
+from typing import Any, Literal
 
 from pydantic import Field, computed_field, model_validator
 
 from src.schemas import SearchResponse
 from src.schemas.base import ORSBaseModel, RWSBaseModel
-from src.services.rag.preprocess import normalize_symptoms
+from src.services.rag.preprocess import build_embed_text, build_keyword_text
 from src.settings import settings
 
 MatchOperator = Literal["or", "and"]
@@ -165,14 +165,6 @@ class HybridRetrieveRequest(RetrieveBaseRequest):
         return body
 
 
-PreprocessableRequest = TypeVar(
-    "PreprocessableRequest",
-    Bm25RetrieveRequest,
-    VectorRetrieveRequest,
-    HybridRetrieveRequest,
-)
-
-
 class RetrieveExperimentRequest(RWSBaseModel):
     """Run the same query through multiple retrieval modes for comparison."""
 
@@ -312,11 +304,13 @@ class DiseaseDocument(RWSBaseModel):
 
     Use without ``embedding`` when loading source records; ``Ingestion`` normalizes
     symptoms/antecedents, embeds ``embed_text``, sets ``embedding``, then bulk-indexes.
-    ``keyword_text`` is always derived for BM25; it is included in bulk payloads via
-    ``to_bulk_action()``.
+    ``embed_text`` uses disease + symptoms + antecedents.
+    ``description`` is indexed for LLM context only, not embedded.
     """
 
-    doc_id: str = Field(..., min_length=1)
+    doc_id: str = Field(
+        ..., min_length=1, description="Canonical ICD-10 code (OpenSearch _id)."
+    )
     disease: str = Field(..., min_length=1)
     symptoms: list[str]
     severity: int = Field(..., ge=1, le=5)
@@ -327,18 +321,12 @@ class DiseaseDocument(RWSBaseModel):
 
     @property
     def embed_text(self) -> str:
-        symptom_str = ", ".join(normalize_symptoms(self.symptoms))
-        return f"Disease: {self.disease}. Symptoms: {symptom_str}. {self.description}"
+        return build_embed_text(self.disease, self.symptoms, self.antecedents)
 
-    @computed_field  # type: ignore[prop-decorator]
+    @computed_field
     @property
     def keyword_text(self) -> str:
-        parts = [
-            self.disease.strip(),
-            *normalize_symptoms(self.symptoms),
-            *normalize_symptoms(self.antecedents),
-        ]
-        return " ".join(part for part in parts if part)
+        return build_keyword_text(self.disease, self.symptoms, self.antecedents)
 
     @model_validator(mode="after")
     def validate_embedding_dimension(self) -> "DiseaseDocument":
