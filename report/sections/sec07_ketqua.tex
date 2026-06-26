@@ -1,0 +1,122 @@
+\section{Kết quả thí nghiệm (Results)}
+% [SỐ LIỆU THỰC -- EXP-02 offline (19/06, n=132,448) + OpenSearch live (25/06, mẫu 5.000, seed 13). Trình bày: Hương; số liệu: Thương/Tú.]
+
+\subsection{Kết quả tham chiếu offline (Python thuần, n=132,448)}
+Bảng \ref{tab:offline} tổng hợp kết quả EXP-01/EXP-02 chạy bằng Python thuần trên toàn bộ tập validate. Các dòng BM25 là tham chiếu từ EXP-01; đóng góp của EXP-02 là Dense và Hybrid-RRF.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Kết quả truy xuất offline (Python thuần) trên tập validate DDXPlus đầy đủ ($n=132{,}448$). Dense: \texttt{bge-small-en-v1.5}; Hybrid: RRF($k=60$).}
+\label{tab:offline}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Phương pháp} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR}\\
+\hline
+BM25 + description \textit{(EXP-01)} & \textbf{98.78\%} & 99.96\% & 100.00\% & \textbf{0.9937}\\
+BM25 keyword\_text \textit{(EXP-01)} & 98.47\% & 99.95\% & 99.99\% & 0.9921\\
+Hybrid-RRF + description & 91.95\% & 99.52\% & 99.77\% & 0.9570\\
+Hybrid-RRF (no-desc) & 91.17\% & 98.89\% & 99.61\% & 0.9511\\
+Dense + description & 84.28\% & 95.48\% & 98.46\% & 0.9027\\
+Dense (no-desc) & 83.11\% & 94.41\% & 96.82\% & 0.8911\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=9pt,
+  width=0.92\textwidth, height=6.2cm,
+  enlarge x limits=0.28,
+  ymin=80, ymax=103,
+  ylabel={Tỉ lệ (\%)},
+  symbolic x coords={BM25, Hybrid-RRF, Dense},
+  xtick=data,
+  legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3, font=\footnotesize},
+]
+\addplot coordinates {(BM25,98.78) (Hybrid-RRF,91.95) (Dense,84.28)};
+\addplot coordinates {(BM25,99.96) (Hybrid-RRF,99.52) (Dense,95.48)};
+\addplot coordinates {(BM25,100.00) (Hybrid-RRF,99.77) (Dense,98.46)};
+\legend{Hit@1, Hit@3, Hit@5}
+\end{axis}
+\end{tikzpicture}
+\caption{So sánh Hit@1/Hit@3/Hit@5 của ba chiến lược (cấu hình + description, offline Python thuần, $n=132{,}448$).}
+\label{fig:bar}
+\end{figure}
+
+\textbf{Nhận xét (offline):} thứ tự Hit@1 là \textbf{BM25 (98.78\%) $>$ Hybrid (91.95\%) $>$ Dense (84.28\%)} -- BM25 hơn Hybrid 6.83 điểm \%, hơn Dense 14.50 điểm \%. Trường \textit{description} cải thiện đều cả ba (Dense +1.17, Hybrid +0.78, BM25 +0.31 điểm \% Hit@1); trong RRF, thành phần BM25 đang đóng góp chính.
+
+\subsection{Đối chiếu Python thuần với OpenSearch (mẫu 5.000, seed 13)}
+Ngày 25/06/2026, nhóm chạy thử pipeline OpenSearch live trên \textbf{mẫu 5.000 bệnh nhân (seed 13)} -- cùng cách lấy mẫu với EXP-02 -- để kiểm chứng tính nhất quán giữa hai hạ tầng (Bảng \ref{tab:livevsoffline}). So sánh dùng biến thể \texttt{keyword\_text} ở cả hai chế độ.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Đối chiếu OpenSearch live (mẫu 5.000, seed 13) với Python thuần (offline, đầy đủ), biến thể \texttt{keyword\_text}.}
+\label{tab:livevsoffline}
+\begin{tabular}{llccccr}
+\hline
+\textbf{Phương pháp} & \textbf{Hạ tầng} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR} & \textbf{$n$}\\
+\hline
+BM25 & OpenSearch live & 98.88\% & 99.96\% & 99.98\% & 0.9942 & 5.000\\
+BM25 & Python thuần & 98.47\% & 99.95\% & 99.99\% & 0.9921 & 132.448\\
+Hybrid-RRF & OpenSearch live & 92.50\% & 98.86\% & 99.52\% & 0.9575 & 5.000\\
+Hybrid-RRF & Python thuần & 91.17\% & 98.89\% & 99.61\% & 0.9511 & 132.448\\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Nhận xét (đối chiếu):} hai hạ tầng cho kết quả \textbf{rất nhất quán}: chênh lệch Hit@1 chỉ +0.41 điểm \% (BM25) và +1.33 điểm \% (Hybrid) theo hướng live cao hơn, nằm trong dao động do cỡ mẫu 5.000 và khác biệt cài đặt engine (analyzer, tie-break, k-NN xấp xỉ HNSW). Quan trọng hơn, \textbf{thứ tự BM25 $>$ Hybrid được bảo toàn}, khẳng định bộ số offline là mốc tham chiếu/trần trên hợp lệ cho logic truy xuất. Con số chốt cuối vẫn lấy từ lần chạy OpenSearch đầy đủ (Bảng \ref{tab:livefull}).
+
+\subsection{Kết quả OpenSearch chạy đầy đủ (Tú cập nhật sau khi chạy full)}
+Bảng \ref{tab:livefull} là khung số liệu \textit{production} trên toàn tập validate -- \textbf{con số chốt của Phase 1} -- do \textbf{Nguyễn Minh Tú} điền sau khi chạy pipeline OpenSearch đầy đủ ($n=132{,}448$, ước tính 30--60 phút). Khi điền, ghi kèm cột $\Delta$ so với offline tương ứng để soi độ sai khác hạ tầng.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Kết quả OpenSearch đầy đủ -- \textit{khung chờ điền (Người điền: Nguyễn Minh Tú)}.}
+\label{tab:livefull}
+\begin{tabular}{lcccccr}
+\hline
+\textbf{Phương pháp} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR} & \textbf{NDCG@5} & \textbf{$n$}\\
+\hline
+BM25 (keyword\_text) & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
+BM25 + description & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
+Hybrid-RRF & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
+Dense & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
++ Reranker (A4, Phase 2) & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Chỉ số QA bổ sung (tùy chọn)}
+Bảng \ref{tab:qa} dành cho \textbf{Nguyễn Thị Diễm Hương} bổ sung các chỉ số QA theo phần research (nếu muốn), giúp đánh giá toàn diện hơn ngoài Hit@k/MRR.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Chỉ số QA bổ sung -- \textit{khung chờ điền (Người điền: Nguyễn Thị Diễm Hương)}.}
+\label{tab:qa}
+\begin{tabular}{p{6.2cm}p{3.2cm}p{2.4cm}}
+\hline
+\textbf{Chỉ số QA} & \textbf{Ý nghĩa} & \textbf{Giá trị}\\
+\hline
+NDCG@5 (graded relevance) & Chất lượng xếp hạng có trọng số & \textit{[Hương điền]}\\
+Tier-1.5: ICD-10 chapter Hit@1 & Đúng chương ICD-10 & \textit{[Hương điền]}\\
+Tier-1.5: ICD-10 block Hit@1 & Đúng block ICD-10 & \textit{[Hương điền]}\\
+MSR (Missed-Severe Ratio, severity $\le 2$) & Tỉ lệ bỏ sót bệnh nặng & \textit{[Hương điền]}\\
+Bootstrap 95\% CI (B=1000, seed 42) & Khoảng tin cậy của Hit@1 & \textit{[Hương điền]}\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{notebox}{Quy ước điền số liệu}
+\begin{itemize}
+\item Bảng 1--2: số liệu đã chốt (offline + đối chiếu mẫu 5k) -- KHÔNG sửa.
+\item Bảng 3: Nguyễn Minh Tú điền sau khi chạy OpenSearch đầy đủ; ghi rõ ngày chạy, seed, và $\Delta$ so với offline.
+\item Bảng 4: Nguyễn Thị Diễm Hương điền các chỉ số QA tùy chọn; nêu rõ công thức nếu khác chuẩn.
+\item Mọi con số phải kèm $n$ (cỡ mẫu) và làm tròn 2 chữ số thập phân để so sánh được.
+\end{itemize}
+\end{notebox}

@@ -1,0 +1,8 @@
+# Patient data (licensed, large) — never commit
+data/
+*.zip
+release_validate_patients*
+
+# Python
+__pycache__/
+*.pyc

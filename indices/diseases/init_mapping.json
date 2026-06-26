@@ -1,0 +1,35 @@
+{
+    "properties": {
+        "doc_id": {
+            "type": "keyword"
+        },
+        "disease": {
+            "type": "text",
+            "fields": {
+                "raw": {
+                    "type": "keyword"
+                }
+            }
+        },
+        "symptoms": {
+            "type": "keyword"
+        },
+        "severity": {
+            "type": "keyword"
+        },
+        "description": {
+            "type": "text"
+        },
+        "precautions": {
+            "type": "keyword"
+        },
+        "keyword_text": {
+            "type": "text"
+        },
+        "embedding": {
+            "type": "knn_vector",
+            "dimension": 384,
+            "space_type": "cosinesimil"
+        }
+    }
+}
