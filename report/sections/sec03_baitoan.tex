@@ -1,0 +1,12 @@
+\section{Bài toán nghiên cứu (Research Problem)}
+% [NHÁP -- Phụ trách: Nguyễn Văn Thương.]
+
+\begin{itemize}
+\item \textbf{Tên bài toán:} Truy xuất tri thức y khoa (information retrieval) phục vụ hỗ trợ chẩn đoán bệnh trong khung RAG.
+\item \textbf{Input:} Một truy vấn biểu diễn tập bằng chứng/triệu chứng (evidences) của bệnh nhân, đã được chuẩn hoá theo cùng quy ước với KB.
+\item \textbf{Output:} Danh sách bệnh (tài liệu KB) được xếp hạng theo độ liên quan; lấy top-$K$ để hỗ trợ chẩn đoán phân biệt.
+\item \textbf{Mục tiêu nghiên cứu:} Tối đa hoá độ chính xác truy xuất ở vị trí đầu (Hit@1) đồng thời giữ chất lượng xếp hạng tổng thể (MRR@5, NDCG@5) cao.
+\item \textbf{Metric đánh giá:} Hit@1, Hit@3, Hit@5, MRR@5, NDCG@5.
+\end{itemize}
+
+\textbf{Giả thuyết nghiên cứu:} việc kết hợp truy xuất lexical (BM25) và dense (embedding ngữ nghĩa) theo cơ chế hybrid hai tầng, kèm re-ranking, sẽ cải thiện chất lượng truy xuất so với từng thành phần riêng lẻ, đặc biệt với các truy vấn diễn đạt tự nhiên. Giả thuyết này cần được kiểm chứng bằng một bộ đánh giá sát thực tế (xem mục Thảo luận và Hạn chế).

@@ -1,0 +1,10 @@
+\section{Thảo luận (Discussion)}
+% [NHÁP -- Phụ trách: cả nhóm; chủ trì: Nguyễn Văn Thương.]
+
+\textbf{Vì sao BM25 dẫn đầu trên bộ đánh giá này?} Truy vấn được tạo từ các token evidence \textit{đã chuẩn hoá}, trùng khớp từ vựng cao với KB -- điều kiện thuận lợi cho khớp từ chính xác của BM25. Do đó kết quả \textbf{không} đồng nghĩa với việc kiến trúc dense/hybrid kém hơn về bản chất.
+
+\textbf{Vai trò của description:} cải thiện đều cả ba phương pháp, củng cố quyết định giữ trường này.
+
+\textbf{Python thuần so với OpenSearch:} bộ số offline được thiết kế như một mốc tham chiếu/trần trên cho logic truy xuất; lần chạy OpenSearch live (mẫu 5k) cho kết quả nhất quán cả về giá trị lẫn thứ hạng, nên có thể tin cậy chuyển sang đo production đầy đủ. Khác biệt nhỏ giữa hai hạ tầng đến từ analyzer của OpenSearch, cơ chế tie-break và k-NN xấp xỉ (HNSW) so với cosine brute-force.
+
+\textbf{Hệ quả thiết kế:} (i) embedding phổ thông (không chuyên y khoa) chưa được kiểm tra đúng thế mạnh ngữ nghĩa; (ii) RRF cào bằng trọng số kéo lùi BM25 gần hoàn hảo; (iii) cần bộ truy vấn ngôn ngữ tự nhiên để đo đúng giá trị dense/hybrid. Các điểm này định hướng cho Phase 2.
