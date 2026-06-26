@@ -1,0 +1,45 @@
+\section{Phương pháp nghiên cứu (Methodology)}
+% [NHÁP -- Phụ trách: Nguyễn Minh Tú (pipeline) & Nguyễn Văn Thương (KB/đánh giá).]
+
+\subsection{Kiến trúc pipeline hai tầng (two-layer RAG)}
+Thiết kế A (DDXPlus-only, retrieval-first) gồm các bước: (1) xây dựng KB từ định nghĩa bệnh và evidence; (2) lập chỉ mục trên OpenSearch (chỉ mục từ vựng cho BM25 và chỉ mục vector cho k-NN); (3) truy xuất Hybrid (BM25 + dense) hợp nhất bằng RRF; (4) re-ranking top-$K$ (mã nguồn đã hiện thực cuối Phase 1, đánh giá định lượng ở Phase 2); (5) sinh câu trả lời bằng LLM (Phase 2).
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=0.9cm]
+\node[stage, text width=2.1cm] (q) {Truy vấn bệnh nhân\\(EVIDENCES + tuổi/giới)};
+\node[stage, text width=2.0cm, right=of q] (pre) {Tiền xử lý\\decode + chuẩn hoá};
+\node[stage, text width=2.5cm, right=of pre] (hyb) {Truy xuất Hybrid\\BM25 (keyword\_text) + k-NN (BGE 384-d)};
+\node[stage, text width=1.9cm, right=of hyb] (rrf) {RRF $k=60$\\$\rightarrow$ top-20};
+\node[future, text width=1.9cm, right=of rrf] (rr) {Re-ranking\\top-20 $\rightarrow$ top-5\\(Phase 2)};
+\node[future, text width=1.9cm, right=of rr] (gen) {Sinh câu trả lời\\Qwen3-8B\\(Phase 2)};
+\draw[flow] (q) -- (pre);
+\draw[flow] (pre) -- (hyb);
+\draw[flow] (hyb) -- (rrf);
+\draw[flow] (rrf) -- (rr);
+\draw[flow] (rr) -- (gen);
+\end{tikzpicture}}
+\caption{Pipeline RAG hai tầng (Thiết kế A). Khối nét liền: hoàn thiện và đánh giá ở Phase 1. Khối nét đứt: re-ranking (mã nguồn đã hiện thực cuối Phase 1, đánh giá ở Phase 2) và sinh câu trả lời (Phase 2).}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Xây dựng và kiểm định KB}
+Mỗi bệnh được mô tả bằng tập evidence tương ứng (có/không trường \textit{description}). Trong quá trình rà soát KB, nhóm đã thống nhất (PR \#6) các điểm sau: (i) \textbf{dùng chung normalizer} giữa bước build KB và bước query (\texttt{ddxplus\_normalize}) để text lúc build và lúc truy vấn đồng nhất; (ii) \textbf{bổ sung \texttt{icd10\_codes}} cho mọi tài liệu; (iii) \textbf{sửa ánh xạ ICD-10 của Pneumonia} (J17 $\rightarrow$ J18); (iv) \textbf{tái sinh KB} và kiểm định (49 tài liệu, 0 token lệch). Việc này khắc phục hiện tượng lệch BM25/embedding ở 9/49 bệnh do KB cũ được build bằng normalizer phiên bản trước. Nhóm chuẩn bị \textbf{hai bản KB} -- bản đã chuẩn hoá (\texttt{kb\_ddxplus.json}) và bản giữ nguyên (\texttt{kb\_ddxplus\_rawq.json}) -- để so sánh Hit@1/MRR trên tập dev và chọn bản tốt hơn. Phần rà soát ICD-10 được tự động hoá bằng \texttt{scripts/build\_icd10\_reference.py}, sinh \texttt{data/kb/icd10\_audit.csv} và \texttt{icd10\_audit.md}.
+
+\subsection{Các chiến lược truy xuất}
+\begin{itemize}
+\item \textbf{BM25} (lexical, baseline): Okapi BM25 trên trường \texttt{keyword\_text}/\textit{description}.
+\item \textbf{Dense:} mã hoá bằng \texttt{BAAI/bge-small-en-v1.5} (384 chiều, cosine); truy vấn được nhúng sau khi loại bỏ tên bệnh (vốn là nhãn gold).
+\item \textbf{Hybrid:} hợp nhất thứ hạng BM25 và dense bằng Reciprocal Rank Fusion (RRF, $k=60$).
+\item \textbf{Re-ranking (mã nguồn cuối Phase 1, đánh giá Phase 2):} cross-encoder \texttt{bge-reranker-base} (top-20 $\rightarrow$ top-5).
+\item \textbf{Sinh câu trả lời (Phase 2):} mô hình \texttt{Qwen3-8B} dựa trên top-$K$ tài liệu truy xuất.
+\end{itemize}
+
+\subsection{Harness đánh giá: Python thuần và OpenSearch}
+Để có số liệu sớm và kiểm soát logic truy xuất độc lập với hạ tầng, nhóm dùng \textbf{hai chế độ đánh giá song song}:
+\begin{enumerate}
+\item \textbf{Tham chiếu (offline, Python thuần):} cài đặt Okapi BM25 ($k_1=1.5$, $b=0.75$, tokenizer \texttt{[a-z0-9]+}), dense bằng thư viện \texttt{sentence-transformers}, và hybrid ghép thủ công bằng RRF ($k=60$). Vì KB chỉ có 49 tài liệu nên brute-force in-memory là đủ; chế độ này \textbf{không} dùng OpenSearch và đóng vai trò \textit{trần trên} cho chất lượng logic.
+\item \textbf{Production (live OpenSearch):} ingest KB vào OpenSearch rồi truy xuất qua BM25 query + k-NN vector + search pipeline \texttt{hybrid-rrf}. Đây là con số chốt cho hệ thống thực; được đối chiếu với chế độ offline để phát hiện sai khác do hạ tầng.
+\end{enumerate}
+Việc tách hai chế độ giúp kiểm soát biến: cùng KB, cùng normalizer, cùng ground truth, chỉ khác hạ tầng thực thi.
