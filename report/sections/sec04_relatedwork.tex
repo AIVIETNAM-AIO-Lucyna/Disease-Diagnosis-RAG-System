@@ -1,0 +1,14 @@
+\section{Tổng quan nghiên cứu liên quan (Related Work)}
+% [STUB -- Phụ trách: Nguyễn Thị Diễm Hương. Bổ sung trích dẫn vào references.bib.]
+
+Phần này tổng hợp các hướng nghiên cứu liên quan theo nhóm chủ đề (không liệt kê rời rạc):
+\begin{itemize}
+\item \textbf{Retrieval-Augmented Generation (RAG):} khung kết hợp truy xuất và sinh văn bản; động lực giảm ảo giác và cập nhật tri thức.
+\item \textbf{Truy xuất lexical:} BM25 và các biến thể; điểm mạnh khớp từ chính xác, hạn chế về ngữ nghĩa.
+\item \textbf{Truy xuất dense:} các mô hình embedding (ví dụ họ BGE, DPR, Sentence-BERT); điểm mạnh ngữ nghĩa, phụ thuộc dữ liệu huấn luyện và miền ứng dụng.
+\item \textbf{Hybrid retrieval và rank fusion:} hợp nhất lexical và dense (ví dụ Reciprocal Rank Fusion); cân bằng độ chính xác từ vựng và ngữ nghĩa.
+\item \textbf{Re-ranking:} cross-encoder / LLM re-ranker để tinh chỉnh top-$K$.
+\item \textbf{Truy xuất/Chẩn đoán trong miền y khoa và bộ dữ liệu DDXPlus~\cite{ddxplus2022}:} đặc thù chồng lấp triệu chứng, yêu cầu độ chính xác và khả năng kiểm chứng nguồn.
+\end{itemize}
+
+\textit{Khoảng trống:} so với các công trình trên, nghiên cứu này tập trung đánh giá có hệ thống lexical/dense/hybrid trên KB DDXPlus đã chuẩn hoá, và chỉ ra ảnh hưởng của thiết kế đánh giá tới kết luận về hiệu quả các phương pháp.

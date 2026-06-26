@@ -1,0 +1,10 @@
+\section{Ablation Study và phân tích bổ sung}
+% [NHÁP -- Phụ trách: Nguyễn Thị Diễm Hương & Nguyễn Minh Tú.]
+
+\textbf{(A) Ảnh hưởng của trường \textit{description} (A/B):} bật \textit{description} cải thiện Hit@1 ở cả ba phương pháp -- Dense +1.17, Hybrid +0.78, BM25 +0.31 điểm \% -- cho thấy \textit{description} cung cấp tín hiệu hữu ích và nhất quán; nên giữ ở cả keyword text lẫn embedding.
+
+\textbf{(B) Ảnh hưởng của chiến lược truy xuất:} trên bộ đánh giá hiện tại, lexical (BM25) chiếm ưu thế; hybrid kéo theo thành phần BM25 nên cao hơn dense thuần (Bảng \ref{tab:offline}).
+
+\textbf{(C) Tính nhất quán hạ tầng (offline vs OpenSearch):} chênh lệch Hit@1 giữa Python thuần và OpenSearch live (mẫu 5k) nhỏ và giữ nguyên thứ hạng phương pháp (Bảng \ref{tab:livevsoffline}), củng cố độ tin cậy của logic truy xuất.
+
+\textbf{(D) Phân tích dự kiến (Phase 2):} (i) tinh chỉnh trọng số RRF (tăng tỉ trọng BM25 hoặc cascade BM25 $\rightarrow$ dense khi top-1 thiếu tự tin); (ii) thay embedding y khoa chuyên biệt; (iii) thêm re-ranking. Mục tiêu là kiểm chứng giá trị của kiến trúc hai tầng trên truy vấn ngôn ngữ tự nhiên.

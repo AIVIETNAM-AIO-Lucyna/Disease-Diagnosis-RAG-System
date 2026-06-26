@@ -1,0 +1,1675 @@
+[
+  {
+    "doc_id": "J93",
+    "icd10_codes": [
+      "J93"
+    ],
+    "disease": "Spontaneous pneumothorax",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "shortness of breath or difficulty breathing in a significant way",
+      "pain that is increased when you breathe in deeply",
+      "symptoms that are increased with physical exertion but alleviated with rest",
+      "chest pain even at rest",
+      "swelling in one or more areas of your body"
+    ],
+    "antecedents": [
+      "smoke cigarettes",
+      "family members ever had a pneumothorax",
+      "spontaneous pneumothorax",
+      "chronic obstructive pulmonary disease",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, shortness of breath or difficulty breathing in a significant way, pain that is increased when you breathe in deeply, symptoms that are increased with physical exertion but alleviated with rest, chest pain even at rest, swelling in one or more areas of your body. Risk factors: smoke cigarettes, family members ever had a pneumothorax, spontaneous pneumothorax, chronic obstructive pulmonary disease, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Spontaneous pneumothorax pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location shortness of breath or difficulty breathing in a significant way pain that is increased when you breathe in deeply symptoms that are increased with physical exertion but alleviated with rest chest pain even at rest swelling in one or more areas of your body smoke cigarettes family members ever had a pneumothorax spontaneous pneumothorax chronic obstructive pulmonary disease recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "G44.009",
+    "icd10_codes": [
+      "G44.009"
+    ],
+    "disease": "Cluster headache",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "your eyes produce excessive tears",
+      "nasal congestion / runny nose",
+      "weakness/paralysis in one or more of your limbs or in your face"
+    ],
+    "antecedents": [
+      "family members been diagnosed with cluster headaches",
+      "drink alcohol excessively",
+      "medication that dilates your blood vessels",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, your eyes produce excessive tears, nasal congestion / runny nose, weakness/paralysis in one or more of your limbs or in your face. Risk factors: family members been diagnosed with cluster headaches, drink alcohol excessively, medication that dilates your blood vessels, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Cluster headache pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location your eyes produce excessive tears nasal congestion / runny nose weakness/paralysis in one or more of your limbs or in your face family members been diagnosed with cluster headaches drink alcohol excessively medication that dilates your blood vessels recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "K22.3",
+    "icd10_codes": [
+      "K22.3"
+    ],
+    "disease": "Boerhaave",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "shortness of breath or difficulty breathing in a significant way",
+      "thrown up blood or something resembling coffee beans",
+      "have you vomited several times",
+      "nauseous"
+    ],
+    "antecedents": [
+      "drink alcohol excessively",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, shortness of breath or difficulty breathing in a significant way, thrown up blood or something resembling coffee beans, have you vomited several times, nauseous. Risk factors: drink alcohol excessively, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Boerhaave pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location shortness of breath or difficulty breathing in a significant way thrown up blood or something resembling coffee beans have you vomited several times nauseous drink alcohol excessively recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "S22.9",
+    "icd10_codes": [
+      "S22.9"
+    ],
+    "disease": "Spontaneous rib fracture",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "pain that is increased when you breathe in deeply",
+      "pain that is increased with movement",
+      "cough",
+      "swelling in one or more areas of your body",
+      "intense coughing fits",
+      "shortness of breath or difficulty breathing in a significant way"
+    ],
+    "antecedents": [
+      "drink alcohol excessively",
+      "metastatic cancer",
+      "being treated for osteoporosis",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, pain that is increased when you breathe in deeply, pain that is increased with movement, cough, swelling in one or more areas of your body, intense coughing fits, shortness of breath or difficulty breathing in a significant way. Risk factors: drink alcohol excessively, metastatic cancer, being treated for osteoporosis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Spontaneous rib fracture pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location pain that is increased when you breathe in deeply pain that is increased with movement cough swelling in one or more areas of your body intense coughing fits shortness of breath or difficulty breathing in a significant way drink alcohol excessively metastatic cancer being treated for osteoporosis recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "K21",
+    "icd10_codes": [
+      "K21"
+    ],
+    "disease": "GERD",
+    "symptoms": [
+      "burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth",
+      "cough",
+      "symptoms that get worse after eating",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "are your symptoms worse when lying down and alleviated while sitting up",
+      "thrown up blood or something resembling coffee beans",
+      "stools that were black"
+    ],
+    "antecedents": [
+      "significantly overweight compared to people of the same height as you",
+      "pregnant",
+      "asthma",
+      "drink alcohol excessively",
+      "smoke cigarettes",
+      "hiatal hernia",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth, cough, symptoms that get worse after eating, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, are your symptoms worse when lying down and alleviated while sitting up, thrown up blood or something resembling coffee beans, stools that were black. Risk factors: significantly overweight compared to people of the same height as you, pregnant, asthma, drink alcohol excessively, smoke cigarettes, hiatal hernia, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "GERD burning sensation that starts in your stomach then goes up into your throat, and can be associated with a bitter taste in your mouth cough symptoms that get worse after eating pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location are your symptoms worse when lying down and alleviated while sitting up thrown up blood or something resembling coffee beans stools that were black significantly overweight compared to people of the same height as you pregnant asthma drink alcohol excessively smoke cigarettes hiatal hernia recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "B20",
+    "icd10_codes": [
+      "B20"
+    ],
+    "disease": "HIV (initial infection)",
+    "symptoms": [
+      "fever",
+      "so tired that you are unable to do your usual activities",
+      "diffuse muscle pain",
+      "involuntary weight loss over the last 3 months",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "sore throat",
+      "swollen or painful lymph nodes",
+      "diarrhea or an increase in stool frequency",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "nauseous",
+      "significantly increased sweating"
+    ],
+    "antecedents": [
+      "unprotected sex with more than one partner in the last 6 months",
+      "using intravenous drugs",
+      "sexually transmitted infection",
+      "sexual intercourse with an hiv-positive partner in the past 12 months",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: fever, so tired that you are unable to do your usual activities, diffuse muscle pain, involuntary weight loss over the last 3 months, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, sore throat, swollen or painful lymph nodes, diarrhea or an increase in stool frequency, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, nauseous, significantly increased sweating. Risk factors: unprotected sex with more than one partner in the last 6 months, using intravenous drugs, sexually transmitted infection, sexual intercourse with an hiv-positive partner in the past 12 months, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "HIV (initial infection) fever so tired that you are unable to do your usual activities diffuse muscle pain involuntary weight loss over the last 3 months pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location sore throat swollen or painful lymph nodes diarrhea or an increase in stool frequency rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off nauseous significantly increased sweating unprotected sex with more than one partner in the last 6 months using intravenous drugs sexually transmitted infection sexual intercourse with an hiv-positive partner in the past 12 months recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "D64.9",
+    "icd10_codes": [
+      "D64.9"
+    ],
+    "disease": "Anemia",
+    "symptoms": [
+      "slightly dizzy or lightheaded",
+      "constantly feel fatigued",
+      "so tired that you are unable to do your usual activities",
+      "shortness of breath or difficulty breathing in a significant way",
+      "skin much paler than usual",
+      "lightheaded and dizzy",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "light red blood or blood clots in your stool",
+      "stools that were black",
+      "very abundant or very long menstruation periods"
+    ],
+    "antecedents": [
+      "poor diet",
+      "diagnosis of anemia",
+      "family members who have been diagnosed with anemia",
+      "pregnant",
+      "chronic kidney failure",
+      "bmi less than 18.5",
+      "taking any new oral anticoagulants",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: slightly dizzy or lightheaded, constantly feel fatigued, so tired that you are unable to do your usual activities, shortness of breath or difficulty breathing in a significant way, skin much paler than usual, lightheaded and dizzy, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, light red blood or blood clots in your stool, stools that were black, very abundant or very long menstruation periods. Risk factors: poor diet, diagnosis of anemia, family members who have been diagnosed with anemia, pregnant, chronic kidney failure, bmi less than 18.5, taking any new oral anticoagulants, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Anemia slightly dizzy or lightheaded constantly feel fatigued so tired that you are unable to do your usual activities shortness of breath or difficulty breathing in a significant way skin much paler than usual lightheaded and dizzy pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location light red blood or blood clots in your stool stools that were black very abundant or very long menstruation periods poor diet diagnosis of anemia family members who have been diagnosed with anemia pregnant chronic kidney failure bmi less than 18.5 taking any new oral anticoagulants recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J02.9",
+    "icd10_codes": [
+      "J02.9"
+    ],
+    "disease": "Viral pharyngitis",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "nasal congestion / runny nose",
+      "fever",
+      "cough",
+      "coughing up blood"
+    ],
+    "antecedents": [
+      "attend or work in a daycare",
+      "live with 4 or more people",
+      "smoke cigarettes",
+      "in contact with a person with similar symptoms in the past 2 weeks",
+      "immunosuppressed",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, nasal congestion / runny nose, fever, cough, coughing up blood. Risk factors: attend or work in a daycare, live with 4 or more people, smoke cigarettes, in contact with a person with similar symptoms in the past 2 weeks, immunosuppressed, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Viral pharyngitis pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location nasal congestion / runny nose fever cough coughing up blood attend or work in a daycare live with 4 or more people smoke cigarettes in contact with a person with similar symptoms in the past 2 weeks immunosuppressed recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "K40",
+    "icd10_codes": [
+      "K40"
+    ],
+    "disease": "Inguinal hernia",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "your abdomen is bloated or distended",
+      "intense coughing fits",
+      "are the symptoms or pain increased with coughing, with an effort like lifting a weight or from forcing a bowel movement",
+      "able to pass stools or gas since your symptoms increased"
+    ],
+    "antecedents": [
+      "born prematurely",
+      "significantly overweight compared to people of the same height as you",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, your abdomen is bloated or distended, intense coughing fits, are the symptoms or pain increased with coughing, with an effort like lifting a weight or from forcing a bowel movement, able to pass stools or gas since your symptoms increased. Risk factors: born prematurely, significantly overweight compared to people of the same height as you, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Inguinal hernia pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off your abdomen is bloated or distended intense coughing fits are the symptoms or pain increased with coughing, with an effort like lifting a weight or from forcing a bowel movement able to pass stools or gas since your symptoms increased born prematurely significantly overweight compared to people of the same height as you recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "G70.0",
+    "icd10_codes": [
+      "G70.0"
+    ],
+    "disease": "Myasthenia gravis",
+    "symptoms": [
+      "difficulty swallowing, or have a feeling of discomfort/blockage when swallowing",
+      "difficulty articulating words/speaking",
+      "perception of seeing two images of a single object seen overlapping or adjacent to each other",
+      "hard time opening/raising one or both eyelids",
+      "weakness in both arms and/or both legs",
+      "shortness of breath or difficulty breathing in a significant way",
+      "do your symptoms of muscle weakness increase with fatigue and/or stress",
+      "pain or weakness in your jaw",
+      "weakness/paralysis in one or more of your limbs or in your face"
+    ],
+    "antecedents": [
+      "are there any members of your family who have been diagnosed myasthenia gravis",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: difficulty swallowing, or have a feeling of discomfort/blockage when swallowing, difficulty articulating words/speaking, perception of seeing two images of a single object seen overlapping or adjacent to each other, hard time opening/raising one or both eyelids, weakness in both arms and/or both legs, shortness of breath or difficulty breathing in a significant way, do your symptoms of muscle weakness increase with fatigue and/or stress, pain or weakness in your jaw, weakness/paralysis in one or more of your limbs or in your face. Risk factors: are there any members of your family who have been diagnosed myasthenia gravis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Myasthenia gravis difficulty swallowing, or have a feeling of discomfort/blockage when swallowing difficulty articulating words/speaking perception of seeing two images of a single object seen overlapping or adjacent to each other hard time opening/raising one or both eyelids weakness in both arms and/or both legs shortness of breath or difficulty breathing in a significant way do your symptoms of muscle weakness increase with fatigue and/or stress pain or weakness in your jaw weakness/paralysis in one or more of your limbs or in your face are there any members of your family who have been diagnosed myasthenia gravis recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "A37",
+    "icd10_codes": [
+      "A37"
+    ],
+    "disease": "Whooping cough",
+    "symptoms": [
+      "vomit after coughing",
+      "intense coughing fits",
+      "wheeze while inhaling"
+    ],
+    "antecedents": [
+      "in contact with someone who has had pertussis",
+      "asthma",
+      "significantly overweight compared to people of the same height as you",
+      "are your vaccinations up to date",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: vomit after coughing, intense coughing fits, wheeze while inhaling. Risk factors: in contact with someone who has had pertussis, asthma, significantly overweight compared to people of the same height as you, are your vaccinations up to date, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Whooping cough vomit after coughing intense coughing fits wheeze while inhaling in contact with someone who has had pertussis asthma significantly overweight compared to people of the same height as you are your vaccinations up to date recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "T78.0",
+    "icd10_codes": [
+      "T78.0"
+    ],
+    "disease": "Anaphylaxis",
+    "symptoms": [
+      "in contact with or ate something that you have an allergy to",
+      "lightheaded and dizzy",
+      "lose consciousness",
+      "shortness of breath or difficulty breathing in a significant way",
+      "wheezing sound when you exhale",
+      "high pitched sound when breathing in",
+      "swelling location",
+      "swelling in one or more areas of your body",
+      "diarrhea or an increase in stool frequency",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "nauseous",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off"
+    ],
+    "antecedents": [
+      "more likely to develop common allergies than the general population",
+      "severe food allergy",
+      "recent international travel"
+    ],
+    "severity": 1,
+    "description": "Condition characterized by: in contact with or ate something that you have an allergy to, lightheaded and dizzy, lose consciousness, shortness of breath or difficulty breathing in a significant way, wheezing sound when you exhale, high pitched sound when breathing in, swelling location, swelling in one or more areas of your body, diarrhea or an increase in stool frequency, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, nauseous, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off. Risk factors: more likely to develop common allergies than the general population, severe food allergy, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Anaphylaxis in contact with or ate something that you have an allergy to lightheaded and dizzy lose consciousness shortness of breath or difficulty breathing in a significant way wheezing sound when you exhale high pitched sound when breathing in swelling location swelling in one or more areas of your body diarrhea or an increase in stool frequency pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location nauseous rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off more likely to develop common allergies than the general population severe food allergy recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J05.1",
+    "icd10_codes": [
+      "J05.1"
+    ],
+    "disease": "Epiglottitis",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "fever",
+      "you produce more saliva than usual",
+      "pain that improves when you lean forward",
+      "difficulty swallowing, or have a feeling of discomfort/blockage when swallowing",
+      "the tone of your voice has become deeper, softer or hoarse",
+      "shortness of breath or difficulty breathing in a significant way",
+      "high pitched sound when breathing in"
+    ],
+    "antecedents": [
+      "high blood pressure",
+      "diabetes",
+      "are your vaccinations up to date",
+      "drink alcohol excessively",
+      "regularly take stimulant drugs",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, fever, you produce more saliva than usual, pain that improves when you lean forward, difficulty swallowing, or have a feeling of discomfort/blockage when swallowing, the tone of your voice has become deeper, softer or hoarse, shortness of breath or difficulty breathing in a significant way, high pitched sound when breathing in. Risk factors: high blood pressure, diabetes, are your vaccinations up to date, drink alcohol excessively, regularly take stimulant drugs, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Epiglottitis pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location fever you produce more saliva than usual pain that improves when you lean forward difficulty swallowing, or have a feeling of discomfort/blockage when swallowing the tone of your voice has become deeper, softer or hoarse shortness of breath or difficulty breathing in a significant way high pitched sound when breathing in high blood pressure diabetes are your vaccinations up to date drink alcohol excessively regularly take stimulant drugs recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "G61.0",
+    "icd10_codes": [
+      "G61.0"
+    ],
+    "disease": "Guillain-Barré syndrome",
+    "symptoms": [
+      "weakness in both arms and/or both legs",
+      "shortness of breath or difficulty breathing in a significant way",
+      "weakness in your facial muscles and/or eyes",
+      "numbness, loss of sensation or tingling, in both arms and legs and around your mouth",
+      "numbness, loss of sensation or tingling in the feet",
+      "weakness or paralysis on one side of the face, which may still be present or completely resolved",
+      "weakness/paralysis in one or more of your limbs or in your face",
+      "numbness, loss of sensitivity or tingling anywhere on your body"
+    ],
+    "antecedents": [
+      "viral infection",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: weakness in both arms and/or both legs, shortness of breath or difficulty breathing in a significant way, weakness in your facial muscles and/or eyes, numbness, loss of sensation or tingling, in both arms and legs and around your mouth, numbness, loss of sensation or tingling in the feet, weakness or paralysis on one side of the face, which may still be present or completely resolved, weakness/paralysis in one or more of your limbs or in your face, numbness, loss of sensitivity or tingling anywhere on your body. Risk factors: viral infection, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Guillain-Barré syndrome weakness in both arms and/or both legs shortness of breath or difficulty breathing in a significant way weakness in your facial muscles and/or eyes numbness, loss of sensation or tingling, in both arms and legs and around your mouth numbness, loss of sensation or tingling in the feet weakness or paralysis on one side of the face, which may still be present or completely resolved weakness/paralysis in one or more of your limbs or in your face numbness, loss of sensitivity or tingling anywhere on your body viral infection recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J04.0",
+    "icd10_codes": [
+      "J04.0"
+    ],
+    "disease": "Acute laryngitis",
+    "symptoms": [
+      "the tone of your voice has become deeper, softer or hoarse",
+      "fever",
+      "cough",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location"
+    ],
+    "antecedents": [
+      "cold in the last 2 weeks",
+      "live with 4 or more people",
+      "attend or work in a daycare",
+      "smoke cigarettes",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: the tone of your voice has become deeper, softer or hoarse, fever, cough, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location. Risk factors: cold in the last 2 weeks, live with 4 or more people, attend or work in a daycare, smoke cigarettes, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Acute laryngitis the tone of your voice has become deeper, softer or hoarse fever cough pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location cold in the last 2 weeks live with 4 or more people attend or work in a daycare smoke cigarettes recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J05.0",
+    "icd10_codes": [
+      "J05.0"
+    ],
+    "disease": "Croup",
+    "symptoms": [
+      "high pitched sound when breathing in",
+      "fever",
+      "nasal congestion / runny nose",
+      "does the person have a whooping cough",
+      "shortness of breath or difficulty breathing in a significant way",
+      "are your symptoms more prominent at night",
+      "you produce more saliva than usual"
+    ],
+    "antecedents": [
+      "have you or any member of your family ever had croup",
+      "are your vaccinations up to date",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: high pitched sound when breathing in, fever, nasal congestion / runny nose, does the person have a whooping cough, shortness of breath or difficulty breathing in a significant way, are your symptoms more prominent at night, you produce more saliva than usual. Risk factors: have you or any member of your family ever had croup, are your vaccinations up to date, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Croup high pitched sound when breathing in fever nasal congestion / runny nose does the person have a whooping cough shortness of breath or difficulty breathing in a significant way are your symptoms more prominent at night you produce more saliva than usual have you or any member of your family ever had croup are your vaccinations up to date recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I47.1",
+    "icd10_codes": [
+      "I47.1"
+    ],
+    "disease": "PSVT",
+    "symptoms": [
+      "your heart is beating fast, irregularly",
+      "slightly dizzy or lightheaded",
+      "shortness of breath or difficulty breathing in a significant way",
+      "lightheaded and dizzy",
+      "anxious",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location"
+    ],
+    "antecedents": [
+      "regularly take stimulant drugs",
+      "consume energy drinks regularly",
+      "regularly drink coffee or tea",
+      "taken decongestants or other substances that may have stimulant effects",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: your heart is beating fast, irregularly, slightly dizzy or lightheaded, shortness of breath or difficulty breathing in a significant way, lightheaded and dizzy, anxious, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location. Risk factors: regularly take stimulant drugs, consume energy drinks regularly, regularly drink coffee or tea, taken decongestants or other substances that may have stimulant effects, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "PSVT your heart is beating fast, irregularly slightly dizzy or lightheaded shortness of breath or difficulty breathing in a significant way lightheaded and dizzy anxious pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location regularly take stimulant drugs consume energy drinks regularly regularly drink coffee or tea taken decongestants or other substances that may have stimulant effects recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I48.91",
+    "icd10_codes": [
+      "I48.91"
+    ],
+    "disease": "Atrial fibrillation",
+    "symptoms": [
+      "your heart is beating fast, irregularly",
+      "shortness of breath or difficulty breathing in a significant way",
+      "slightly dizzy or lightheaded",
+      "symptoms that are increased with physical exertion but alleviated with rest",
+      "your heart is beating very irregularly or in a disorganized pattern"
+    ],
+    "antecedents": [
+      "heart defect",
+      "diagnosed with hyperthyroidism",
+      "high blood pressure",
+      "heart attack or angina",
+      "diabetes",
+      "severe chronic obstructive pulmonary disease",
+      "significantly overweight compared to people of the same height as you",
+      "issue with one of your heart valves",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: your heart is beating fast, irregularly, shortness of breath or difficulty breathing in a significant way, slightly dizzy or lightheaded, symptoms that are increased with physical exertion but alleviated with rest, your heart is beating very irregularly or in a disorganized pattern. Risk factors: heart defect, diagnosed with hyperthyroidism, high blood pressure, heart attack or angina, diabetes, severe chronic obstructive pulmonary disease, significantly overweight compared to people of the same height as you, issue with one of your heart valves, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Atrial fibrillation your heart is beating fast, irregularly shortness of breath or difficulty breathing in a significant way slightly dizzy or lightheaded symptoms that are increased with physical exertion but alleviated with rest your heart is beating very irregularly or in a disorganized pattern heart defect diagnosed with hyperthyroidism high blood pressure heart attack or angina diabetes severe chronic obstructive pulmonary disease significantly overweight compared to people of the same height as you issue with one of your heart valves recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J47",
+    "icd10_codes": [
+      "J47"
+    ],
+    "disease": "Bronchiectasis",
+    "symptoms": [
+      "cough",
+      "cough that produces colored or more abundant sputum than usual",
+      "coughing up blood",
+      "shortness of breath or difficulty breathing in a significant way"
+    ],
+    "antecedents": [
+      "of asian descent",
+      "cystic fibrosis",
+      "pneumonia",
+      "crohn’s disease or ulcerative colitis",
+      "rheumatoid arthritis",
+      "immunosuppressed",
+      "asthma",
+      "chronic obstructive pulmonary disease",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: cough, cough that produces colored or more abundant sputum than usual, coughing up blood, shortness of breath or difficulty breathing in a significant way. Risk factors: of asian descent, cystic fibrosis, pneumonia, crohn’s disease or ulcerative colitis, rheumatoid arthritis, immunosuppressed, asthma, chronic obstructive pulmonary disease, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Bronchiectasis cough cough that produces colored or more abundant sputum than usual coughing up blood shortness of breath or difficulty breathing in a significant way of asian descent cystic fibrosis pneumonia crohn’s disease or ulcerative colitis rheumatoid arthritis immunosuppressed asthma chronic obstructive pulmonary disease recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J30",
+    "icd10_codes": [
+      "J30"
+    ],
+    "disease": "Allergic sinusitis",
+    "symptoms": [
+      "cough",
+      "nasal congestion / runny nose",
+      "severe itching in one or both eyes",
+      "nose or the back of your throat itchy"
+    ],
+    "antecedents": [
+      "more likely to develop common allergies than the general population",
+      "live in in a big city",
+      "close family members who suffer from allergies, hay fever or eczema",
+      "family members who have asthma",
+      "asthma",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: cough, nasal congestion / runny nose, severe itching in one or both eyes, nose or the back of your throat itchy. Risk factors: more likely to develop common allergies than the general population, live in in a big city, close family members who suffer from allergies, hay fever or eczema, family members who have asthma, asthma, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Allergic sinusitis cough nasal congestion / runny nose severe itching in one or both eyes nose or the back of your throat itchy more likely to develop common allergies than the general population live in in a big city close family members who suffer from allergies, hay fever or eczema family members who have asthma asthma recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "B57",
+    "icd10_codes": [
+      "B57"
+    ],
+    "disease": "Chagas",
+    "symptoms": [
+      "fever",
+      "new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today",
+      "unintentionally losing weight",
+      "nauseous",
+      "diarrhea or an increase in stool frequency",
+      "swollen or painful lymph nodes",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "swelling location",
+      "swelling in one or more areas of your body",
+      "shortness of breath or difficulty breathing in a significant way"
+    ],
+    "antecedents": [
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: fever, new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today, unintentionally losing weight, nauseous, diarrhea or an increase in stool frequency, swollen or painful lymph nodes, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, swelling location, swelling in one or more areas of your body, shortness of breath or difficulty breathing in a significant way. Risk factors: recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Chagas fever new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today unintentionally losing weight nauseous diarrhea or an increase in stool frequency swollen or painful lymph nodes pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location swelling location swelling in one or more areas of your body shortness of breath or difficulty breathing in a significant way recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "T61.1",
+    "icd10_codes": [
+      "T61.1"
+    ],
+    "disease": "Scombroid food poisoning",
+    "symptoms": [
+      "lightheaded and dizzy",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "diarrhea or an increase in stool frequency",
+      "nauseous",
+      "shortness of breath or difficulty breathing in a significant way",
+      "did your cheeks suddenly turn red",
+      "wheezing sound when you exhale",
+      "your heart is beating fast, irregularly"
+    ],
+    "antecedents": [
+      "eat dark-fleshed fish or swiss cheese before the reaction occurred",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: lightheaded and dizzy, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, diarrhea or an increase in stool frequency, nauseous, shortness of breath or difficulty breathing in a significant way, did your cheeks suddenly turn red, wheezing sound when you exhale, your heart is beating fast, irregularly. Risk factors: eat dark-fleshed fish or swiss cheese before the reaction occurred, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Scombroid food poisoning lightheaded and dizzy rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off diarrhea or an increase in stool frequency nauseous shortness of breath or difficulty breathing in a significant way did your cheeks suddenly turn red wheezing sound when you exhale your heart is beating fast, irregularly eat dark-fleshed fish or swiss cheese before the reaction occurred recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I51.4",
+    "icd10_codes": [
+      "I51.4"
+    ],
+    "disease": "Myocarditis",
+    "symptoms": [
+      "new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today",
+      "your heart is beating fast, irregularly",
+      "shortness of breath or difficulty breathing in a significant way",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "more irritable",
+      "out of breath with minimal physical effort",
+      "are your symptoms worse when lying down and alleviated while sitting up",
+      "symptoms that are increased with physical exertion but alleviated with rest"
+    ],
+    "antecedents": [
+      "viral infection",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today, your heart is beating fast, irregularly, shortness of breath or difficulty breathing in a significant way, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, more irritable, out of breath with minimal physical effort, are your symptoms worse when lying down and alleviated while sitting up, symptoms that are increased with physical exertion but alleviated with rest. Risk factors: viral infection, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Myocarditis new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today your heart is beating fast, irregularly shortness of breath or difficulty breathing in a significant way pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location more irritable out of breath with minimal physical effort are your symptoms worse when lying down and alleviated while sitting up symptoms that are increased with physical exertion but alleviated with rest viral infection recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J38.5",
+    "icd10_codes": [
+      "J38.5"
+    ],
+    "disease": "Larygospasm",
+    "symptoms": [
+      "high pitched sound when breathing in"
+    ],
+    "antecedents": [
+      "asthma",
+      "cold in the last 2 weeks",
+      "smoke cigarettes",
+      "exposed to secondhand cigarette smoke on a daily basis",
+      "gastroesophageal reflux",
+      "recent international travel"
+    ],
+    "severity": 1,
+    "description": "Condition characterized by: high pitched sound when breathing in. Risk factors: asthma, cold in the last 2 weeks, smoke cigarettes, exposed to secondhand cigarette smoke on a daily basis, gastroesophageal reflux, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Larygospasm high pitched sound when breathing in asthma cold in the last 2 weeks smoke cigarettes exposed to secondhand cigarette smoke on a daily basis gastroesophageal reflux recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "G24.02",
+    "icd10_codes": [
+      "G24.02"
+    ],
+    "disease": "Acute dystonic reactions",
+    "symptoms": [
+      "suffocating for a very short time associated with inability to breathe or speak",
+      "annoying muscle spasms in your face, neck or any other part of your body",
+      "suddenly have difficulty or an inability to open your mouth or have jaw pain when opening it",
+      "muscle spasms or soreness in your neck are keeping you from turning your head to one side",
+      "trouble keeping your tongue in your mouth",
+      "shortness of breath or difficulty breathing in a significant way",
+      "hard time opening/raising one or both eyelids",
+      "unable to control the direction of your eyes"
+    ],
+    "antecedents": [
+      "regularly take stimulant drugs",
+      "antipsychotic medication within the last 7 days",
+      "treated in hospital recently for nausea, agitation, intoxication or aggressive behavior and received medication via an intravenous or intramuscular route",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: suffocating for a very short time associated with inability to breathe or speak, annoying muscle spasms in your face, neck or any other part of your body, suddenly have difficulty or an inability to open your mouth or have jaw pain when opening it, muscle spasms or soreness in your neck are keeping you from turning your head to one side, trouble keeping your tongue in your mouth, shortness of breath or difficulty breathing in a significant way, hard time opening/raising one or both eyelids, unable to control the direction of your eyes. Risk factors: regularly take stimulant drugs, antipsychotic medication within the last 7 days, treated in hospital recently for nausea, agitation, intoxication or aggressive behavior and received medication via an intravenous or intramuscular route, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Acute dystonic reactions suffocating for a very short time associated with inability to breathe or speak annoying muscle spasms in your face, neck or any other part of your body suddenly have difficulty or an inability to open your mouth or have jaw pain when opening it muscle spasms or soreness in your neck are keeping you from turning your head to one side trouble keeping your tongue in your mouth shortness of breath or difficulty breathing in a significant way hard time opening/raising one or both eyelids unable to control the direction of your eyes regularly take stimulant drugs antipsychotic medication within the last 7 days treated in hospital recently for nausea, agitation, intoxication or aggressive behavior and received medication via an intravenous or intramuscular route recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "R60.0",
+    "icd10_codes": [
+      "R60.0"
+    ],
+    "disease": "Localized edema",
+    "symptoms": [
+      "shortness of breath or difficulty breathing in a significant way",
+      "swelling location",
+      "swelling in one or more areas of your body",
+      "are your symptoms worse when lying down and alleviated while sitting up",
+      "bouts of choking or shortness of breath that wake you up at night",
+      "have you gained weight recently",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location"
+    ],
+    "antecedents": [
+      "surgery to remove lymph nodes",
+      "endocrine disease or a hormone dysfunction",
+      "deep vein thrombosis",
+      "calcium channel blockers",
+      "corticosteroids",
+      "kidney problem resulting in an inability to retain proteins",
+      "liver cirrhosis",
+      "heart failure",
+      "issue with one of your heart valves",
+      "obstructive sleep apnea",
+      "anti-inflammatory drugs",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: shortness of breath or difficulty breathing in a significant way, swelling location, swelling in one or more areas of your body, are your symptoms worse when lying down and alleviated while sitting up, bouts of choking or shortness of breath that wake you up at night, have you gained weight recently, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location. Risk factors: surgery to remove lymph nodes, endocrine disease or a hormone dysfunction, deep vein thrombosis, calcium channel blockers, corticosteroids, kidney problem resulting in an inability to retain proteins, liver cirrhosis, heart failure, issue with one of your heart valves, obstructive sleep apnea, anti-inflammatory drugs, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Localized edema shortness of breath or difficulty breathing in a significant way swelling location swelling in one or more areas of your body are your symptoms worse when lying down and alleviated while sitting up bouts of choking or shortness of breath that wake you up at night have you gained weight recently pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location surgery to remove lymph nodes endocrine disease or a hormone dysfunction deep vein thrombosis calcium channel blockers corticosteroids kidney problem resulting in an inability to retain proteins liver cirrhosis heart failure issue with one of your heart valves obstructive sleep apnea anti-inflammatory drugs recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "M32",
+    "icd10_codes": [
+      "M32"
+    ],
+    "disease": "SLE",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "shortness of breath or difficulty breathing in a significant way",
+      "painful mouth ulcers or sores",
+      "constantly feel fatigued",
+      "swelling in one or more areas of your body"
+    ],
+    "antecedents": [
+      "smoke cigarettes",
+      "have your first menstrual period before the age of 12",
+      "have you breastfed one of your children for more than 9 months",
+      "pericarditis",
+      "high blood pressure",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, shortness of breath or difficulty breathing in a significant way, painful mouth ulcers or sores, constantly feel fatigued, swelling in one or more areas of your body. Risk factors: smoke cigarettes, have your first menstrual period before the age of 12, have you breastfed one of your children for more than 9 months, pericarditis, high blood pressure, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "SLE pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash swollen itching severity lesion larger than 1cm lesions peel off shortness of breath or difficulty breathing in a significant way painful mouth ulcers or sores constantly feel fatigued swelling in one or more areas of your body smoke cigarettes have your first menstrual period before the age of 12 have you breastfed one of your children for more than 9 months pericarditis high blood pressure recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "A15",
+    "icd10_codes": [
+      "A15"
+    ],
+    "disease": "Tuberculosis",
+    "symptoms": [
+      "cough",
+      "coughing up blood",
+      "shortness of breath or difficulty breathing in a significant way",
+      "fever",
+      "involuntary weight loss over the last 3 months"
+    ],
+    "antecedents": [
+      "drink alcohol excessively",
+      "using intravenous drugs",
+      "infected with the human immunodeficiency virus",
+      "corticosteroids",
+      "diabetes",
+      "bmi less than 18.5",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: cough, coughing up blood, shortness of breath or difficulty breathing in a significant way, fever, involuntary weight loss over the last 3 months. Risk factors: drink alcohol excessively, using intravenous drugs, infected with the human immunodeficiency virus, corticosteroids, diabetes, bmi less than 18.5, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Tuberculosis cough coughing up blood shortness of breath or difficulty breathing in a significant way fever involuntary weight loss over the last 3 months drink alcohol excessively using intravenous drugs infected with the human immunodeficiency virus corticosteroids diabetes bmi less than 18.5 recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I20.0",
+    "icd10_codes": [
+      "I20.0"
+    ],
+    "disease": "Unstable angina",
+    "symptoms": [
+      "symptoms that are increased with physical exertion but alleviated with rest",
+      "find that your symptoms have worsened over the last 2 weeks and that progressively less effort is required to cause the symptoms",
+      "chest pain even at rest",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "shortness of breath or difficulty breathing in a significant way",
+      "constantly feel fatigued",
+      "nauseous",
+      "significantly increased sweating"
+    ],
+    "antecedents": [
+      "diabetes",
+      "high blood pressure",
+      "smoke cigarettes",
+      "significantly overweight compared to people of the same height as you",
+      "high cholesterol",
+      "drink alcohol excessively",
+      "exercise regularly, 4 times per week or more",
+      "close family members who had a cardiovascular disease problem before the age of 50",
+      "heart attack or angina",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: symptoms that are increased with physical exertion but alleviated with rest, find that your symptoms have worsened over the last 2 weeks and that progressively less effort is required to cause the symptoms, chest pain even at rest, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, shortness of breath or difficulty breathing in a significant way, constantly feel fatigued, nauseous, significantly increased sweating. Risk factors: diabetes, high blood pressure, smoke cigarettes, significantly overweight compared to people of the same height as you, high cholesterol, drink alcohol excessively, exercise regularly, 4 times per week or more, close family members who had a cardiovascular disease problem before the age of 50, heart attack or angina, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Unstable angina symptoms that are increased with physical exertion but alleviated with rest find that your symptoms have worsened over the last 2 weeks and that progressively less effort is required to cause the symptoms chest pain even at rest pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location shortness of breath or difficulty breathing in a significant way constantly feel fatigued nauseous significantly increased sweating diabetes high blood pressure smoke cigarettes significantly overweight compared to people of the same height as you high cholesterol drink alcohol excessively exercise regularly, 4 times per week or more close family members who had a cardiovascular disease problem before the age of 50 heart attack or angina recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I20.9",
+    "icd10_codes": [
+      "I20.9"
+    ],
+    "disease": "Stable angina",
+    "symptoms": [
+      "symptoms that are increased with physical exertion but alleviated with rest",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "shortness of breath or difficulty breathing in a significant way",
+      "constantly feel fatigued"
+    ],
+    "antecedents": [
+      "heart attack or angina",
+      "diabetes",
+      "high blood pressure",
+      "smoke cigarettes",
+      "significantly overweight compared to people of the same height as you",
+      "high cholesterol",
+      "drink alcohol excessively",
+      "exercise regularly, 4 times per week or more",
+      "close family members who had a cardiovascular disease problem before the age of 50",
+      "recent international travel"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: symptoms that are increased with physical exertion but alleviated with rest, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, shortness of breath or difficulty breathing in a significant way, constantly feel fatigued. Risk factors: heart attack or angina, diabetes, high blood pressure, smoke cigarettes, significantly overweight compared to people of the same height as you, high cholesterol, drink alcohol excessively, exercise regularly, 4 times per week or more, close family members who had a cardiovascular disease problem before the age of 50, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Stable angina symptoms that are increased with physical exertion but alleviated with rest pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location shortness of breath or difficulty breathing in a significant way constantly feel fatigued heart attack or angina diabetes high blood pressure smoke cigarettes significantly overweight compared to people of the same height as you high cholesterol drink alcohol excessively exercise regularly, 4 times per week or more close family members who had a cardiovascular disease problem before the age of 50 recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "A98.4",
+    "icd10_codes": [
+      "A98.4"
+    ],
+    "disease": "Ebola",
+    "symptoms": [
+      "unusual bleeding or bruising related to your consultation today",
+      "fever",
+      "nauseous",
+      "diarrhea or an increase in stool frequency",
+      "have you felt confused or disorientated lately",
+      "cough",
+      "diffuse muscle pain",
+      "constantly feel fatigued",
+      "shortness of breath or difficulty breathing in a significant way",
+      "sore throat"
+    ],
+    "antecedents": [
+      "in contact with a person with similar symptoms in the past 2 weeks",
+      "recent international travel",
+      "in the last month, have you been in contact with anyone infected with the ebola virus"
+    ],
+    "severity": 1,
+    "description": "Condition characterized by: unusual bleeding or bruising related to your consultation today, fever, nauseous, diarrhea or an increase in stool frequency, have you felt confused or disorientated lately, cough, diffuse muscle pain, constantly feel fatigued, shortness of breath or difficulty breathing in a significant way, sore throat. Risk factors: in contact with a person with similar symptoms in the past 2 weeks, recent international travel, in the last month, have you been in contact with anyone infected with the ebola virus.",
+    "source": "ddxplus",
+    "keyword_text": "Ebola unusual bleeding or bruising related to your consultation today fever nauseous diarrhea or an increase in stool frequency have you felt confused or disorientated lately cough diffuse muscle pain constantly feel fatigued shortness of breath or difficulty breathing in a significant way sore throat in contact with a person with similar symptoms in the past 2 weeks recent international travel in the last month, have you been in contact with anyone infected with the ebola virus",
+    "embedding": []
+  },
+  {
+    "doc_id": "H66.90",
+    "icd10_codes": [
+      "H66.90"
+    ],
+    "disease": "Acute otitis media",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "fever",
+      "nasal congestion / runny nose",
+      "cough",
+      "more irritable"
+    ],
+    "antecedents": [
+      "being treated",
+      "are your vaccinations up to date",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, fever, nasal congestion / runny nose, cough, more irritable. Risk factors: being treated, are your vaccinations up to date, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Acute otitis media pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location fever nasal congestion / runny nose cough more irritable being treated are your vaccinations up to date recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "F41",
+    "icd10_codes": [
+      "F41"
+    ],
+    "disease": "Panic attack",
+    "symptoms": [
+      "your heart is beating fast, irregularly",
+      "like you are choking or suffocating",
+      "pain present",
+      "pain related to consultation",
+      "anxious",
+      "numbness, loss of sensitivity or tingling anywhere on your body",
+      "significantly increased sweating",
+      "shortness of breath or difficulty breathing in a significant way",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "nauseous",
+      "lightheaded and dizzy",
+      "like you are detached from your own body or your surroundings",
+      "numbness, loss of sensation or tingling, in both arms and legs and around your mouth",
+      "fear of dying"
+    ],
+    "antecedents": [
+      "chronic anxiety",
+      "depression",
+      "drink alcohol excessively",
+      "do any members of your immediate family have a psychiatric illness",
+      "head trauma",
+      "asthma",
+      "migraine or is a member of your family known to have migraines",
+      "fibromyalgia",
+      "recent international travel"
+    ],
+    "severity": 5,
+    "description": "Condition characterized by: your heart is beating fast, irregularly, like you are choking or suffocating, pain present, pain related to consultation, anxious, numbness, loss of sensitivity or tingling anywhere on your body, significantly increased sweating, shortness of breath or difficulty breathing in a significant way, pain radiation, pain character, pain onset speed, pain intensity, pain location, nauseous, lightheaded and dizzy, like you are detached from your own body or your surroundings, numbness, loss of sensation or tingling, in both arms and legs and around your mouth, fear of dying. Risk factors: chronic anxiety, depression, drink alcohol excessively, do any members of your immediate family have a psychiatric illness, head trauma, asthma, migraine or is a member of your family known to have migraines, fibromyalgia, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Panic attack your heart is beating fast, irregularly like you are choking or suffocating pain present pain related to consultation anxious numbness, loss of sensitivity or tingling anywhere on your body significantly increased sweating shortness of breath or difficulty breathing in a significant way pain radiation pain character pain onset speed pain intensity pain location nauseous lightheaded and dizzy like you are detached from your own body or your surroundings numbness, loss of sensation or tingling, in both arms and legs and around your mouth fear of dying chronic anxiety depression drink alcohol excessively do any members of your immediate family have a psychiatric illness head trauma asthma migraine or is a member of your family known to have migraines fibromyalgia recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J45",
+    "icd10_codes": [
+      "J45"
+    ],
+    "disease": "Bronchospasm / acute asthma exacerbation",
+    "symptoms": [
+      "cough",
+      "shortness of breath or difficulty breathing in a significant way",
+      "wheezing sound when you exhale"
+    ],
+    "antecedents": [
+      "cold in the last 2 weeks",
+      "live in in a big city",
+      "family members who have asthma",
+      "exposed to secondhand cigarette smoke on a daily basis",
+      "asthma",
+      "hospitalized for an asthma attack in the past year",
+      "2 or more asthma attacks in the past year",
+      "more likely to develop common allergies than the general population",
+      "diagnosed with chronic sinusitis",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: cough, shortness of breath or difficulty breathing in a significant way, wheezing sound when you exhale. Risk factors: cold in the last 2 weeks, live in in a big city, family members who have asthma, exposed to secondhand cigarette smoke on a daily basis, asthma, hospitalized for an asthma attack in the past year, 2 or more asthma attacks in the past year, more likely to develop common allergies than the general population, diagnosed with chronic sinusitis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Bronchospasm / acute asthma exacerbation cough shortness of breath or difficulty breathing in a significant way wheezing sound when you exhale cold in the last 2 weeks live in in a big city family members who have asthma exposed to secondhand cigarette smoke on a daily basis asthma hospitalized for an asthma attack in the past year 2 or more asthma attacks in the past year more likely to develop common allergies than the general population diagnosed with chronic sinusitis recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J40",
+    "icd10_codes": [
+      "J40"
+    ],
+    "disease": "Bronchitis",
+    "symptoms": [
+      "are your symptoms more prominent at night",
+      "cough",
+      "sore throat",
+      "nasal congestion / runny nose",
+      "cough that produces colored or more abundant sputum than usual",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "wheezing sound when you exhale",
+      "fever",
+      "shortness of breath or difficulty breathing in a significant way"
+    ],
+    "antecedents": [
+      "are your vaccinations up to date",
+      "smoke cigarettes",
+      "chronic obstructive pulmonary disease",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: are your symptoms more prominent at night, cough, sore throat, nasal congestion / runny nose, cough that produces colored or more abundant sputum than usual, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, wheezing sound when you exhale, fever, shortness of breath or difficulty breathing in a significant way. Risk factors: are your vaccinations up to date, smoke cigarettes, chronic obstructive pulmonary disease, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Bronchitis are your symptoms more prominent at night cough sore throat nasal congestion / runny nose cough that produces colored or more abundant sputum than usual pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location wheezing sound when you exhale fever shortness of breath or difficulty breathing in a significant way are your vaccinations up to date smoke cigarettes chronic obstructive pulmonary disease recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J44.1",
+    "icd10_codes": [
+      "J44.1"
+    ],
+    "disease": "Acute COPD exacerbation / infection",
+    "symptoms": [
+      "cough",
+      "wheezing sound when you exhale",
+      "cough that produces colored or more abundant sputum than usual",
+      "shortness of breath or difficulty breathing in a significant way"
+    ],
+    "antecedents": [
+      "gastroesophageal reflux",
+      "smoke cigarettes",
+      "chronic obstructive pulmonary disease",
+      "flare ups of chronic obstructive pulmonary disease in the past year",
+      "work in agriculture",
+      "work in the mining sector",
+      "work in construction",
+      "severe chronic obstructive pulmonary disease",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: cough, wheezing sound when you exhale, cough that produces colored or more abundant sputum than usual, shortness of breath or difficulty breathing in a significant way. Risk factors: gastroesophageal reflux, smoke cigarettes, chronic obstructive pulmonary disease, flare ups of chronic obstructive pulmonary disease in the past year, work in agriculture, work in the mining sector, work in construction, severe chronic obstructive pulmonary disease, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Acute COPD exacerbation / infection cough wheezing sound when you exhale cough that produces colored or more abundant sputum than usual shortness of breath or difficulty breathing in a significant way gastroesophageal reflux smoke cigarettes chronic obstructive pulmonary disease flare ups of chronic obstructive pulmonary disease in the past year work in agriculture work in the mining sector work in construction severe chronic obstructive pulmonary disease recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I26",
+    "icd10_codes": [
+      "I26"
+    ],
+    "disease": "Pulmonary embolism",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "swelling location",
+      "swelling in one or more areas of your body",
+      "lose consciousness",
+      "coughing up blood",
+      "pain that is increased when you breathe in deeply",
+      "shortness of breath or difficulty breathing in a significant way"
+    ],
+    "antecedents": [
+      "active cancer",
+      "deep vein thrombosis",
+      "surgery within the last month",
+      "unable to move or get up for more than 3 consecutive days within the last 4 weeks",
+      "recent international travel",
+      "hormones"
+    ],
+    "severity": 2,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, swelling location, swelling in one or more areas of your body, lose consciousness, coughing up blood, pain that is increased when you breathe in deeply, shortness of breath or difficulty breathing in a significant way. Risk factors: active cancer, deep vein thrombosis, surgery within the last month, unable to move or get up for more than 3 consecutive days within the last 4 weeks, recent international travel, hormones.",
+    "source": "ddxplus",
+    "keyword_text": "Pulmonary embolism pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location swelling location swelling in one or more areas of your body lose consciousness coughing up blood pain that is increased when you breathe in deeply shortness of breath or difficulty breathing in a significant way active cancer deep vein thrombosis surgery within the last month unable to move or get up for more than 3 consecutive days within the last 4 weeks recent international travel hormones",
+    "embedding": []
+  },
+  {
+    "doc_id": "J06.9",
+    "icd10_codes": [
+      "J06.9"
+    ],
+    "disease": "URTI",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "cough",
+      "significantly increased sweating",
+      "nasal congestion / runny nose",
+      "sore throat",
+      "diffuse muscle pain",
+      "fever",
+      "cough that produces colored or more abundant sputum than usual"
+    ],
+    "antecedents": [
+      "live with 4 or more people",
+      "exposed to secondhand cigarette smoke on a daily basis",
+      "attend or work in a daycare",
+      "in contact with a person with similar symptoms in the past 2 weeks",
+      "smoke cigarettes",
+      "recent international travel"
+    ],
+    "severity": 5,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, cough, significantly increased sweating, nasal congestion / runny nose, sore throat, diffuse muscle pain, fever, cough that produces colored or more abundant sputum than usual. Risk factors: live with 4 or more people, exposed to secondhand cigarette smoke on a daily basis, attend or work in a daycare, in contact with a person with similar symptoms in the past 2 weeks, smoke cigarettes, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "URTI pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location cough significantly increased sweating nasal congestion / runny nose sore throat diffuse muscle pain fever cough that produces colored or more abundant sputum than usual live with 4 or more people exposed to secondhand cigarette smoke on a daily basis attend or work in a daycare in contact with a person with similar symptoms in the past 2 weeks smoke cigarettes recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J11.1",
+    "icd10_codes": [
+      "J11.1"
+    ],
+    "disease": "Influenza",
+    "symptoms": [
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "loss of appetite",
+      "chills or shivers",
+      "fever",
+      "significantly increased sweating",
+      "cough",
+      "so tired that you are unable to do your usual activities",
+      "nasal congestion / runny nose",
+      "sore throat",
+      "diffuse muscle pain",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location"
+    ],
+    "antecedents": [
+      "smoke cigarettes",
+      "immunosuppressed",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, loss of appetite, chills or shivers, fever, significantly increased sweating, cough, so tired that you are unable to do your usual activities, nasal congestion / runny nose, sore throat, diffuse muscle pain, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location. Risk factors: smoke cigarettes, immunosuppressed, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Influenza rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off loss of appetite chills or shivers fever significantly increased sweating cough so tired that you are unable to do your usual activities nasal congestion / runny nose sore throat diffuse muscle pain pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location smoke cigarettes immunosuppressed recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J18",
+    "icd10_codes": [
+      "J17",
+      "J18"
+    ],
+    "disease": "Pneumonia",
+    "symptoms": [
+      "pain that is increased when you breathe in deeply",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "coughing up blood",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today",
+      "loss of appetite",
+      "are your symptoms more prominent at night",
+      "fever",
+      "cough that produces colored or more abundant sputum than usual",
+      "cough",
+      "shortness of breath or difficulty breathing in a significant way",
+      "chills or shivers",
+      "diffuse muscle pain",
+      "nasal congestion / runny nose"
+    ],
+    "antecedents": [
+      "are your vaccinations up to date",
+      "surgery within the last month",
+      "chronic obstructive pulmonary disease",
+      "asthma",
+      "heart failure",
+      "stroke",
+      "parkinson’s disease",
+      "smoke cigarettes",
+      "drink alcohol excessively",
+      "bmi less than 18.5",
+      "pneumonia",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: pain that is increased when you breathe in deeply, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, coughing up blood, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today, loss of appetite, are your symptoms more prominent at night, fever, cough that produces colored or more abundant sputum than usual, cough, shortness of breath or difficulty breathing in a significant way, chills or shivers, diffuse muscle pain, nasal congestion / runny nose. Risk factors: are your vaccinations up to date, surgery within the last month, chronic obstructive pulmonary disease, asthma, heart failure, stroke, parkinson’s disease, smoke cigarettes, drink alcohol excessively, bmi less than 18.5, pneumonia, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Pneumonia pain that is increased when you breathe in deeply pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location coughing up blood rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today loss of appetite are your symptoms more prominent at night fever cough that produces colored or more abundant sputum than usual cough shortness of breath or difficulty breathing in a significant way chills or shivers diffuse muscle pain nasal congestion / runny nose are your vaccinations up to date surgery within the last month chronic obstructive pulmonary disease asthma heart failure stroke parkinson’s disease smoke cigarettes drink alcohol excessively bmi less than 18.5 pneumonia recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J01",
+    "icd10_codes": [
+      "J01"
+    ],
+    "disease": "Acute rhinosinusitis",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "greenish or yellowish nasal discharge",
+      "cough",
+      "have you lost your sense of smell",
+      "fever",
+      "nasal congestion / runny nose"
+    ],
+    "antecedents": [
+      "are your vaccinations up to date",
+      "deviated nasal septum",
+      "smoke cigarettes",
+      "gastroesophageal reflux",
+      "pneumonia",
+      "more likely to develop common allergies than the general population",
+      "asthma",
+      "polyps in your nose",
+      "cold in the last 2 weeks",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, greenish or yellowish nasal discharge, cough, have you lost your sense of smell, fever, nasal congestion / runny nose. Risk factors: are your vaccinations up to date, deviated nasal septum, smoke cigarettes, gastroesophageal reflux, pneumonia, more likely to develop common allergies than the general population, asthma, polyps in your nose, cold in the last 2 weeks, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Acute rhinosinusitis pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location greenish or yellowish nasal discharge cough have you lost your sense of smell fever nasal congestion / runny nose are your vaccinations up to date deviated nasal septum smoke cigarettes gastroesophageal reflux pneumonia more likely to develop common allergies than the general population asthma polyps in your nose cold in the last 2 weeks recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J32",
+    "icd10_codes": [
+      "J32"
+    ],
+    "disease": "Chronic rhinosinusitis",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "greenish or yellowish nasal discharge",
+      "cough",
+      "have you lost your sense of smell",
+      "nasal congestion / runny nose"
+    ],
+    "antecedents": [
+      "cold in the last 2 weeks",
+      "deviated nasal septum",
+      "smoke cigarettes",
+      "gastroesophageal reflux",
+      "pneumonia",
+      "more likely to develop common allergies than the general population",
+      "asthma",
+      "polyps in your nose",
+      "recent international travel"
+    ],
+    "severity": 5,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, greenish or yellowish nasal discharge, cough, have you lost your sense of smell, nasal congestion / runny nose. Risk factors: cold in the last 2 weeks, deviated nasal septum, smoke cigarettes, gastroesophageal reflux, pneumonia, more likely to develop common allergies than the general population, asthma, polyps in your nose, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Chronic rhinosinusitis pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location greenish or yellowish nasal discharge cough have you lost your sense of smell nasal congestion / runny nose cold in the last 2 weeks deviated nasal septum smoke cigarettes gastroesophageal reflux pneumonia more likely to develop common allergies than the general population asthma polyps in your nose recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J21",
+    "icd10_codes": [
+      "J21"
+    ],
+    "disease": "Bronchiolitis",
+    "symptoms": [
+      "cough",
+      "shortness of breath or difficulty breathing in a significant way",
+      "decrease in appetite",
+      "nasal congestion / runny nose",
+      "fever",
+      "wheezing sound when you exhale",
+      "temporarily stop breathing while you’re asleep"
+    ],
+    "antecedents": [
+      "are your vaccinations up to date",
+      "does your mother suffer from asthma",
+      "live with 4 or more people",
+      "live in the suburbs",
+      "live in a rural area",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: cough, shortness of breath or difficulty breathing in a significant way, decrease in appetite, nasal congestion / runny nose, fever, wheezing sound when you exhale, temporarily stop breathing while you’re asleep. Risk factors: are your vaccinations up to date, does your mother suffer from asthma, live with 4 or more people, live in the suburbs, live in a rural area, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Bronchiolitis cough shortness of breath or difficulty breathing in a significant way decrease in appetite nasal congestion / runny nose fever wheezing sound when you exhale temporarily stop breathing while you’re asleep are your vaccinations up to date does your mother suffer from asthma live with 4 or more people live in the suburbs live in a rural area recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "C34",
+    "icd10_codes": [
+      "C34"
+    ],
+    "disease": "Pulmonary neoplasm",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "coughing up blood",
+      "involuntary weight loss over the last 3 months",
+      "loss of appetite",
+      "shortness of breath or difficulty breathing in a significant way",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "constantly feel fatigued",
+      "cough"
+    ],
+    "antecedents": [
+      "former smoker",
+      "smoke cigarettes",
+      "family members who have had lung cancer",
+      "exposed to secondhand cigarette smoke on a daily basis",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: pain present, pain related to consultation, coughing up blood, involuntary weight loss over the last 3 months, loss of appetite, shortness of breath or difficulty breathing in a significant way, pain radiation, pain character, pain onset speed, pain intensity, pain location, constantly feel fatigued, cough. Risk factors: former smoker, smoke cigarettes, family members who have had lung cancer, exposed to secondhand cigarette smoke on a daily basis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Pulmonary neoplasm pain present pain related to consultation coughing up blood involuntary weight loss over the last 3 months loss of appetite shortness of breath or difficulty breathing in a significant way pain radiation pain character pain onset speed pain intensity pain location constantly feel fatigued cough former smoker smoke cigarettes family members who have had lung cancer exposed to secondhand cigarette smoke on a daily basis recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I21",
+    "icd10_codes": [
+      "I21"
+    ],
+    "disease": "Possible NSTEMI / STEMI",
+    "symptoms": [
+      "loss of appetite",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "shortness of breath or difficulty breathing in a significant way",
+      "constantly feel fatigued",
+      "nauseous",
+      "significantly increased sweating"
+    ],
+    "antecedents": [
+      "heart attack or angina",
+      "problem with poor circulation",
+      "former smoker",
+      "smoke cigarettes",
+      "high blood pressure",
+      "diabetes",
+      "high cholesterol",
+      "infected with the human immunodeficiency virus",
+      "significantly overweight compared to people of the same height as you",
+      "close family members who had a cardiovascular disease problem before the age of 50",
+      "recent international travel"
+    ],
+    "severity": 1,
+    "description": "Condition characterized by: loss of appetite, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, shortness of breath or difficulty breathing in a significant way, constantly feel fatigued, nauseous, significantly increased sweating. Risk factors: heart attack or angina, problem with poor circulation, former smoker, smoke cigarettes, high blood pressure, diabetes, high cholesterol, infected with the human immunodeficiency virus, significantly overweight compared to people of the same height as you, close family members who had a cardiovascular disease problem before the age of 50, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Possible NSTEMI / STEMI loss of appetite pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location shortness of breath or difficulty breathing in a significant way constantly feel fatigued nauseous significantly increased sweating heart attack or angina problem with poor circulation former smoker smoke cigarettes high blood pressure diabetes high cholesterol infected with the human immunodeficiency virus significantly overweight compared to people of the same height as you close family members who had a cardiovascular disease problem before the age of 50 recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "D86",
+    "icd10_codes": [
+      "D86"
+    ],
+    "disease": "Sarcoidosis",
+    "symptoms": [
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "diffuse redness in one or both eyes",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "have you lost consciousness associated with violent and sustained muscle contractions or had an absence episode",
+      "swollen or painful lymph nodes",
+      "shortness of breath or difficulty breathing in a significant way",
+      "vaginal discharge"
+    ],
+    "antecedents": [
+      "significantly overweight compared to people of the same height as you",
+      "work in agriculture",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, diffuse redness in one or both eyes, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, have you lost consciousness associated with violent and sustained muscle contractions or had an absence episode, swollen or painful lymph nodes, shortness of breath or difficulty breathing in a significant way, vaginal discharge. Risk factors: significantly overweight compared to people of the same height as you, work in agriculture, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Sarcoidosis rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off diffuse redness in one or both eyes pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location have you lost consciousness associated with violent and sustained muscle contractions or had an absence episode swollen or painful lymph nodes shortness of breath or difficulty breathing in a significant way vaginal discharge significantly overweight compared to people of the same height as you work in agriculture recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "C25",
+    "icd10_codes": [
+      "C25"
+    ],
+    "disease": "Pancreatic neoplasm",
+    "symptoms": [
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "rash location",
+      "lesions, redness or problems on your skin that you believe are related to the condition you are consulting for",
+      "rash color",
+      "rash pain intensity",
+      "rash swollen",
+      "itching severity",
+      "lesion larger than 1cm",
+      "lesions peel off",
+      "diarrhea or an increase in stool frequency",
+      "constantly feel fatigued",
+      "cough",
+      "pale stools and dark urine",
+      "nauseous",
+      "involuntary weight loss over the last 3 months"
+    ],
+    "antecedents": [
+      "diabetes",
+      "smoke cigarettes",
+      "significantly overweight compared to people of the same height as you",
+      "are there members of your family who have been diagnosed with pancreatic cancer",
+      "chronic pancreatitis",
+      "recent international travel"
+    ],
+    "severity": 3,
+    "description": "Condition characterized by: pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, rash location, lesions, redness or problems on your skin that you believe are related to the condition you are consulting for, rash color, rash pain intensity, rash swollen, itching severity, lesion larger than 1cm, lesions peel off, diarrhea or an increase in stool frequency, constantly feel fatigued, cough, pale stools and dark urine, nauseous, involuntary weight loss over the last 3 months. Risk factors: diabetes, smoke cigarettes, significantly overweight compared to people of the same height as you, are there members of your family who have been diagnosed with pancreatic cancer, chronic pancreatitis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Pancreatic neoplasm pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location rash location lesions, redness or problems on your skin that you believe are related to the condition you are consulting for rash color rash pain intensity rash swollen itching severity lesion larger than 1cm lesions peel off diarrhea or an increase in stool frequency constantly feel fatigued cough pale stools and dark urine nauseous involuntary weight loss over the last 3 months diabetes smoke cigarettes significantly overweight compared to people of the same height as you are there members of your family who have been diagnosed with pancreatic cancer chronic pancreatitis recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "J81.0",
+    "icd10_codes": [
+      "J81.0"
+    ],
+    "disease": "Acute pulmonary edema",
+    "symptoms": [
+      "symptoms that are increased with physical exertion but alleviated with rest",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "swelling location",
+      "swelling in one or more areas of your body",
+      "new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today",
+      "significantly increased sweating",
+      "shortness of breath or difficulty breathing in a significant way",
+      "bouts of choking or shortness of breath that wake you up at night",
+      "are your symptoms worse when lying down and alleviated while sitting up"
+    ],
+    "antecedents": [
+      "heart attack or angina",
+      "heart failure",
+      "fluid in your lungs",
+      "high blood pressure",
+      "currently undergo dialysis",
+      "recent international travel"
+    ],
+    "severity": 1,
+    "description": "Condition characterized by: symptoms that are increased with physical exertion but alleviated with rest, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, swelling location, swelling in one or more areas of your body, new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today, significantly increased sweating, shortness of breath or difficulty breathing in a significant way, bouts of choking or shortness of breath that wake you up at night, are your symptoms worse when lying down and alleviated while sitting up. Risk factors: heart attack or angina, heart failure, fluid in your lungs, high blood pressure, currently undergo dialysis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Acute pulmonary edema symptoms that are increased with physical exertion but alleviated with rest pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location swelling location swelling in one or more areas of your body new fatigue, generalized and vague discomfort, diffuse muscle aches or a change in your general well-being related to your consultation today significantly increased sweating shortness of breath or difficulty breathing in a significant way bouts of choking or shortness of breath that wake you up at night are your symptoms worse when lying down and alleviated while sitting up heart attack or angina heart failure fluid in your lungs high blood pressure currently undergo dialysis recent international travel",
+    "embedding": []
+  },
+  {
+    "doc_id": "I30",
+    "icd10_codes": [
+      "I30"
+    ],
+    "disease": "Pericarditis",
+    "symptoms": [
+      "pain that is increased when you breathe in deeply",
+      "are your symptoms worse when lying down and alleviated while sitting up",
+      "pain present",
+      "pain related to consultation",
+      "pain radiation",
+      "pain character",
+      "pain onset speed",
+      "pain intensity",
+      "pain location",
+      "shortness of breath or difficulty breathing in a significant way",
+      "your heart is beating fast, irregularly"
+    ],
+    "antecedents": [
+      "viral infection",
+      "pericarditis",
+      "recent international travel"
+    ],
+    "severity": 4,
+    "description": "Condition characterized by: pain that is increased when you breathe in deeply, are your symptoms worse when lying down and alleviated while sitting up, pain present, pain related to consultation, pain radiation, pain character, pain onset speed, pain intensity, pain location, shortness of breath or difficulty breathing in a significant way, your heart is beating fast, irregularly. Risk factors: viral infection, pericarditis, recent international travel.",
+    "source": "ddxplus",
+    "keyword_text": "Pericarditis pain that is increased when you breathe in deeply are your symptoms worse when lying down and alleviated while sitting up pain present pain related to consultation pain radiation pain character pain onset speed pain intensity pain location shortness of breath or difficulty breathing in a significant way your heart is beating fast, irregularly viral infection pericarditis recent international travel",
+    "embedding": []
+  }
+]

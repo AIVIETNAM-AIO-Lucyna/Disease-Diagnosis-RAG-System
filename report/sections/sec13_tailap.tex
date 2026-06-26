@@ -1,0 +1,21 @@
+\section{Tái lập kết quả và mã nguồn (Replicate the results)}
+% [NHÁP -- Phụ trách: Vương Đình Minh Trí (môi trường) & Nguyễn Minh Tú (lệnh chạy).]
+
+\begin{itemize}
+\item \textbf{Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System} (nhánh mặc định: \texttt{dev}).
+\item \textbf{Chuẩn bị dữ liệu:} tải DDXPlus (English) phiên bản 2 từ Figshare (xem Phụ lục); các file dữ liệu lớn \textbf{không} commit lên Git -- xem hướng dẫn Data setup trong README.
+\item \textbf{Cài đặt môi trường:} \texttt{pip install -r requirements.txt}.
+\item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_evidences.json} và \texttt{release\_conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
+\item \textbf{Đánh giá offline (Python thuần):} chạy \texttt{eval\_retrieval.py} để tái tạo Bảng \ref{tab:offline}.
+\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook/CLI eval trên engine để tái tạo Bảng \ref{tab:livevsoffline} và điền Bảng \ref{tab:livefull}. \textit{[Tú/Trí điền lệnh chính xác.]}
+\end{itemize}
+
+\begin{aivncodebox}[Cấu trúc mã nguồn (rút gọn):]
+Disease-Diagnosis-RAG-System/
+|-- data/
+|-- src/
+|-- eval/
+|-- kb/
+|-- requirements.txt
+|-- README.md
+\end{aivncodebox}

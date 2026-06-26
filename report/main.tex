@@ -1,0 +1,132 @@
+\begin{filecontents*}[overwrite]{references.bib}
+@inproceedings{ddxplus2022,
+  author    = {Arsene Fansi Tchango and Rishab Goel and Zhi Wen and Julien Martel and Joumana Ghosn},
+  title     = {{DDXPlus}: A New Dataset for Automatic Medical Diagnosis},
+  booktitle = {Advances in Neural Information Processing Systems 35 (NeurIPS 2022), Datasets and Benchmarks Track},
+  year      = {2022},
+  note      = {arXiv:2205.09148. Dataset (English) version 2, posted 10 March 2026 on Figshare; code: https://github.com/mila-iqia/ddxplus},
+  url       = {https://figshare.com/articles/dataset/DDXPlus_Dataset_English_/22687585}
+}
+\end{filecontents*}
+\documentclass[12pt]{ai_conquer2026}
+\addbibresource{references.bib}
+
+% ---- Bo sung goi & sua tran le (khong dung vao file .cls goc) ----
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\titleformat{\section}{\normalfont\huge\bfseries\raggedright}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalfont\Large\bfseries\raggedright}{\thesubsection}{0.6em}{}
+\setlength{\emergencystretch}{3em}
+\tikzset{
+  stage/.style={rectangle, rounded corners, draw=aivnGreen, thick, fill=aivnGreen!10, align=center, minimum height=1.0cm, inner sep=4pt, font=\small},
+  future/.style={rectangle, rounded corners, draw=gray!70, thick, dashed, fill=gray!12, align=center, minimum height=1.0cm, inner sep=4pt, font=\small},
+  flow/.style={-{Latex[length=2.4mm]}, thick, draw=aivnGreen!85},
+  twoway/.style={{Latex[length=2.4mm]}-{Latex[length=2.4mm]}, thick, draw=aivnGreen!85}
+}
+
+\title{%
+  \begin{center}
+        \IfFileExists{Figures/group\_logo.png}{\includegraphics[width=2.8cm]{Figures/group\_logo.png}\\[1ex]}{}
+        \Large {AI VIET NAM -- AI Conquer 2026}\\[.5ex]
+        \Huge \textbf{Hệ thống Hỏi--Đáp Hỗ trợ Chẩn đoán Bệnh dựa trên RAG trên bộ dữ liệu DDXPlus}\\[.8ex]
+        \large \textnormal{\textit{A Retrieval-Augmented Generation System for Disease Diagnosis Support on the DDXPlus Dataset}}\\[.5ex]
+  \end{center}
+}
+
+% Author --------------------------------------------------------------------
+\posttitle{
+\author{
+\begin{minipage}{\textwidth}
+\centering
+\textbf{Nhóm Med\_Pharm\_Bio\_Nexus}\\[0.8em]
+\begin{tabular}{lll}
+\textbf{Họ và tên} & \textbf{Vị trí} & \textbf{Vai trò}\\[0.3em]
+Nguyễn Minh Tú & AI Engineer (Pipeline) & Thành viên\\
+Nguyễn Thị Diễm Hương & QA / Reviewer & Thành viên\\
+Hoàng Phước Nguyên & AI Engineer (Data) & Thành viên\\
+Vương Đình Minh Trí & Tech Leader & Thành viên\\
+Nguyễn Văn Thương & AI Engineer (Model) & Quản lý nhóm\\
+\end{tabular}
+\end{minipage}
+}
+}
+\date{}
+
+% Header --------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\href{https://www.facebook.com/aivietnam.edu.vn}{\textcolor{aivnGreen}{\bfseries AI VIET NAM (AI Conquer 2026)}}}
+\rhead{\href{https://aivietnam.edu.vn/}{\textcolor{aivnGreen}{\bfseries aivietnam.edu.vn}}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{1.0pt}
+\renewcommand{\headrule}{{\color{aivnGreen}\hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+
+\begin{document}
+\maketitle
+\vspace{-1.5em}
+\setlength{\epigraphwidth}{0.6\textwidth}
+\input{sections/sec01_tomtat}
+\newpage
+\setcounter{tocdepth}{2}
+\tableofcontents
+\thispagestyle{fancy}
+\newpage
+\input{sections/sec02_gioithieu}
+\input{sections/sec03_baitoan}
+\input{sections/sec04_relatedwork}
+\input{sections/sec05_phuongphap}
+\input{sections/sec06_experiments}
+\input{sections/sec07_ketqua}
+\input{sections/sec08_ablation}
+\input{sections/sec09_thaoluan}
+\input{sections/sec10_loihanche}
+\input{sections/sec11_phase2}
+\input{sections/sec12_teamops}
+\input{sections/sec13_tailap}
+\input{sections/sec14_ketluan}
+\newpage
+\section{Tài liệu tham khảo}
+\label{section:references}
+\nocite{*}
+\vspace{-3.2em}
+\printbibliography
+
+\newpage
+\begin{appendices}
+\begin{enumerate}
+\item \textbf{AIVIETNAM:} Thông tin về AIVIETNAM có thể đọc thêm tại \href{https://aivietnam.edu.vn/}{đây}.
+\item \textbf{GitHub Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System}
+\item \textbf{Dataset:} DDXPlus (English), phiên bản 2 -- đăng ngày 10/03/2026 trên Figshare: \url{https://figshare.com/articles/dataset/DDXPlus_Dataset_English_/22687585}. Mã nguồn gốc: \url{https://github.com/mila-iqia/ddxplus}.
+\item \textbf{Model:} \texttt{BAAI/bge-small-en-v1.5} (HuggingFace) -- dùng zero-shot, không fine-tune.
+\item \textbf{Experiment Logs:} EXP-01 (offline) và EXP-02 (offline, $n=132{,}448$) cùng lần chạy thử OpenSearch live (25/06, mẫu 5.000) được ghi đầy đủ trên Notion (Experiment \& Logs).
+\item \textbf{Quản lý dự án:} JIRA (key SCRUM): \url{https://thng.atlassian.net/jira/software/projects/SCRUM/boards/1}; Discord server ID: \texttt{1511918814995157074}; Notion: không gian làm việc nội bộ của nhóm (Single Source of Truth).
+\item \textbf{Demo Video / Presentation:} \textit{[điền sau].}
+\end{enumerate}
+
+\bigskip
+\noindent\textbf{Phân công \& Đóng góp (CRediT -- Phase 1).} Bảng \ref{tab:credit} ghi nhận đóng góp dựa trên bằng chứng kiểm chứng được (commit/PR trên GitHub; biểu mẫu \& nhật ký trên Notion), tách riêng hai trục: \textit{thực hiện kỹ thuật} và \textit{viết \& biên tập báo cáo}.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Phân công \& đóng góp theo CRediT (Phase 1), trên cơ sở commit/PR/Notion.}
+\label{tab:credit}
+\begin{tabular}{p{2.8cm}p{4.8cm}p{3.4cm}}
+\hline
+\textbf{Thành viên} & \textbf{Đóng góp thực hiện (có dẫn chứng)} & \textbf{Viết \& biên tập báo cáo}\\
+\hline
+Nguyễn Văn Thương & Rà soát y khoa KB; chuẩn hoá ICD-10 + audit; thiết kế \& chạy harness offline (EXP-01/02; PR \#6, \#8); điều phối nhóm & Chủ trì viết \& tổng hợp (Report Integrator)\\
+Nguyễn Minh Tú & Pipeline RAG; ingest/index OpenSearch (PR \#9, \#12); reranker (PR \#10); chạy eval live OpenSearch & Đóng góp nội dung pipeline \& kết quả live\\
+Nguyễn Thị Diễm Hương & Thiết kế \& đo chỉ số QA (Tier-1.5, MSR, NDCG@5) & Viết mục Kết quả/QA; review \& hiệu đính\\
+Vương Đình Minh Trí & Kiến trúc \& DevOps; ingest mapping; tech-lead review & Đóng góp nội dung kiến trúc/DevOps\\
+Hoàng Phước Nguyên & KB v1 (49 thẻ bệnh, ICD-10 ID, severity); hàm chuẩn hoá triệu chứng; khử trùng eval (nhánh \texttt{feat/ddxplus-kb}) & Cung cấp tư liệu KB cho mục Dữ liệu; không tham gia trực tiếp khâu viết\\
+\hline
+\end{tabular}
+\end{table}
+\noindent{\footnotesize\textit{Ghi chú: bảng phản ánh đóng góp Phase 1 trên cơ sở dữ liệu khách quan (lịch sử Git, biểu mẫu Notion); vai trò Report Integrator do nhóm thống nhất qua biểu quyết nội bộ.}}
+
+\end{appendices}
+
+\end{document}
