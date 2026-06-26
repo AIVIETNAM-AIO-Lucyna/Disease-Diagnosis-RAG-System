@@ -1,9 +1,9 @@
 # ICD-10 & Severity Reference — DDXPlus Knowledge Base
 
-**Project:** Disease-Diagnosis-RAG-System — AIO 2026, Project 1  
-**Team:** Med / Pharm / Bio Nexus  
-**Author:** Nguyễn Văn Thương (Team Leader — Domain Expert)  
-**Generated:** 2026-06-12  
+**Project:** Disease-Diagnosis-RAG-System — AIO 2026, Project 1
+**Team:** Med / Pharm / Bio Nexus
+**Author:** Nguyễn Văn Thương (Team Leader — Domain Expert)
+**Generated:** 2026-06-12
 **Source:** `release_conditions.json` (DDXPlus, CC-BY)
 
 ## Methodology

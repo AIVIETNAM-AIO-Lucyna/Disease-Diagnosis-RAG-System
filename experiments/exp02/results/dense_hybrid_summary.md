@@ -29,5 +29,6 @@
 - On this lexically-aligned eval (query tokens overlap KB vocabulary), BM25 is strongest.
   This reflects the eval format, NOT an architectural conclusion about hybrid retrieval.
 - `description` consistently helps all methods.
+- **Live OpenSearch** (production `embed_query()`, full validate n=132,448): BM25 98.65% · dense 79.54% · hybrid 92.30% Hit@1 — see `live_eval_latest.json` and [`notebooks/exp02_live_eval.ipynb`](../../notebooks/exp02_live_eval.ipynb). Live dense is not directly comparable to offline dense (legacy query embed template).
 - Next steps: realistic / natural-language eval; tune RRF weighting (favor BM25, or
   cascade dense only on low-confidence); consider a medical-domain embedding.

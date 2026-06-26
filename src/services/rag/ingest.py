@@ -50,8 +50,7 @@ class Ingestion:
         self._client.bulk(request.to_bulk_actions())
         return len(documents)
 
-    @staticmethod
-    def _normalize_record(record: DiseaseDocument) -> DiseaseDocument:
+    def _normalize_record(self, record: DiseaseDocument) -> DiseaseDocument:
         return record.model_copy(
             update={
                 "symptoms": normalize_symptoms(record.symptoms),
