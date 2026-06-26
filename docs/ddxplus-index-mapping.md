@@ -1,6 +1,6 @@
 # DDXPlus index mapping guide
 
-> **Version:** 2026-06-25
+> **Version:** 2026-06-26
 > **Audience:** Data / ingest team
 > **Dataset:** DDXPlus Design A (49-condition knowledge base)
 
@@ -178,7 +178,7 @@ Use [`DiseaseDocument` / `BulkIngestRequest`](../src/services/rag/schemas.py) wi
 
 Remote OpenSearch bulk writes may exceed the library default HTTP timeout — set `OPENSEARCH_TIMEOUT=60` (or higher) in `.env`.
 
-Parallel live eval (`notebooks/exp02_live_eval.ipynb`) uses concurrent HTTP searches — set `OPENSEARCH_POOL_MAXSIZE` ≥ `EXP02_WORKERS` (default 16 / 8) to avoid urllib3 `Connection pool is full` warnings. Restart the notebook kernel after changing pool settings.
+Parallel live eval (`notebooks/exp02_live_eval.ipynb`) uses concurrent HTTP searches — set `OPENSEARCH_POOL_MAXSIZE` ≥ `EXP02_WORKERS` (default 16 / 8) to avoid urllib3 `Connection pool is full` warnings. Restart the notebook kernel after changing pool settings. Full-run metrics are saved to `experiments/exp02/results/live_eval_latest.json`.
 
 ## Post-ingest validation
 
@@ -220,6 +220,7 @@ GET /diseases/_count
 
 | Date | Change |
 |------|--------|
+| 2026-06-26 | Linked live eval results artifact (`live_eval_latest.json`) |
 | 2026-06-25 | Document `OPENSEARCH_POOL_MAXSIZE` for parallel live eval |
 | 2026-06-25 | Updated ingest workflow (`Ingestion`, `RAGService`, `preprocess.py`); eval data paths; `OPENSEARCH_TIMEOUT` |
 | 2026-06-11 | Linked Phase 1 review PDF |

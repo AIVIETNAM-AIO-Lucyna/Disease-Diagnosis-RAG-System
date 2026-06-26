@@ -1,6 +1,6 @@
 # Project structure
 
-> **Version:** 2026-06-25
+> **Version:** 2026-06-26
 > **See also:** [Development philosophy](./development-philosophy.md), [Roadmap](./roadmap-and-refactors.md)
 
 ## Repository layout
@@ -15,7 +15,7 @@ disease-diagnosis-rag-system/
 ├── data/
 │   └── kb/                        # Committed KB artifacts (kb_ddxplus.json)
 ├── experiments/
-│   └── exp02/                     # Offline retrieval eval scripts + results
+│   └── exp02/                     # Offline retrieval eval scripts + results (incl. live_eval_*.json)
 ├── models/                        # Downloaded HF models (gitignored)
 ├── src/
 │   ├── settings.py                # Env-based config (OpenSearch, models, retrieval)
@@ -191,6 +191,7 @@ Low-level `search_*` and `run_experiment()` remain retrieval-only for A/B testin
 | `tests/rag/retrieve.py` | `Retriever` helpers, search modes, experiment runner |
 | `tests/rag/rerank.py` | `RetrieveHit.passage_text`, `Retriever.rerank()` |
 | `tests/rag/pipeline.py` | `RAGService.query()` retrieve → rerank wiring |
+| `tests/rag/preprocess.py` | KB text builders, `PreprocessPipeline`, DDXPlus phrase normalization |
 | `tests/rag/conftest.py` | Mocked embedding, reranker, and OpenSearch fixtures |
 
 Run: `uv sync --extra dev && uv run pytest tests/rag` (no live cluster required).
@@ -203,6 +204,7 @@ RAG domain models live under `src/services/rag/` so OpenSearch infrastructure st
 
 | Date | Change |
 |------|--------|
+| 2026-06-26 | Added `tests/rag/preprocess.py`; noted live eval JSON artifacts under `experiments/exp02/results/` |
 | 2026-06-25 | Documented urllib3 HTTP stack, `OPENSEARCH_POOL_MAXSIZE`, batched `embed_queries` |
 | 2026-06-25 | Updated `Retriever` constructor, `PreprocessPipeline` injection, ingest flow, EXP-02 notebook |
 | 2026-06-22 | Documented `Retriever` constructor, hit validation, rerank query preprocessing |

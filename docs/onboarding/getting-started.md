@@ -1,6 +1,6 @@
 # Getting started
 
-> **Version:** 2026-06-25
+> **Version:** 2026-06-26
 > **Audience:** New contributors
 > **Next:** [Project structure](./project-structure.md)
 
@@ -139,7 +139,7 @@ print(rag.ingest(records))  # 49
 
 Interactive walkthrough: [`notebooks/walkthrough.ipynb`](../../notebooks/walkthrough.ipynb) (run `uv sync --extra dev`).
 
-Live EXP-02 eval against OpenSearch: [`notebooks/exp02_live_eval.ipynb`](../../notebooks/exp02_live_eval.ipynb) (requires DDXPlus eval data under `data/eval/`). Tunables: `EXP02_SAMPLE`, `EXP02_WORKERS`, `OPENSEARCH_POOL_MAXSIZE`.
+Live EXP-02 eval against OpenSearch: [`notebooks/exp02_live_eval.ipynb`](../../notebooks/exp02_live_eval.ipynb) (requires DDXPlus eval data under `data/eval/`). Tunables: `EXP02_SAMPLE`, `EXP02_WORKERS`, `EXP02_REINGEST`, `EXP02_RUN_EVAL`, `EXP02_RESULTS`, `OPENSEARCH_POOL_MAXSIZE`. Committed metrics: [`experiments/exp02/results/live_eval_latest.json`](../../experiments/exp02/results/live_eval_latest.json).
 
 ### 5. Run tests (before commit)
 
@@ -174,6 +174,7 @@ Tests mock OpenSearch, BGE, and reranker — no `.env` or indexed documents requ
 
 | Date | Change |
 |------|--------|
+| 2026-06-26 | Documented EXP-02 save/load (`EXP02_RUN_EVAL`, `EXP02_RESULTS`, `live_eval_latest.json`) |
 | 2026-06-25 | Documented `OPENSEARCH_POOL_MAXSIZE`, parallel eval tuning, urllib3 pool troubleshooting |
 | 2026-06-25 | Documented `PreprocessPipeline` on `Retriever`, ingest example, `OPENSEARCH_TIMEOUT`, EXP-02 notebook |
 | 2026-06-22 | Fixed `Retriever` examples to pass required OpenSearch `client` |

@@ -26,7 +26,7 @@ See [Getting started](./docs/onboarding/getting-started.md) for detailed setup a
 
 End-to-end demo: [`notebooks/walkthrough.ipynb`](./notebooks/walkthrough.ipynb) (ingest → retrieve → rerank).
 
-Live eval vs EXP-02 baselines: [`notebooks/exp02_live_eval.ipynb`](./notebooks/exp02_live_eval.ipynb) (requires DDXPlus patient data under `data/eval/`).
+Live eval vs EXP-02 baselines: [`notebooks/exp02_live_eval.ipynb`](./notebooks/exp02_live_eval.ipynb) (requires DDXPlus patient data under `data/eval/`). Latest full-run metrics are committed in [`experiments/exp02/results/live_eval_latest.json`](./experiments/exp02/results/live_eval_latest.json).
 
 ## Testing (before commit)
 
@@ -89,6 +89,7 @@ Documentation uses **date-based versions** (`YYYY-MM-DD`), not semver. Update th
 
 | Date | Change |
 |------|--------|
+| 2026-06-26 | EXP-02 live eval save/load (`live_eval_latest.json`); full validate results committed |
 | 2026-06-25 | Document `OPENSEARCH_POOL_MAXSIZE`, urllib3 pool troubleshooting, EXP-02 eval tunables |
 | 2026-06-25 | Document `OPENSEARCH_TIMEOUT`, EXP-02 live eval notebook; sync onboarding docs with ingest/preprocess API |
 | 2026-06-25 | Document batch ingestion (`Ingestion`) and derived `keyword_text` |
