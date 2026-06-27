@@ -3,59 +3,63 @@
 
 Nhóm vận hành trên bốn công cụ, mỗi công cụ một vai trò rõ ràng, kết nối bằng đồng bộ tự động để tránh nhập tay trùng lặp:
 \begin{itemize}
-\item \textbf{JIRA} (key SCRUM) -- điểm tạo và quản lý công việc (Scrum board, sprint): \url{https://thng.atlassian.net/jira/software/projects/SCRUM/boards/1}.
-\item \textbf{Notion} -- Single Source of Truth: tài liệu, kế hoạch, ADR, log thí nghiệm, knowledge hub (không gian làm việc nội bộ của nhóm).
-\item \textbf{Discord} (server ID \texttt{1511918814995157074}) -- kênh trao đổi và nhận thông báo tự động.
-\item \textbf{GitHub} -- mã nguồn, Pull Request, review (\texttt{Disease-Diagnosis-RAG-System}).
+    \item \textbf{JIRA} (key SCRUM) -- điểm tạo và quản lý công việc (Scrum board, sprint): \url{https://thng.atlassian.net/jira/software/projects/SCRUM/boards/1}.
+    \item \textbf{Notion} -- Single Source of Truth: tài liệu, kế hoạch, ADR, log thí nghiệm, knowledge hub (không gian làm việc nội bộ của nhóm).
+    \item \textbf{Discord} (server ID \texttt{1511918814995157074}) -- kênh trao đổi và nhận thông báo tự động.
+    \item \textbf{GitHub} -- mã nguồn, Pull Request, review (\texttt{Disease-Diagnosis-RAG-System}).
 \end{itemize}
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[node distance=1.4cm and 2.0cm]
-\node[stage, text width=2.4cm] (jira) {\textbf{JIRA}\\Scrum board};
-\node[stage, text width=2.4cm, right=of jira] (notion) {\textbf{Notion}\\Source of Truth};
-\node[stage, text width=2.4cm, right=of notion] (discord) {\textbf{Discord}\\Thông báo nhóm};
-\node[stage, text width=2.4cm, above=of notion] (github) {\textbf{GitHub}\\Code + PR};
-\node[future, text width=2.4cm, below=of notion] (prism) {\textbf{Prism/Overleaf}\\Báo cáo};
-\draw[twoway] (jira) -- node[above, font=\footnotesize, align=center]{Unito\\2 chiều} (notion);
-\draw[flow] (jira) to[bend right=38] node[below, font=\footnotesize, align=center]{Jira Automation\\1 chiều} (discord);
-\draw[flow] (github) -- node[right, font=\footnotesize]{evidence/PR} (notion);
-\draw[flow] (notion) -- node[right, font=\footnotesize]{nội dung} (prism);
-\end{tikzpicture}}
-\caption{Sơ đồ đồng bộ công cụ: JIRA $\leftrightarrow$ Notion (2 chiều, Unito), JIRA $\rightarrow$ Discord (1 chiều, Jira Automation). Notion và Discord không đồng bộ trực tiếp.}
-\label{fig:toolchain}
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+        \begin{tikzpicture}
+            % --- Nút đặt bằng toạ độ tuyệt đối để tránh chồng lấp ---
+            \node[stage, text width=2.6cm] (notion)  at (0,1.5)   {\textbf{Notion}\\Source of Truth};
+            \node[stage, text width=2.6cm] (jira)    at (-5.2,1.5) {\textbf{JIRA}\\Scrum board};
+            \node[stage, text width=2.6cm] (discord) at (5.2,1.5)  {\textbf{Discord}\\Thông báo nhóm};
+            \node[stage, text width=2.6cm] (github)  at (0,3.7)   {\textbf{GitHub}\\Code + PR};
+            \node[future, text width=2.6cm] (prism)   at (0,-0.5)  {\textbf{Prism/Overleaf}\\Báo cáo};
+            % --- Mũi tên ---
+            \draw[twoway] (jira) -- node[above, font=\footnotesize, align=center]{Unito\\2 chiều} (notion);
+            \draw[flow] (github) -- node[right, font=\footnotesize]{evidence/PR} (notion);
+            \draw[flow] (notion) -- node[right, font=\footnotesize]{nội dung} (prism);
+            % Kênh thông báo JIRA -> Discord đi vòng dưới (Manhattan), nằm hẳn dưới Prism
+            \draw[flow] (jira.south) |- (0,-2.6) -| (discord.south);
+            \node[font=\footnotesize, align=center] at (0,-2.95) {Jira Automation, 1 chiều};
+        \end{tikzpicture}}
+    \caption{Sơ đồ đồng bộ công cụ: JIRA $\leftrightarrow$ Notion (2 chiều, Unito), JIRA $\rightarrow$ Discord (1 chiều, Jira Automation). Notion và Discord không đồng bộ trực tiếp.}
+    \label{fig:toolchain}
 \end{figure}
 
 \subsection{Đồng bộ JIRA $\leftrightarrow$ Notion (Unito, 2 chiều)}
 \begin{table}[H]
-\centering
-\small
-\caption{Sáu trường đồng bộ hai chiều giữa JIRA và Notion (Unito).}
-\label{tab:unito}
-\begin{tabular}{lll}
-\hline
-\textbf{JIRA} & \textbf{Notion} & \textbf{Chiều}\\
-\hline
-Summary & Task Name & 2 chiều\\
-Status & Status & 2 chiều\\
-Priority & Priority & 2 chiều\\
-Sprint & Sprint & 2 chiều\\
-Due date & Deadline & 2 chiều\\
-Description (footer) & Link & 1 chiều (gắn link)\\
-\hline
-\end{tabular}
+    \centering
+    \small
+    \caption{Sáu trường đồng bộ hai chiều giữa JIRA và Notion (Unito).}
+    \label{tab:unito}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{JIRA}        & \textbf{Notion} & \textbf{Chiều}     \\
+        \hline
+        Summary              & Task Name       & 2 chiều            \\
+        Status               & Status          & 2 chiều            \\
+        Priority             & Priority        & 2 chiều            \\
+        Sprint               & Sprint          & 2 chiều            \\
+        Due date             & Deadline        & 2 chiều            \\
+        Description (footer) & Link            & 1 chiều (gắn link) \\
+        \hline
+    \end{tabular}
 \end{table}
 
 \subsection{Thông báo JIRA $\rightarrow$ Discord (Jira Automation, 1 chiều)}
 Sáu luồng thông báo tự động gửi qua webhook vào kênh Discord (Webhook \#1 và \#2 theo loại sự kiện):
 \begin{enumerate}
-\item Tạo issue mới (issue created).
-\item Đổi trạng thái (status changed).
-\item Đổi người phụ trách (assignee changed).
-\item Thêm bình luận (comment added).
-\item Bắt đầu / kết thúc sprint.
-\item Hoàn thành issue (done).
+    \item Tạo issue mới (issue created).
+    \item Đổi trạng thái (status changed).
+    \item Đổi người phụ trách (assignee changed).
+    \item Thêm bình luận (comment added).
+    \item Bắt đầu / kết thúc sprint.
+    \item Hoàn thành issue (done).
 \end{enumerate}
 \textit{Lưu ý bảo mật:} không in URL webhook đầy đủ trong tài liệu; chỉ cấu hình trong JIRA Automation.
 
