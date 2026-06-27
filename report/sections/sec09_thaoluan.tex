@@ -5,6 +5,35 @@
 
 \textbf{Vai trò của description:} cải thiện đều cả ba phương pháp, củng cố quyết định giữ trường này.
 
-\textbf{Python thuần so với OpenSearch:} bộ số offline được thiết kế như một mốc tham chiếu/trần trên cho logic truy xuất; lần chạy OpenSearch live (mẫu 5k) cho kết quả nhất quán cả về giá trị lẫn thứ hạng, nên có thể tin cậy chuyển sang đo production đầy đủ. Khác biệt nhỏ giữa hai hạ tầng đến từ analyzer của OpenSearch, cơ chế tie-break và k-NN xấp xỉ (HNSW) so với cosine brute-force.
+\textbf{Python thuần (offline) so với OpenSearch (production) trên toàn tập $n=132{,}448$.} Sau khi lần chạy production đầy đủ hoàn tất ngày 26/06/2026 (8 workers, $\approx 3.7$ giờ), hai hạ tầng được đối chiếu trực tiếp trên \emph{cùng cỡ mẫu} (toàn bộ 132.448 ca), thay cho lần chạy thử trên mẫu 5.000 trước đây. Số liệu (Bảng~\ref{tab:livevsoffline}, Hình~\ref{fig:liveoffline}) cho ba nhận định:
+\begin{itemize}
+    \item \textbf{BM25 tái lập gần như khít:} chênh lệch Hit@1 chỉ $+0.18$ điểm \% (98.65\% live so với 98.47\% offline), MRR $+0.0010$; các metric trùng tới chữ số thập phân thứ hai. Điều này xác nhận đồng thời (i) harness Python thuần là mốc tham chiếu trung thực, và (ii) khâu ingest, ánh xạ \texttt{keyword\_text} cùng analyzer BM25 trên OpenSearch đã cấu hình đúng.
+    \item \textbf{Hybrid-RRF nhất quán:} Hit@1 live nhỉnh hơn $+1.13$ điểm \% (92.30\% so với 91.17\%); Hit@3/Hit@5 lệch không đáng kể ($\le 0.07$ điểm \%); thứ hạng được giữ nguyên. Khác biệt nhỏ đến từ việc live dùng search pipeline \texttt{hybrid-rrf} của OpenSearch, còn offline hợp nhất thứ hạng cục bộ.
+    \item \textbf{Dense kNN lệch có hệ thống và \emph{giải thích được}; đây không phải đối chiếu công bằng:} Hit@1 live thấp hơn offline $3.57$ điểm \% (79.54\% so với 83.11\%), MRR thấp hơn $0.0202$. Nguyên nhân \emph{không} phải mô hình suy giảm mà do \textbf{hai khác biệt ở cách mã hoá truy vấn} (phía tài liệu giống nhau -- cùng \texttt{build\_embed\_text} no-desc lúc ingest): (1) \emph{mẫu chuỗi truy vấn} -- offline dùng \texttt{embed\_text\_query()} sinh chuỗi dạng câu ``\textit{Symptoms and antecedents: <các cụm>.}'', còn production dùng \texttt{embed\_query()} trên chuỗi \emph{nối token bằng khoảng trắng}; (2) \emph{instruction prefix} của BGE -- production thêm tiền tố ``\textit{Represent this sentence for searching relevant passages:}'' còn offline không. Việc chỉ thêm prefix và đổi mẫu chuỗi ở phía truy vấn tạo \emph{bất đối xứng truy vấn--tài liệu}; với truy vấn dạng cụm token triệu chứng đã chuẩn hoá, prefix làm lệch vector truy vấn và giảm độ khớp k-NN. Vì vậy con số Dense offline chỉ mang tính \emph{định hướng}; muốn kết luận chắc chắn về Dense cần đồng bộ quy ước embed truy vấn ở hai phía rồi đo lại (Phase 2).
+\end{itemize}
+Quan trọng nhất, \textbf{thứ tự BM25 $>$ Hybrid $>$ Dense được bảo toàn ở cả hai hạ tầng}, nên các kết luận của Phase 1 vẫn vững. BM25 và Hybrid (khớp trực tiếp) đóng vai trò \emph{mỏ neo} xác thực rằng pipeline production đã tái lập đúng bộ offline.
 
-\textbf{Hệ quả thiết kế:} (i) embedding phổ thông (không chuyên y khoa) chưa được kiểm tra đúng thế mạnh ngữ nghĩa; (ii) RRF cào bằng trọng số kéo lùi BM25 gần hoàn hảo; (iii) cần bộ truy vấn ngôn ngữ tự nhiên để đo đúng giá trị dense/hybrid. Các điểm này định hướng cho Phase 2.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+                ybar, bar width=12pt,
+                width=0.9\textwidth, height=6.4cm,
+                enlarge x limits=0.32,
+                ymin=75, ymax=103,
+                ylabel={Hit@1 (\%)},
+                symbolic x coords={BM25, Hybrid-RRF, Dense},
+                xtick=data,
+                nodes near coords, every node near coord/.append style={font=\tiny},
+                legend style={at={(0.5,-0.18)}, anchor=north, legend columns=2, font=\footnotesize},
+            ]
+            \addplot coordinates {(BM25,98.65) (Hybrid-RRF,92.30) (Dense,79.54)};
+            \addplot coordinates {(BM25,98.47) (Hybrid-RRF,91.17) (Dense,83.11)};
+            \legend{OpenSearch live ($n=132{,}448$), Python thuần ($n=132{,}448$)}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Đối chiếu Hit@1 giữa OpenSearch live (production) và Python thuần (offline) trên toàn tập, biến thể \texttt{keyword\_text}/no-desc. BM25 và Hybrid bám sát nhau; chênh lệch ở Dense bắt nguồn từ khác biệt cách mã hoá truy vấn (mẫu chuỗi + prefix BGE), không phải đối chiếu công bằng.}
+    \label{fig:liveoffline}
+\end{figure}
+
+\textbf{Hệ quả thiết kế:} (i) embedding phổ thông (không chuyên y khoa) chưa được kiểm tra đúng thế mạnh ngữ nghĩa; (ii) RRF cào bằng trọng số kéo lùi BM25 gần hoàn hảo; (iii) cần bộ truy vấn ngôn ngữ tự nhiên để đo đúng giá trị dense/hybrid; (iv) cần đồng bộ quy ước mã hoá truy vấn (mẫu chuỗi + prefix BGE) giữa offline và production để Dense/Hybrid được đối chiếu công bằng. Các điểm này định hướng cho Phase 2.
