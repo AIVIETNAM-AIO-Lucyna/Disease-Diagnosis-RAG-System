@@ -3,12 +3,12 @@
 
 \subsection{Dataset}
 \begin{itemize}
-\item \textbf{Tên dataset:} DDXPlus~\cite{ddxplus2022} (English), \textbf{phiên bản 2 -- đăng ngày 10/03/2026} trên Figshare; giấy phép CC-BY.
-\item \textbf{Quy mô tri thức:} \textbf{49 bệnh} (\texttt{release\_conditions.json}) và \textbf{223 bằng chứng triệu chứng} (\texttt{release\_evidences.json}); kèm mã ICD-10 và mức độ nặng (severity, thang 1--5, 1 là nặng nhất).
-\item \textbf{Quy mô bệnh nhân:} khoảng 1,3 triệu hồ sơ bệnh nhân tổng hợp (synthetic), chia train/validate/test.
-\item \textbf{KB:} mỗi bệnh là một tài liệu mô tả bằng tập evidence (trường \texttt{keyword\_text}, \texttt{embedding} 384 chiều, \texttt{symptoms}, \texttt{disease}, \texttt{icd10\_codes}, \texttt{severity}).
-\item \textbf{Xử lý dữ liệu (rà soát KB -- PR \#6):} chuẩn hoá token evidence dùng chung normalizer build/query; bổ sung \texttt{icd10\_codes}; sửa Pneumonia J17 $\rightarrow$ J18; tái sinh KB (49 tài liệu, 0 token lệch).
-\item \textbf{Trường \texttt{description}:} mô tả do nhóm tự tổng hợp (ghép chuỗi từ triệu chứng); nhóm thống nhất index đầy đủ các trường trong mapping để Phase 2 (inject ngữ cảnh cho LLM) tái sử dụng được, không phải dựng lại.
+    \item \textbf{Tên dataset:} DDXPlus~\cite{ddxplus2022} (English), \textbf{phiên bản 2 -- đăng ngày 10/03/2026} trên Figshare; giấy phép CC-BY.
+    \item \textbf{Quy mô tri thức:} \textbf{49 bệnh} (\texttt{release\_conditions.json}) và \textbf{223 bằng chứng triệu chứng} (\texttt{release\_evidences.json}); kèm mã ICD-10 và mức độ nặng (severity, thang 1--5, 1 là nặng nhất).
+    \item \textbf{Quy mô bệnh nhân:} khoảng 1,3 triệu hồ sơ bệnh nhân tổng hợp (synthetic), chia train/validate/test.
+    \item \textbf{KB:} mỗi bệnh là một tài liệu mô tả bằng tập evidence (trường \texttt{keyword\_text}, \texttt{embedding} 384 chiều, \texttt{symptoms}, \texttt{disease}, \texttt{icd10\_codes}, \texttt{severity}).
+    \item \textbf{Xử lý dữ liệu (rà soát KB -- PR \#6):} chuẩn hoá token evidence dùng chung normalizer build/query; bổ sung \texttt{icd10\_codes}; sửa Pneumonia J17 $\rightarrow$ J18; tái sinh KB (49 tài liệu, 0 token lệch).
+    \item \textbf{Trường \texttt{description}:} mô tả do nhóm tự tổng hợp (ghép chuỗi từ triệu chứng); nhóm thống nhất index đầy đủ các trường trong mapping để Phase 2 (inject ngữ cảnh cho LLM) tái sử dụng được, không phải dựng lại.
 \end{itemize}
 
 \subsection{Chia dữ liệu}
@@ -18,15 +18,30 @@ Sử dụng phân chia gốc train/validate/test của DDXPlus (stratified). KB 
 Nghiên cứu \textbf{không fine-tune}; dùng embedding pretrained \texttt{BAAI/bge-small-en-v1.5} (384 chiều, cosine) theo dạng zero-shot.
 
 \subsection{Thiết lập đánh giá và quy ước đối chiếu}
+
+Mỗi truy vấn bệnh nhân được đối chiếu với \textbf{49 tài liệu} trong Knowledge Base (KB), tương ứng với một tài liệu cho mỗi bệnh. Bài toán được mô hình hoá như một tác vụ \emph{ranking}, trong đó mục tiêu là đưa tài liệu của \textit{bệnh đúng} (gold document) lên vị trí cao nhất trong danh sách kết quả. Do không gian ứng viên chỉ gồm 49 tài liệu, baseline ngẫu nhiên của Hit@1 là khoảng $1/49 \approx 2\%$; mốc này được dùng làm tham chiếu khi diễn giải các kết quả thực nghiệm.
+
+\paragraph{Chỉ số đánh giá.}
+Với $P$ là tập truy vấn và $\mathrm{rank}*p$ là thứ hạng của tài liệu gold đối với truy vấn $p$, các chỉ số được tính như sau:
+\begin{equation}
+    \mathrm{Hit@}k=\frac{1}{|P|}\sum*{p\in P}\mathbb{1}!\left[\mathrm{rank}*p\le k\right],
+    \qquad
+    \mathrm{MRR}=\frac{1}{|P|}\sum*{p\in P}\frac{1}{\mathrm{rank}_p}.
+\end{equation}
+
+Trong Phase~1, \textbf{Hit@1} được chọn làm chỉ số đánh giá chính, trong khi \textbf{Hit@3}, \textbf{Hit@5} và \textbf{MRR} được sử dụng để bổ sung góc nhìn về chất lượng xếp hạng. Lưu ý rằng MRR được tính trên thứ hạng của toàn bộ 49 tài liệu, không giới hạn ở top-5. Chỉ số \textbf{NDCG@5}, sử dụng graded relevance dựa trên Tier ICD-10, đã được tích hợp vào khung đánh giá nhưng chỉ được phân tích định lượng trong Phase~2.
+
 \begin{itemize}
-\item \textbf{Metric chính:} Hit@1. \textbf{Metric phụ:} Hit@3, Hit@5, MRR@5; Tier-1 còn bổ sung NDCG@5.
-\item \textbf{Chế độ offline (Python thuần):} EXP-01 (BM25 tham chiếu) và EXP-02 (Dense, Hybrid-RRF) chạy trên toàn bộ $n=132{,}448$; Okapi BM25 ($k_1=1.5$, $b=0.75$, tokenizer \texttt{[a-z0-9]+}), tie-break tất định.
-\item \textbf{Chế độ live (OpenSearch):} ingest KB rồi truy xuất qua BM25 + k-NN + search pipeline \texttt{hybrid-rrf}. Lần chạy thử ngày \textbf{25/06/2026} dùng \textbf{mẫu 5.000 bệnh nhân, seed 13} (đồng bộ cách lấy mẫu với EXP-02); lần chạy đầy đủ ($n=132{,}448$, ước tính 30--60 phút) \textbf{đang được Tú thực hiện để hoàn tất đánh giá Phase 1}.
-\item \textbf{Nguyên tắc so sánh:} cùng KB, cùng normalizer, cùng ground truth; chỉ khác hạ tầng. Bảng đối chiếu (mục Kết quả) trình bày song song để đo độ sai khác giữa hai chế độ.
+    \item \textbf{Knowledge Base.} Tất cả các thí nghiệm sử dụng cùng một phiên bản KB đã chuẩn hoá gồm 49 tài liệu (\href{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System/pull/6}{PR~\#6}), với cùng bộ chuẩn hoá cho cả giai đoạn xây dựng chỉ mục và truy vấn. Phiên bản giữ nguyên câu hỏi gốc (\texttt{kb\_ddxplus\_rawq.json}) chỉ được dùng để đánh giá ảnh hưởng của bước chuẩn hoá.
+
+    \item \textbf{Truy vấn và nhãn.} Mỗi truy vấn được xây dựng từ trường \texttt{EVIDENCES} sau khi loại bỏ tên bệnh nhằm tránh rò rỉ thông tin; nhãn đúng lấy từ trường \texttt{PATHOLOGY}. Những truy vấn trở thành rỗng sau bước chuẩn hoá được loại khỏi tập đánh giá. Trước khi chấm điểm, tập đánh giá được chia ra làm 2 phần (test: 101 trường hợp, validation: 75 trường hợp).
+
+    \item \textbf{Đánh giá offline (Python).} Các thí nghiệm EXP-01 (BM25) và EXP-02 (Dense, Hybrid-RRF) được thực hiện trên toàn bộ tập dữ liệu ($n=132{,}448$), không lấy mẫu. BM25 sử dụng công thức Okapi với $k_1=1.5$, $b=0.75$ và tokenizer \texttt{[a-z0-9]+}. Dense retrieval sử dụng mô hình \texttt{sentence-transformers} với độ tương đồng cosine được tính chính xác bằng brute-force trên toàn bộ 49 tài liệu. Các trường hợp đồng điểm được xử lý bằng quy tắc tie-break tất định (giảm dần theo điểm, sau đó theo tên bệnh). Hai biến thể được khảo sát gồm: (i) trường BM25 chỉ dùng \texttt{keyword\_text} hoặc kết hợp \texttt{keyword\_text+description}; và (ii) văn bản dùng để tạo embedding có hoặc không bao gồm trường \texttt{description}.
+
+    \item \textbf{Đánh giá production (OpenSearch).} Quy trình gồm ba bước: chuẩn hoá KB, sinh embedding cho tài liệu và bulk indexing vào OpenSearch. Hệ thống hỗ trợ ba chế độ truy xuất: \texttt{match} (BM25), \texttt{knn} (Dense Retrieval) và \texttt{hybrid} sử dụng search pipeline \texttt{hybrid-rrf}, với top-$20$ kết quả. Chỉ mục vector sử dụng trường \texttt{knn\_vector} kích thước 384, \texttt{space\_type=cosinesimil} với các tham số mặc định (\texttt{ef}, \texttt{m}); do đó, truy vấn k-NN trong môi trường production là \emph{xấp xỉ} thay vì cosine chính xác như ở chế độ offline. Hybrid retrieval sử dụng \texttt{score-ranker-processor} với Reciprocal Rank Fusion (RRF, $k=60$). Sau lần chạy thử trên mẫu 5.000 bệnh nhân (25/06/2026, seed 13), hệ thống được đánh giá trên toàn bộ tập validation vào ngày 26/06/2026 ($n=132{,}448$, 8 workers, thời gian khoảng 3,7 giờ). Các kết quả này được sử dụng làm kết quả production chính thức của Phase~1 và được đối chiếu trực tiếp với các kết quả offline.
+
+    \item \textbf{Nguyên tắc đối chiếu.} Mọi phép so sánh đều sử dụng cùng một KB, cùng bộ chuẩn hoá và cùng ground truth; khác biệt duy nhất nằm ở hạ tầng thực thi (offline so với production). Trong Phase~1, nghiên cứu chỉ thực hiện so sánh mô tả; các kiểm định ý nghĩa thống kê (ví dụ bootstrap confidence interval) sẽ được thực hiện trong Phase~2.
 \end{itemize}
 
-\begin{figure}[H]
-\centering
-\fbox{\begin{minipage}{0.92\textwidth}\centering\vspace{1.0cm}\textit{[Chỗ dành cho hình -- cần \textbf{Tú} (hoặc \textbf{Trí}) bổ sung: ảnh chụp OpenSearch Dashboards minh hoạ chỉ mục KB, alias \texttt{diseases} và search pipeline \texttt{hybrid-rrf}.]}\vspace{1.0cm}\end{minipage}}
-\caption{Minh hoạ hạ tầng OpenSearch (do thành viên bổ sung để hoàn tất Phase 1).}
-\end{figure}
+
+Chi tiết hạ tầng OpenSearch (mapping chỉ mục, alias \texttt{diseases}, search pipeline \texttt{hybrid-rrf}) được minh hoạ ở mục Phương pháp (Hình~\ref{fig:os-mapping}, \ref{fig:os-alias} và \ref{fig:os-pipeline}).
