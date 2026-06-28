@@ -1,122 +1,156 @@
 \section{Kết quả thí nghiệm (Results)}
-% [SỐ LIỆU THỰC -- EXP-02 offline (19/06, n=132,448) + OpenSearch live (25/06, mẫu 5.000, seed 13). Trình bày: Hương; số liệu: Thương/Tú.]
+% [SỐ LIỆU THỰC -- EXP-02 offline (19/06, n=132,448) + OpenSearch live FULL (26/06, n=132,448, 8 workers, ~3.7h). Trình bày: Hương; số liệu: Thương/Tú.]
 
 \subsection{Kết quả tham chiếu offline (Python thuần, n=132,448)}
-Bảng \ref{tab:offline} tổng hợp kết quả EXP-01/EXP-02 chạy bằng Python thuần trên toàn bộ tập validate. Các dòng BM25 là tham chiếu từ EXP-01; đóng góp của EXP-02 là Dense và Hybrid-RRF.
+Bảng \ref{tab:offline} tổng hợp kết quả EXP-01/EXP-02 chạy bằng Python thuần trên toàn bộ tập validate. Các dòng BM25 là tham chiếu từ EXP-01; đóng góp của EXP-02 là Dense và Hybrid-RRF. Đây là \textit{mốc tham chiếu / trần trên} cho chất lượng logic truy xuất trên cùng KB và normalizer.
 
 \begin{table}[H]
-\centering
-\small
-\caption{Kết quả truy xuất offline (Python thuần) trên tập validate DDXPlus đầy đủ ($n=132{,}448$). Dense: \texttt{bge-small-en-v1.5}; Hybrid: RRF($k=60$).}
-\label{tab:offline}
-\begin{tabular}{lcccc}
-\hline
-\textbf{Phương pháp} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR}\\
-\hline
-BM25 + description \textit{(EXP-01)} & \textbf{98.78\%} & 99.96\% & 100.00\% & \textbf{0.9937}\\
-BM25 keyword\_text \textit{(EXP-01)} & 98.47\% & 99.95\% & 99.99\% & 0.9921\\
-Hybrid-RRF + description & 91.95\% & 99.52\% & 99.77\% & 0.9570\\
-Hybrid-RRF (no-desc) & 91.17\% & 98.89\% & 99.61\% & 0.9511\\
-Dense + description & 84.28\% & 95.48\% & 98.46\% & 0.9027\\
-Dense (no-desc) & 83.11\% & 94.41\% & 96.82\% & 0.8911\\
-\hline
-\end{tabular}
+  \centering
+  \small
+  \caption{Kết quả truy xuất offline (Python thuần) trên tập validate DDXPlus đầy đủ ($n=132{,}448$). Dense: \texttt{bge-small-en-v1.5}; Hybrid: RRF($k=60$). Nguồn: \texttt{experiments/exp02/results/dense\_hybrid\_summary.md}, \texttt{EXP02\_eval\_report.md}.}
+  \label{tab:offline}
+  \begin{tabular}{lcccc}
+    \hline
+    \textbf{Phương pháp}                 & \textbf{Hit@1}   & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR}    \\
+    \hline
+    BM25 + description \textit{(EXP-01)} & \textbf{98.78\%} & 99.96\%        & 100.00\%       & \textbf{0.9937} \\
+    BM25 keyword\_text \textit{(EXP-01)} & 98.47\%          & 99.95\%        & 99.99\%        & 0.9921          \\
+    Hybrid-RRF + description             & 91.95\%          & 99.52\%        & 99.77\%        & 0.9570          \\
+    Hybrid-RRF (no-desc)                 & 91.17\%          & 98.89\%        & 99.61\%        & 0.9511          \\
+    Dense + description                  & 84.28\%          & 95.48\%        & 98.46\%        & 0.9027          \\
+    Dense (no-desc)                      & 83.11\%          & 94.41\%        & 96.82\%        & 0.8911          \\
+    \hline
+  \end{tabular}
 \end{table}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-  ybar, bar width=9pt,
-  width=0.92\textwidth, height=6.2cm,
-  enlarge x limits=0.28,
-  ymin=80, ymax=103,
-  ylabel={Tỉ lệ (\%)},
-  symbolic x coords={BM25, Hybrid-RRF, Dense},
-  xtick=data,
-  legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3, font=\footnotesize},
-]
-\addplot coordinates {(BM25,98.78) (Hybrid-RRF,91.95) (Dense,84.28)};
-\addplot coordinates {(BM25,99.96) (Hybrid-RRF,99.52) (Dense,95.48)};
-\addplot coordinates {(BM25,100.00) (Hybrid-RRF,99.77) (Dense,98.46)};
-\legend{Hit@1, Hit@3, Hit@5}
-\end{axis}
-\end{tikzpicture}
-\caption{So sánh Hit@1/Hit@3/Hit@5 của ba chiến lược (cấu hình + description, offline Python thuần, $n=132{,}448$).}
-\label{fig:bar}
-\end{figure}
 
 \textbf{Nhận xét (offline):} thứ tự Hit@1 là \textbf{BM25 (98.78\%) $>$ Hybrid (91.95\%) $>$ Dense (84.28\%)} -- BM25 hơn Hybrid 6.83 điểm \%, hơn Dense 14.50 điểm \%. Trường \textit{description} cải thiện đều cả ba (Dense +1.17, Hybrid +0.78, BM25 +0.31 điểm \% Hit@1); trong RRF, thành phần BM25 đang đóng góp chính.
 
-\subsection{Đối chiếu Python thuần với OpenSearch (mẫu 5.000, seed 13)}
-Ngày 25/06/2026, nhóm chạy thử pipeline OpenSearch live trên \textbf{mẫu 5.000 bệnh nhân (seed 13)} -- cùng cách lấy mẫu với EXP-02 -- để kiểm chứng tính nhất quán giữa hai hạ tầng (Bảng \ref{tab:livevsoffline}). So sánh dùng biến thể \texttt{keyword\_text} ở cả hai chế độ.
+\subsection{Phân tích Hit@1 theo từng bệnh (offline BM25 \texttt{keyword\_text})}
+Con số tổng hợp $\sim$98\% che giấu một số bệnh khó. Bảng \ref{tab:perdisease} liệt kê các bệnh có Hit@1 thấp nhất; 44 bệnh còn lại đều đạt $\ge 97.97\%$ và phần lớn đạt 100\%.
 
 \begin{table}[H]
-\centering
-\small
-\caption{Đối chiếu OpenSearch live (mẫu 5.000, seed 13) với Python thuần (offline, đầy đủ), biến thể \texttt{keyword\_text}.}
-\label{tab:livevsoffline}
-\begin{tabular}{llccccr}
-\hline
-\textbf{Phương pháp} & \textbf{Hạ tầng} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR} & \textbf{$n$}\\
-\hline
-BM25 & OpenSearch live & 98.88\% & 99.96\% & 99.98\% & 0.9942 & 5.000\\
-BM25 & Python thuần & 98.47\% & 99.95\% & 99.99\% & 0.9921 & 132.448\\
-Hybrid-RRF & OpenSearch live & 92.50\% & 98.86\% & 99.52\% & 0.9575 & 5.000\\
-Hybrid-RRF & Python thuần & 91.17\% & 98.89\% & 99.61\% & 0.9511 & 132.448\\
-\hline
-\end{tabular}
+  \centering
+  \small
+  \caption{Năm bệnh có Hit@1 thấp nhất (offline BM25 \texttt{keyword\_text}). Nguồn: \texttt{experiments/exp02/results/exp02\_per\_disease.csv}.}
+  \label{tab:perdisease}
+  \begin{tabular}{lccr}
+    \hline
+    \textbf{Bệnh}        & \textbf{Hit@1} & \textbf{MRR} & \textbf{$n$} \\
+    \hline
+    Acute rhinosinusitis & 49.62\%        & 0.7481       & 1.866        \\
+    Unstable angina      & 84.32\%        & 0.9204       & 2.748        \\
+    Myocarditis          & 93.54\%        & 0.9651       & 1.547        \\
+    Bronchitis           & 96.87\%        & 0.9831       & 3.543        \\
+    URTI                 & 97.78\%        & 0.9888       & 8.656        \\
+    \hline
+  \end{tabular}
 \end{table}
+\textbf{Phân tích lỗi.} Các bệnh có Hit@1 thấp nhất đều có một hoặc nhiều \textit{bệnh anh em} trong cùng nhóm bệnh lý với tập evidence triệu chứng chồng lấn đáng kể. Ví dụ, \textit{Acute rhinosinusitis} chỉ đạt Hit@1 = 49.62\%, trong khi \textit{Chronic rhinosinusitis} và \textit{Allergic sinusitis} đều đạt 100\%; \textit{Unstable angina} (84.32\%) có biểu hiện gần với \textit{Stable angina} (98.25\%) và nhóm \textit{Possible NSTEMI/STEMI} (99.97\%); tương tự, các bệnh nhiễm trùng đường hô hấp như \textit{URTI} (97.78\%, hô hấp trên), \textit{Viral pharyngitis} (98.96\%) và \textit{Bronchitis} (96.87\%, hô hấp dưới) cũng có tập triệu chứng chồng lấn cao. (Các cặp nhầm lẫn cụ thể nêu trên là \textit{suy luận} từ mức chồng lấn evidence và Hit@1 của các bệnh anh em; Phase 1 chưa tính confusion matrix để xác nhận trực tiếp.)
 
-\textbf{Nhận xét (đối chiếu):} hai hạ tầng cho kết quả \textbf{rất nhất quán}: chênh lệch Hit@1 chỉ +0.41 điểm \% (BM25) và +1.33 điểm \% (Hybrid) theo hướng live cao hơn, nằm trong dao động do cỡ mẫu 5.000 và khác biệt cài đặt engine (analyzer, tie-break, k-NN xấp xỉ HNSW). Quan trọng hơn, \textbf{thứ tự BM25 $>$ Hybrid được bảo toàn}, khẳng định bộ số offline là mốc tham chiếu/trần trên hợp lệ cho logic truy xuất. Con số chốt cuối vẫn lấy từ lần chạy OpenSearch đầy đủ (Bảng \ref{tab:livefull}).
+Nguyên nhân chủ yếu xuất phát từ bản chất của BM25, vốn dựa trên đối sánh từ vựng. Khi nhiều bệnh chia sẻ phần lớn các evidence, tài liệu của bệnh anh em thường đạt điểm BM25 tương đương hoặc cao hơn và chiếm vị trí đầu bảng xếp hạng. Tuy nhiên, giá trị MRR vẫn duy trì ở mức cao (từ 0.92 trở lên đối với hầu hết các bệnh, ngoại trừ \textit{Acute rhinosinusitis} với MRR = 0.7481), cho thấy tài liệu đúng thường vẫn xuất hiện trong những vị trí đầu dù chưa đạt hạng 1. Kết quả này là cơ sở để triển khai bước \textbf{semantic re-ranking} bằng cross-encoder trong Phase~2 nhằm phân biệt các bệnh có biểu hiện lâm sàng tương tự.
 
-\subsection{Kết quả OpenSearch chạy đầy đủ (Tú cập nhật sau khi chạy full)}
-Bảng \ref{tab:livefull} là khung số liệu \textit{production} trên toàn tập validate -- \textbf{con số chốt của Phase 1} -- do \textbf{Nguyễn Minh Tú} điền sau khi chạy pipeline OpenSearch đầy đủ ($n=132{,}448$, ước tính 30--60 phút). Khi điền, ghi kèm cột $\Delta$ so với offline tương ứng để soi độ sai khác hạ tầng.
+\subsection{Kết quả OpenSearch chạy đầy đủ -- con số chốt Phase 1 ($n=132{,}448$)}
+Ngày \textbf{26/06/2026}, nhóm chạy pipeline OpenSearch production trên \textbf{toàn bộ tập validate} ($n=132{,}448$, 8 workers, $\approx 3.7$ giờ) -- thay cho lần chạy thử trên mẫu 5.000 trước đó. Đây là \textbf{con số chốt của Phase 1} (Bảng \ref{tab:livefull}). Truy xuất qua BM25 query + k-NN vector + search pipeline \texttt{hybrid-rrf}; biến thể \texttt{keyword\_text}/no-desc để khớp đúng cấu hình production. Notebook chạy (\texttt{exp02\_live\_eval.ipynb}) và kết quả (\texttt{live\_eval\_latest.json}) được commit trong \href{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System/pull/13}{PR~\#13}.
 
 \begin{table}[H]
-\centering
-\small
-\caption{Kết quả OpenSearch đầy đủ -- \textit{khung chờ điền (Người điền: Nguyễn Minh Tú)}.}
-\label{tab:livefull}
-\begin{tabular}{lcccccr}
-\hline
-\textbf{Phương pháp} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR} & \textbf{NDCG@5} & \textbf{$n$}\\
-\hline
-BM25 (keyword\_text) & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
-BM25 + description & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
-Hybrid-RRF & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
-Dense & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
-+ Reranker (A4, Phase 2) & \textit{[Tú điền]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & \textit{[..]} & 132.448\\
-\hline
-\end{tabular}
+  \centering
+  \small
+  \caption{Kết quả OpenSearch production chạy đầy đủ ($n=132{,}448$, ngày 26/06/2026). Nguồn: \texttt{experiments/exp02/results/live\_eval\_latest.json}.}
+  \label{tab:livefull}
+  \begin{tabular}{lccccr}
+    \hline
+    \textbf{Phương pháp} & \textbf{Hit@1}   & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR}    & \textbf{$n$} \\
+    \hline
+    BM25 (keyword\_text) & \textbf{98.65\%} & 99.96\%        & 99.99\%        & \textbf{0.9931} & 132.448      \\
+    Hybrid-RRF           & 92.30\%          & 98.85\%        & 99.54\%        & 0.9565          & 132.448      \\
+    Dense kNN            & 79.54\%          & 93.60\%        & 96.75\%        & 0.8709          & 132.448      \\
+    \hline
+  \end{tabular}
 \end{table}
 
-\subsection{Chỉ số QA bổ sung (tùy chọn)}
-Bảng \ref{tab:qa} dành cho \textbf{Nguyễn Thị Diễm Hương} bổ sung các chỉ số QA theo phần research (nếu muốn), giúp đánh giá toàn diện hơn ngoài Hit@k/MRR.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        ybar, bar width=9pt,
+        width=0.92\textwidth, height=6.2cm,
+        enlarge x limits=0.28,
+        ymin=70, ymax=103,
+        ylabel={Tỉ lệ (\%)},
+        symbolic x coords={BM25, Hybrid-RRF, Dense},
+        xtick=data,
+        nodes near coords, every node near coord/.append style={font=\tiny},
+        legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3, font=\footnotesize},
+      ]
+      \addplot coordinates {(BM25,98.65) (Hybrid-RRF,92.30) (Dense,79.54)};
+      \addplot coordinates {(BM25,99.96) (Hybrid-RRF,98.85) (Dense,93.60)};
+      \addplot coordinates {(BM25,99.99) (Hybrid-RRF,99.54) (Dense,96.75)};
+      \legend{Hit@1, Hit@3, Hit@5}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{So sánh Hit@1/Hit@3/Hit@5 của ba chiến lược trên OpenSearch production -- con số chốt Phase 1 (toàn tập $n=132{,}448$, 26/06/2026, biến thể \texttt{keyword\_text}/no-desc).}
+  \label{fig:bar}
+\end{figure}
+
+\textbf{Nhận xét.} Kết quả production nhất quán với các thí nghiệm offline: BM25 tiếp tục đạt hiệu năng cao nhất (Hit@1 = 98.65\%), tiếp theo là Hybrid-RRF (92.30\%) và Dense kNN (79.54\%). Thứ hạng này được giữ nguyên trên toàn bộ tập đánh giá, cho thấy các kết luận của Phase~1 không phụ thuộc vào hạ tầng triển khai mà phản ánh đặc điểm của tập dữ liệu và Knowledge Base.
+
+Khoảng cách giữa Hit@1 và Hit@5 của Hybrid-RRF (92.30\% so với 99.54\%) cũng như Dense kNN (79.54\% so với 96.75\%) cho thấy trong nhiều trường hợp tài liệu đúng đã xuất hiện trong nhóm kết quả đầu nhưng chưa được xếp ở vị trí thứ nhất. Điều này tạo động lực cho bước \emph{semantic re-ranking} bằng cross-encoder nhằm cải thiện chất lượng sắp hạng.
+
+Mặc dù mô-đun cross-encoder đã được hiện thực ở cuối Phase~1, việc đánh giá định lượng được dành cho Phase~2. Tương tự, các chỉ số đánh giá nâng cao như NDCG@5 (graded relevance theo ICD-10 tier), Missed-Severe Ratio (MSR, tỉ lệ bỏ sót bệnh nặng với severity $\le 2$) và khoảng tin cậy bootstrap cũng sẽ được báo cáo trong Phase~2, do đó không được đưa vào bảng kết quả của Phase~1.
+
+\subsection{Đối chiếu Python thuần với OpenSearch trên toàn tập}
+Bảng~\ref{tab:livevsoffline} so sánh trực tiếp kết quả giữa hai hạ tầng \emph{offline} và \emph{OpenSearch production} trên cùng tập đánh giá ($n=132{,}448$), sử dụng cùng Knowledge Base, cùng bộ chuẩn hoá và cùng ground truth; khác biệt duy nhất là hạ tầng thực thi. Để bảo đảm tính tương đương, cả hai chế độ đều sử dụng biến thể \texttt{keyword\_text} (không kèm \texttt{description}). Phân tích chi tiết về mức độ sai khác giữa hai hạ tầng được trình bày trong phần Thảo luận (Hình~\ref{fig:liveoffline}), trong khi Bảng~\ref{tab:harness} tổng hợp các khác biệt về cấu hình và cơ chế thực thi của từng phương pháp.
 
 \begin{table}[H]
-\centering
-\small
-\caption{Chỉ số QA bổ sung -- \textit{khung chờ điền (Người điền: Nguyễn Thị Diễm Hương)}.}
-\label{tab:qa}
-\begin{tabular}{p{6.2cm}p{3.2cm}p{2.4cm}}
-\hline
-\textbf{Chỉ số QA} & \textbf{Ý nghĩa} & \textbf{Giá trị}\\
-\hline
-NDCG@5 (graded relevance) & Chất lượng xếp hạng có trọng số & \textit{[Hương điền]}\\
-Tier-1.5: ICD-10 chapter Hit@1 & Đúng chương ICD-10 & \textit{[Hương điền]}\\
-Tier-1.5: ICD-10 block Hit@1 & Đúng block ICD-10 & \textit{[Hương điền]}\\
-MSR (Missed-Severe Ratio, severity $\le 2$) & Tỉ lệ bỏ sót bệnh nặng & \textit{[Hương điền]}\\
-Bootstrap 95\% CI (B=1000, seed 42) & Khoảng tin cậy của Hit@1 & \textit{[Hương điền]}\\
-\hline
-\end{tabular}
+  \centering
+  \small
+  \caption{Đối chiếu cấu hình hai chế độ đánh giá theo từng phương pháp.}
+  \label{tab:harness}
+  \begin{tabular}{p{2.3cm}p{5.4cm}p{5.4cm}}
+    \hline
+    \textbf{Thành phần} & \textbf{Offline (in-memory)}                                     & \textbf{Production (OpenSearch)}                                                 \\
+    \hline
+    BM25                & tự cài Okapi, $k_1{=}1.5,b{=}0.75$, tokenizer \texttt{[a-z0-9]+} & \texttt{match} trên \texttt{keyword\_text}, BM25 mặc định ($k_1{=}1.2,b{=}0.75$) \\
+    Dense               & cosine in-memory; query không prefix                             & \texttt{knn} HNSW xấp xỉ (\texttt{cosinesimil}); query có prefix BGE             \\
+    Hybrid              & RRF$(k{=}60)$ ghép thủ công 2 danh sách rank                     & \texttt{hybrid} query $+$ \texttt{score-ranker-processor} (\texttt{rrf})         \\
+    Quy mô              & brute-force toàn bộ 49 tài liệu                                  & chỉ mục thật, alias \texttt{diseases}, bulk ingest                               \\
+    Vai trò             & trần trên / mốc tham chiếu logic                                 & con số chốt production                                                           \\
+    \hline
+  \end{tabular}
 \end{table}
 
-\begin{notebox}{Quy ước điền số liệu}
-\begin{itemize}
-\item Bảng 1--2: số liệu đã chốt (offline + đối chiếu mẫu 5k) -- KHÔNG sửa.
-\item Bảng 3: Nguyễn Minh Tú điền sau khi chạy OpenSearch đầy đủ; ghi rõ ngày chạy, seed, và $\Delta$ so với offline.
-\item Bảng 4: Nguyễn Thị Diễm Hương điền các chỉ số QA tùy chọn; nêu rõ công thức nếu khác chuẩn.
-\item Mọi con số phải kèm $n$ (cỡ mẫu) và làm tròn 2 chữ số thập phân để so sánh được.
-\end{itemize}
+\begin{table}[H]
+  \centering
+  \small
+  \caption{Đối chiếu OpenSearch live (production, 26/06) với Python thuần (offline) trên toàn tập, biến thể \texttt{keyword\_text}/no-desc. $\Delta$ = live $-$ offline (điểm \%).}
+  \label{tab:livevsoffline}
+  \begin{tabular}{llccccr}
+    \hline
+    \textbf{Phương pháp} & \textbf{Hạ tầng} & \textbf{Hit@1} & \textbf{Hit@3} & \textbf{Hit@5} & \textbf{MRR} & \textbf{$\Delta$Hit@1} \\
+    \hline
+    BM25                 & OpenSearch live  & 98.65\%        & 99.96\%        & 99.99\%        & 0.9931       & $+0.18$                \\
+    BM25                 & Python thuần     & 98.47\%        & 99.95\%        & 99.99\%        & 0.9921       &                        \\
+    Hybrid-RRF           & OpenSearch live  & 92.30\%        & 98.85\%        & 99.54\%        & 0.9565       & $+1.13$                \\
+    Hybrid-RRF           & Python thuần     & 91.17\%        & 98.89\%        & 99.61\%        & 0.9511       &                        \\
+    Dense kNN            & OpenSearch live  & 79.54\%        & 93.60\%        & 96.75\%        & 0.8709       & $-3.57$                \\
+    Dense kNN            & Python thuần     & 83.11\%        & 94.41\%        & 96.82\%        & 0.8911       &                        \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\textbf{Nhận xét.} Kết quả đối chiếu cho thấy BM25 và Hybrid-RRF đạt mức độ nhất quán cao giữa hai hạ tầng. Chênh lệch Hit@1 chỉ lần lượt là $+0.18$ và $+1.13$ điểm phần trăm, đồng thời thứ hạng các phương pháp được giữ nguyên. Riêng với Hybrid-RRF, mức tăng Hit@1 trên production đi kèm một dao động không đáng kể ở Hit@3/Hit@5 (thấp hơn offline $\le 0.07$ điểm phần trăm), phù hợp với khác biệt nhỏ về cơ chế hợp nhất giữa hai hạ tầng. Điều này cho thấy harness đánh giá offline bằng Python phản ánh trung thực hành vi của hệ thống production và quy trình triển khai trên OpenSearch đã tái lập chính xác các kết quả thực nghiệm.
+
+Đối với Dense Retrieval, Hit@1 trên production thấp hơn 3.57 điểm phần trăm so với offline. Tuy nhiên, đây không phải là một phép so sánh hoàn toàn tương đương do hai hạ tầng sử dụng quy trình mã hoá truy vấn khác nhau: phiên bản offline biểu diễn truy vấn bằng chuỗi câu, trong khi production nối các token evidence và bổ sung instruction prefix của mô hình BGE. Phân tích chi tiết về ảnh hưởng của các khác biệt này được trình bày trong phần Thảo luận.
+
+Quan trọng hơn, thứ tự hiệu năng \textbf{BM25 $>$ Hybrid-RRF $>$ Dense Retrieval} được bảo toàn ở cả hai hạ tầng. Kết quả này củng cố kết luận rằng các xu hướng quan sát được trong Phase~1 là nhất quán và không phụ thuộc vào môi trường thực thi.
+
+
+\begin{notebox}{Quy ước số liệu}
+  \begin{itemize}
+    \item Bảng \ref{tab:offline}: số liệu offline (Python thuần, EXP-01/EXP-02) -- mốc tham chiếu/trần trên.
+    \item Bảng \ref{tab:livefull}: con số chốt production (OpenSearch đầy đủ, 26/06/2026, $n=132{,}448$).
+    \item Bảng \ref{tab:livevsoffline}: đối chiếu hai hạ tầng trên cùng cỡ mẫu, kèm $\Delta$ so với offline.
+    \item Re-ranking và các chỉ số QA (NDCG@5, ICD-10 tier, MSR, bootstrap CI) chưa đo định lượng ở Phase 1 -- dời sang Phase 2; không đưa số liệu chưa đo vào báo cáo.
+    \item Mọi con số kèm $n$ (cỡ mẫu), làm tròn 2 chữ số thập phân.
+  \end{itemize}
 \end{notebox}

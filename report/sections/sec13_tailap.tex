@@ -7,7 +7,7 @@
 \item \textbf{Cài đặt môi trường:} \texttt{pip install -r requirements.txt}.
 \item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_evidences.json} và \texttt{release\_conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
 \item \textbf{Đánh giá offline (Python thuần):} chạy \texttt{eval\_retrieval.py} để tái tạo Bảng \ref{tab:offline}.
-\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook/CLI eval trên engine để tái tạo Bảng \ref{tab:livevsoffline} và điền Bảng \ref{tab:livefull}. \textit{[Tú/Trí điền lệnh chính xác.]}
+\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook \texttt{notebooks/exp02\_live\_eval.ipynb} (8 workers) trên toàn tập để tái tạo Bảng \ref{tab:livefull} và \ref{tab:livevsoffline}; kết quả lưu ở \texttt{experiments/exp02/results/live\_eval\_latest.json}.
 \end{itemize}
 
 \begin{aivncodebox}[Cấu trúc mã nguồn (rút gọn):]

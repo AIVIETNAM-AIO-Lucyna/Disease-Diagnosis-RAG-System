@@ -1,45 +1,176 @@
 \section{Phương pháp nghiên cứu (Methodology)}
-% [NHÁP -- Phụ trách: Nguyễn Minh Tú (pipeline) & Nguyễn Văn Thương (KB/đánh giá).]
+% [Phụ trách: Nguyễn Minh Tú (pipeline) & Nguyễn Văn Thương (KB/đánh giá). Mọi công thức/tham số bám theo mã nguồn thực tế: scripts/build_kb.py, src/services/rag/*, experiments/exp02/*.]
 
-\subsection{Kiến trúc pipeline hai tầng (two-layer RAG)}
-Thiết kế A (DDXPlus-only, retrieval-first) gồm các bước: (1) xây dựng KB từ định nghĩa bệnh và evidence; (2) lập chỉ mục trên OpenSearch (chỉ mục từ vựng cho BM25 và chỉ mục vector cho k-NN); (3) truy xuất Hybrid (BM25 + dense) hợp nhất bằng RRF; (4) re-ranking top-$K$ (mã nguồn đã hiện thực cuối Phase 1, đánh giá định lượng ở Phase 2); (5) sinh câu trả lời bằng LLM (Phase 2).
+\subsection{Tổng quan pipeline hai tầng (Two-Layer RAG)}
+
+Thiết kế A (DDXPlus-only, \textit{retrieval-first}) gồm năm giai đoạn. Đầu tiên, \textbf{Knowledge Base (KB)} được xây dựng từ định nghĩa bệnh và các evidence sau khi tiền xử lý và chuẩn hoá bằng các kỹ thuật NLP. Tiếp theo, KB được \textbf{lập chỉ mục} trên OpenSearch với hai loại chỉ mục: chỉ mục từ vựng phục vụ BM25 và chỉ mục vector phục vụ truy xuất k-NN.
+
+Ở giai đoạn \textbf{truy xuất}, hệ thống hỗ trợ ba chiến lược: BM25 (lexical retrieval), Dense Retrieval (semantic retrieval dựa trên embedding và độ tương đồng cosine) và Hybrid Retrieval, trong đó kết quả của BM25 và Dense được hợp nhất bằng Reciprocal Rank Fusion (RRF). Các tài liệu top-$K$ sau truy xuất được đưa qua bước \textbf{re-ranking} bằng cross-encoder nhằm cải thiện chất lượng xếp hạng. Thành phần này đã được hiện thực trong Phase~1 nhưng chỉ được đánh giá định lượng ở Phase~2. Cuối cùng, các tài liệu đã được xếp hạng được sử dụng làm ngữ cảnh để \textbf{sinh câu trả lời} bằng LLM trong Phase~2.
+
+Để tách biệt chất lượng của thuật toán truy xuất khỏi ảnh hưởng của hạ tầng triển khai, mỗi chiến lược được đánh giá trên hai môi trường thực thi song song: (i) chế độ \textit{offline} (in-memory, Python thuần) dùng làm mốc tham chiếu và (ii) hệ thống OpenSearch, sử dụng các cơ chế lập chỉ mục và truy xuất tương ứng trong môi trường triển khai thực tế.
+
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[node distance=0.9cm]
-\node[stage, text width=2.1cm] (q) {Truy vấn bệnh nhân\\(EVIDENCES + tuổi/giới)};
-\node[stage, text width=2.0cm, right=of q] (pre) {Tiền xử lý\\decode + chuẩn hoá};
-\node[stage, text width=2.5cm, right=of pre] (hyb) {Truy xuất Hybrid\\BM25 (keyword\_text) + k-NN (BGE 384-d)};
-\node[stage, text width=1.9cm, right=of hyb] (rrf) {RRF $k=60$\\$\rightarrow$ top-20};
-\node[future, text width=1.9cm, right=of rrf] (rr) {Re-ranking\\top-20 $\rightarrow$ top-5\\(Phase 2)};
-\node[future, text width=1.9cm, right=of rr] (gen) {Sinh câu trả lời\\Qwen3-8B\\(Phase 2)};
-\draw[flow] (q) -- (pre);
-\draw[flow] (pre) -- (hyb);
-\draw[flow] (hyb) -- (rrf);
-\draw[flow] (rrf) -- (rr);
-\draw[flow] (rr) -- (gen);
-\end{tikzpicture}}
-\caption{Pipeline RAG hai tầng (Thiết kế A). Khối nét liền: hoàn thiện và đánh giá ở Phase 1. Khối nét đứt: re-ranking (mã nguồn đã hiện thực cuối Phase 1, đánh giá ở Phase 2) và sinh câu trả lời (Phase 2).}
-\label{fig:pipeline}
+    \centering
+    \resizebox{\textwidth}{!}{%
+        \begin{tikzpicture}[node distance=0.9cm]
+            \node[stage, text width=2.1cm] (q) {Truy vấn bệnh nhân\\(EVIDENCES + tuổi/giới)};
+            \node[stage, text width=2.0cm, right=of q] (pre) {Tiền xử lý\\decode + chuẩn hoá};
+            \node[stage, text width=2.5cm, right=of pre] (hyb) {Truy xuất Hybrid\\BM25 (keyword\_text) + k-NN (BGE 384-d)};
+            \node[stage, text width=1.9cm, right=of hyb] (rrf) {RRF $k=60$\\$\rightarrow$ top-20};
+            \node[future, text width=1.9cm, right=of rrf] (rr) {Re-ranking\\top-20 $\rightarrow$ top-5\\(Phase 2)};
+            \node[future, text width=1.9cm, right=of rr] (gen) {Sinh câu trả lời\\Qwen3-8B\\(Phase 2)};
+            \draw[flow] (q) -- (pre);
+            \draw[flow] (pre) -- (hyb);
+            \draw[flow] (hyb) -- (rrf);
+            \draw[flow] (rrf) -- (rr);
+            \draw[flow] (rr) -- (gen);
+        \end{tikzpicture}}
+    \caption{Pipeline RAG hai tầng (Thiết kế A). Khối nét liền: hoàn thiện và đánh giá ở Phase 1. Khối nét đứt: re-ranking (mã nguồn cuối Phase 1, đánh giá ở Phase 2) và sinh câu trả lời (Phase 2).}
+    \label{fig:pipeline}
 \end{figure}
 
-\subsection{Xây dựng và kiểm định KB}
-Mỗi bệnh được mô tả bằng tập evidence tương ứng (có/không trường \textit{description}). Trong quá trình rà soát KB, nhóm đã thống nhất (PR \#6) các điểm sau: (i) \textbf{dùng chung normalizer} giữa bước build KB và bước query (\texttt{ddxplus\_normalize}) để text lúc build và lúc truy vấn đồng nhất; (ii) \textbf{bổ sung \texttt{icd10\_codes}} cho mọi tài liệu; (iii) \textbf{sửa ánh xạ ICD-10 của Pneumonia} (J17 $\rightarrow$ J18); (iv) \textbf{tái sinh KB} và kiểm định (49 tài liệu, 0 token lệch). Việc này khắc phục hiện tượng lệch BM25/embedding ở 9/49 bệnh do KB cũ được build bằng normalizer phiên bản trước. Nhóm chuẩn bị \textbf{hai bản KB} -- bản đã chuẩn hoá (\texttt{kb\_ddxplus.json}) và bản giữ nguyên (\texttt{kb\_ddxplus\_rawq.json}) -- để so sánh Hit@1/MRR trên tập dev và chọn bản tốt hơn. Phần rà soát ICD-10 được tự động hoá bằng \texttt{scripts/build\_icd10\_reference.py}, sinh \texttt{data/kb/icd10\_audit.csv} và \texttt{icd10\_audit.md}.
+\subsection{Từ dữ liệu thô đến Knowledge Base: quy trình NLP}
+Knowledge Base (KB) được xây dựng bằng chương trình \code{scripts/build_kb.py}, có nhiệm vụ chuyển đổi dữ liệu thô thành phiên bản đã chuẩn hoá phục vụ truy xuất. Toàn bộ quá trình chuẩn hoá sử dụng chung mô-đun tiền xử lý \code{src/services/rag/preprocess.py} cho cả hai giai đoạn xây dựng chỉ mục (ingest) và xử lý truy vấn (query), qua đó bảo đảm văn bản được chuẩn hoá nhất quán giữa thời điểm lập chỉ mục và thời điểm truy xuất.
 
-\subsection{Các chiến lược truy xuất}
-\begin{itemize}
-\item \textbf{BM25} (lexical, baseline): Okapi BM25 trên trường \texttt{keyword\_text}/\textit{description}.
-\item \textbf{Dense:} mã hoá bằng \texttt{BAAI/bge-small-en-v1.5} (384 chiều, cosine); truy vấn được nhúng sau khi loại bỏ tên bệnh (vốn là nhãn gold).
-\item \textbf{Hybrid:} hợp nhất thứ hạng BM25 và dense bằng Reciprocal Rank Fusion (RRF, $k=60$).
-\item \textbf{Re-ranking (mã nguồn cuối Phase 1, đánh giá Phase 2):} cross-encoder \texttt{bge-reranker-base} (top-20 $\rightarrow$ top-5).
-\item \textbf{Sinh câu trả lời (Phase 2):} mô hình \texttt{Qwen3-8B} dựa trên top-$K$ tài liệu truy xuất.
+\paragraph{(a) Nguồn dữ liệu và trích xuất trường.}
+Knowledge Base được xây dựng từ hai tệp của DDXPlus: \code{release_conditions.json} (49 bệnh) và \code{release_evidences.json} (223 evidence). Đối với mỗi bệnh, hệ thống trích xuất các trường gồm tên bệnh (\texttt{cond-name-eng}), danh sách evidence trong \texttt{symptoms} và \texttt{antecedents}, mức độ nghiêm trọng (\texttt{severity}, thang 1--5) và mã ICD-10 (\texttt{icd10-id}).
+
+\paragraph{(b) Chuẩn hoá cụm triệu chứng (\texttt{normalize\_symptom\_phrase}).}
+Mỗi mã evidence được ánh xạ sang câu hỏi tiếng Anh (\texttt{question\_en}) rồi chuyển thành một cụm danh từ biểu diễn triệu chứng thông qua hàm \texttt{normalize\_symptom\_phrase}. Quy trình chuẩn hoá gồm các bước sau:
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+    \item Áp dụng \textbf{bảng override} cho các câu hỏi đặc biệt không thể xử lý chính xác bằng các quy tắc tổng quát. Bảng này gồm 24 ánh xạ được xây dựng thủ công nhằm bảo toàn ý nghĩa lâm sàng. Ví dụ, \textit{`Characterize your pain:''} được chuyển thành \texttt{pain character}, \textit{`Have you traveled out of the country in the last 4 weeks?''} thành \texttt{recent international travel}, và \textit{``Do you have a cough?''} thành \texttt{cough}.
+
+    \item Chuẩn hoá văn bản bằng cách chuyển về chữ thường, loại bỏ khoảng trắng dư thừa, nội dung trong ngoặc và dấu câu cuối.
+
+    \item Loại bỏ các mẫu mở đầu của câu hỏi (\texttt{\_LEAD\_FRAMES}), chẳng hạn như \textit{``Do you have''}, \textit{``Have you ever''} hoặc \textit{``Are you''}, nhằm giữ lại nội dung mang ý nghĩa lâm sàng.
+
+    \item Loại bỏ các mệnh đề nối và từ chức năng không mang thông tin (ví dụ: \textit{been}, \textit{had}, \textit{a}, \textit{the}, \textit{with}, \textit{to}), sau đó chuẩn hoá khoảng trắng để thu được cụm triệu chứng cuối cùng.
+
+\end{enumerate}
+
+Quy trình trên chuyển đổi các câu hỏi dạng hội thoại trong DDXPlus thành các cụm triệu chứng ngắn gọn và nhất quán, giúp cải thiện hiệu quả lập chỉ mục và truy xuất, đồng thời bảo đảm cùng một quy tắc chuẩn hoá được áp dụng ở cả giai đoạn xây dựng Knowledge Base và xử lý truy vấ
+
+Trước bước này, \texttt{PreprocessPipeline} còn \textbf{mở rộng từ đồng nghĩa} (vd. \textit{tired/exhausted}$\rightarrow$\texttt{fatigue}, \textit{throwing up}$\rightarrow$\texttt{vomiting}). Triệu chứng/antecedent sau chuẩn hoá được \textbf{khử trùng lặp giữ thứ tự}.
+
+\paragraph{(c) Chuẩn hoá mã ICD-10 và định danh tài liệu.}
+Mã ICD-10 được chuẩn hoá bằng hàm \texttt{normalize\_icd10}, bao gồm chuyển sang chữ hoa và loại bỏ khoảng trắng dư thừa. Với các bệnh có nhiều mã ICD-10, hệ thống tách từng mã riêng biệt bằng \texttt{split\_icd10\_codes} trước khi xác định \texttt{doc\_id}. Mỗi tài liệu được gán một \texttt{doc\_id} duy nhất theo quy tắc tất định nhằm bảo đảm tính nhất quán trong quá trình lập chỉ mục và truy xuất. Một số trường hợp ngoại lệ được xử lý bằng bảng override; ví dụ, bệnh \textit{Pneumonia} có cặp mã \texttt{(J17,J18)} được ánh xạ về \texttt{J18} làm \texttt{doc\_id} chuẩn.
+
+\paragraph{(d) Sinh các trường dẫn xuất.}
+Từ ba trường gốc gồm tên bệnh (\textit{disease}), triệu chứng (\textit{symptoms}) và tiền sử (\textit{antecedents}), hệ thống tạo thêm các trường phục vụ truy xuất và sinh câu trả lời:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+    \item \texttt{keyword\_text}: chuỗi ghép của \textit{disease}, \textit{symptoms} và \textit{antecedents}, được lập chỉ mục cho truy xuất từ vựng bằng BM25;
+    \item \texttt{embedding}: vector biểu diễn 384 chiều được sinh bởi mô hình BGE từ chuỗi định dạng \texttt{"Disease: ... Symptoms: ... Antecedents: ..."}, sau đó chuẩn hoá L2 và lưu trong chỉ mục vector để phục vụ Dense Retrieval;
+    \item \texttt{description}: mô tả dạng \texttt{"Condition characterized by: ... Risk factors: ..."}, chỉ được sử dụng làm ngữ cảnh cho LLM trong Phase~2 và không tham gia vào quá trình tạo embedding;
+    \item metadata gồm \texttt{doc\_id}, \texttt{severity} và \texttt{source}.
 \end{itemize}
 
-\subsection{Harness đánh giá: Python thuần và OpenSearch}
-Để có số liệu sớm và kiểm soát logic truy xuất độc lập với hạ tầng, nhóm dùng \textbf{hai chế độ đánh giá song song}:
-\begin{enumerate}
-\item \textbf{Tham chiếu (offline, Python thuần):} cài đặt Okapi BM25 ($k_1=1.5$, $b=0.75$, tokenizer \texttt{[a-z0-9]+}), dense bằng thư viện \texttt{sentence-transformers}, và hybrid ghép thủ công bằng RRF ($k=60$). Vì KB chỉ có 49 tài liệu nên brute-force in-memory là đủ; chế độ này \textbf{không} dùng OpenSearch và đóng vai trò \textit{trần trên} cho chất lượng logic.
-\item \textbf{Production (live OpenSearch):} ingest KB vào OpenSearch rồi truy xuất qua BM25 query + k-NN vector + search pipeline \texttt{hybrid-rrf}. Đây là con số chốt cho hệ thống thực; được đối chiếu với chế độ offline để phát hiện sai khác do hạ tầng.
+\paragraph{(e) Kiểm định tính nhất quán.}
+Sau khi xây dựng Knowledge Base, hệ thống thực hiện các kiểm tra tự động nhằm bảo đảm tính toàn vẹn của dữ liệu, bao gồm: xác nhận đúng 49 tài liệu, \texttt{doc\_id} là duy nhất, \texttt{severity} thuộc khoảng $[1,5]$ và embedding có đúng số chiều. Hai phiên bản KB được duy trì song song: bản chuẩn hoá (\code{kb_ddxplus.json}) và bản giữ nguyên câu hỏi gốc (\code{kb_ddxplus_rawq.json}) để đánh giá ảnh hưởng của bước chuẩn hoá. Kết quả rà soát trong \href{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System/pull/6}{PR~\#6} xác nhận không còn sai lệch token giữa dữ liệu nguồn và dữ liệu sau xử lý, bảo đảm tính nhất quán giữa giai đoạn xây dựng chỉ mục và truy xuất.
+
+\subsection{Vì sao chọn OpenSearch}
+Bài toán truy xuất trong nghiên cứu yêu cầu hỗ trợ đồng thời ba chiến lược trên cùng một Knowledge Base: truy xuất từ vựng (BM25), truy xuất vector (Dense Retrieval) và truy xuất kết hợp (Hybrid Retrieval). Thay vì triển khai nhiều hệ thống riêng biệt, nghiên cứu lựa chọn OpenSearch vì hỗ trợ đầy đủ cả ba cơ chế trong một nền tảng thống nhất, giúp đơn giản hóa kiến trúc hệ thống và bảo đảm tính nhất quán giữa các phương pháp truy xuất.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+    \item \textbf{BM25}: được hỗ trợ trực tiếp thông qua trường \texttt{text} và truy vấn \texttt{match};
+    \item \textbf{Dense Retrieval}: sử dụng trường \texttt{knn\_vector} (384 chiều) và độ tương đồng cosine để thực hiện truy xuất vector xấp xỉ (Approximate Nearest Neighbor);
+    \item \textbf{Hybrid Retrieval}: kết hợp kết quả của BM25 và Dense Retrieval thông qua truy vấn \texttt{hybrid}, sau đó hợp nhất thứ hạng bằng \emph{Reciprocal Rank Fusion} (RRF) trong search pipeline mà không cần hiện thực cơ chế fusion ở tầng ứng dụng;
+    \item \textbf{Triển khai}: hỗ trợ \emph{bulk ingest}, mapping tường minh và cơ chế alias (\texttt{diseases}) cho phép thay thế chỉ mục (\emph{index swapping}) mà không làm gián đoạn dịch vụ.
+\end{itemize}
+
+Việc sử dụng OpenSearch giúp toàn bộ pipeline production được triển khai trên một hạ tầng thống nhất cho cả ba chiến lược truy xuất, đồng thời cho phép đối chiếu trực tiếp với harness đánh giá offline sử dụng cùng Knowledge Base và cùng quy trình tiền xử lý. Nhờ đó, các khác biệt quan sát được trong thực nghiệm chủ yếu phản ánh đặc điểm của thuật toán truy xuất thay vì sự khác biệt trong kiến trúc hệ thống. Ba thành phần hạ tầng chính được trình bày dưới đây gồm: mapping chỉ mục (Hình~\ref{fig:os-mapping}), alias \texttt{diseases} phục vụ thay thế chỉ mục không gián đoạn (Hình~\ref{fig:os-alias}) và search pipeline RRF (Hình~\ref{fig:os-pipeline}).
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.42\textwidth]{Figures/ddxplus_mapping.png}
+    \caption{Mapping chỉ mục \texttt{ddxplus\_diseases}: trường \texttt{keyword\_text} (\texttt{text}) cho BM25 và \texttt{embedding} (\texttt{knn\_vector}, 384 chiều, \texttt{cosinesimil}) cho k-NN, cùng các trường metadata (\texttt{doc\_id}, \texttt{severity}, \texttt{description}\dots).}
+    \label{fig:os-mapping}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figures/alias.png}
+    \caption{Alias \texttt{diseases} trỏ tới chỉ mục vật lý hiện hành, cho phép \textit{swap} chỉ mục khi tái lập (reindex) mà không làm gián đoạn truy vấn.}
+    \label{fig:os-alias}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figures/phase_result_processor.png}
+    \caption{Search pipeline \texttt{hybrid-rrf} với \texttt{score-ranker-processor} (kỹ thuật \texttt{rrf}): hợp nhất thứ hạng của nhánh BM25 và nhánh k-NN ngay trong engine.}
+    \label{fig:os-pipeline}
+\end{figure}
+
+\subsection{Các chiến lược truy xuất: công thức và tham số}
+
+\paragraph{BM25 (Okapi).}
+BM25 được sử dụng làm mô hình truy xuất từ vựng, trong đó điểm phù hợp giữa truy vấn $Q$ và tài liệu $D$ được tính như sau:
+\begin{equation}
+    \mathrm{BM25}(Q,D)=\sum_{t\in Q}\mathrm{IDF}(t)
+    \cdot
+    \frac{f(t,D)\,(k_1+1)}
+    {f(t,D)+k_1\!\left(1-b+b\,\dfrac{|D|}{\mathrm{avgdl}}\right)},
+\end{equation}
+với
+\[
+    \mathrm{IDF}(t)=
+    \ln\!\left(
+    1+\frac{N-n(t)+0.5}{n(t)+0.5}
+    \right),
+\]
+trong đó $f(t,D)$ là tần suất xuất hiện của từ $t$ trong tài liệu, $|D|$ là độ dài tài liệu, $\mathrm{avgdl}$ là độ dài trung bình của tập tài liệu, $N$ là tổng số tài liệu và $n(t)$ là số tài liệu chứa từ $t$.
+
+Trong thực nghiệm, hệ thống offline sử dụng BM25 với $k_1=1.5$, $b=0.75$ và tokenizer \texttt{[a-z0-9]+}; hệ thống production dùng BM25 mặc định của OpenSearch ($k_1=1.2$, $b=0.75$) với \textit{standard analyzer} trên trường \texttt{keyword\_text}. Truy vấn \texttt{match} dùng toán tử \texttt{OR} (tài liệu được tính điểm nếu chứa bất kỳ từ nào của truy vấn). BM25 được đánh giá ở hai biến thể trường: \texttt{keyword\_text} và \texttt{keyword\_text} $+$ \texttt{description} (xem mục Kết quả).
+
+\paragraph{Dense Retrieval (k-NN).}
+Dense retrieval sử dụng mô hình \texttt{BAAI/bge-small-en-v1.5} để mã hoá truy vấn và tài liệu thành vector 384 chiều. Độ tương đồng được tính bằng cosine:
+\begin{equation}
+    \mathrm{sim}(q,d)=\cos(\mathbf{v}_q,\mathbf{v}_d)
+    =\frac{\mathbf{v}_q\cdot\mathbf{v}_d}
+    {\lVert\mathbf{v}_q\rVert\,\lVert\mathbf{v}_d\rVert}.
+\end{equation}
+
+Vector của tài liệu (đã \textbf{chuẩn hoá L2}, nên cosine tương đương tích vô hướng) được sinh từ chuỗi kết hợp tên bệnh, triệu chứng và tiền sử trong bước xây dựng KB. Truy xuất production dùng chỉ mục \texttt{knn\_vector} của OpenSearch (\texttt{space\_type=cosinesimil}, \texttt{index.knn=true}) với HNSW \textit{xấp xỉ}; với KB chỉ 49 tài liệu, kết quả xấp xỉ gần như trùng với tìm kiếm chính xác, lợi thế tốc độ của HNSW chỉ rõ rệt khi KB lớn hơn nhiều. Số lân cận truy xuất mặc định là $k=20$.
+
+Điểm khác biệt giữa hai chế độ nằm ở \textbf{cách biểu diễn truy vấn} (phía tài liệu giống nhau): offline dựng chuỗi dạng câu \texttt{"Symptoms and antecedents: \dots"} và mã hoá \textit{không} prefix; production dùng hàm \texttt{embed\_query()} nối các token đã chuẩn hoá và bổ sung tiền tố của BGE (\texttt{"Represent this sentence for searching relevant passages:"}). Bất đối xứng truy vấn--tài liệu này được phân tích như nguyên nhân chính gây chênh lệch Dense giữa hai chế độ ở mục Thảo luận.
+
+\paragraph{Hybrid Retrieval (Reciprocal Rank Fusion).}
+Hybrid Retrieval kết hợp kết quả từ BM25 và Dense Retrieval bằng phương pháp \textit{Reciprocal Rank Fusion} (RRF):
+\begin{equation}
+    \mathrm{RRF}(d)=
+    \sum_{r\in\{\mathrm{BM25},\,\mathrm{Dense}\}}
+    \frac{1}{k+\mathrm{rank}_r(d)},
+    \qquad
+    k=60.
+\end{equation}
+
+Khác với việc kết hợp điểm số trực tiếp, RRF chỉ sử dụng \textit{thứ hạng} của tài liệu trong từng danh sách và \textbf{gán trọng số bằng nhau} cho hai nhánh BM25 và Dense (không đặt trọng số riêng cho từng nhánh). Hằng số $k=60$ là giá trị mặc định của \texttt{score-ranker-processor}. Hệ thống offline tính RRF trên hai danh sách kết quả cục bộ, còn production dùng \texttt{hybrid} query kết hợp \texttt{score-ranker-processor} của OpenSearch. Cả hai chế độ đều giữ lại top-$20$ tài liệu sau bước truy xuất.
+
+\paragraph{Re-ranking và sinh câu trả lời.}
+Ở Phase~2, top-20 tài liệu được sắp xếp lại bằng cross-encoder \texttt{bge-reranker-base}: khác với bi-encoder (mã hoá truy vấn và tài liệu \textit{riêng rẽ} rồi so cosine), cross-encoder \textbf{mã hoá đồng thời cặp (truy vấn, tài liệu)} qua một lượt Transformer nên cho điểm liên quan chính xác hơn, sau đó giữ lại top-5 tài liệu (\texttt{RERANK\_TOP\_K}$=5$). Các tài liệu này được dùng làm ngữ cảnh cho mô hình ngôn ngữ \texttt{Qwen3-8B} để sinh câu trả lời cuối cùng. Thành phần re-ranking đã được hiện thực, nhưng chỉ được đánh giá định lượng trong Phase~2.
+
+\subsection{Hai chế độ đánh giá: in-memory offline và OpenSearch production}
+
+Để đánh giá chất lượng của các chiến lược truy xuất đồng thời tách biệt ảnh hưởng của hạ tầng triển khai, nhóm xây dựng hai harness đánh giá chạy song song trên cùng một Knowledge Base, cùng pipeline tiền xử lý và cùng bộ dữ liệu gán nhãn. Hai chế độ chỉ khác nhau ở engine thực thi, như tóm tắt trong Bảng~\ref{tab:harness}.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+    \item \textbf{Offline (in-memory).} Toàn bộ quá trình truy xuất được thực hiện trong Python mà không sử dụng OpenSearch. BM25 được cài đặt theo công thức Okapi ($k_1=1.5$, $b=0.75$), Dense Retrieval sử dụng \texttt{sentence-transformers} với mô hình \texttt{BAAI/bge-small-en-v1.5}, còn Hybrid Retrieval kết hợp hai danh sách kết quả bằng Reciprocal Rank Fusion (RRF, $k=60$). Do Knowledge Base chỉ gồm 49 tài liệu, việc tính toán brute-force trên toàn bộ tập dữ liệu là đủ để làm mốc tham chiếu cho chất lượng của các thuật toán truy xuất.
+
+    \item \textbf{Production (OpenSearch).} Knowledge Base được ingest vào OpenSearch thông qua quy trình chuẩn hoá, sinh embedding và bulk indexing. Ba chiến lược truy xuất được triển khai bằng truy vấn \texttt{match} (BM25), \texttt{knn} (Dense Retrieval) và \texttt{hybrid} kết hợp search pipeline sử dụng RRF. Đây là cấu hình được sử dụng trong hệ thống triển khai thực tế.
+
 \end{enumerate}
-Việc tách hai chế độ giúp kiểm soát biến: cùng KB, cùng normalizer, cùng ground truth, chỉ khác hạ tầng thực thi.
+
+\paragraph{Xây dựng truy vấn và nhãn đánh giá.}
+Đối với mỗi bệnh nhân, trường \texttt{EVIDENCES} được xử lý bằng cách loại bỏ hậu tố giá trị (\texttt{\_@\_<value>}), ánh xạ từng mã evidence thành cụm triệu chứng thông qua hàm \texttt{normalize\_symptom\_phrase}, khử trùng lặp và nối thành chuỗi truy vấn. Tên bệnh không được đưa vào truy vấn nhằm tránh rò rỉ thông tin (label leakage). Nhãn đúng được lấy từ trường \texttt{PATHOLOGY} của bộ dữ liệu DDXPlus.
+
+\paragraph{Chỉ số đánh giá.}
+Các chiến lược truy xuất được đánh giá bằng các chỉ số Hit@1, Hit@3, Hit@5 và Mean Reciprocal Rank (MRR), trong đó Hit@1 được sử dụng làm chỉ số chính. Ý nghĩa cụ thể của từng chỉ số như sau:
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+    \item \textbf{Hit@$k$} (tỉ lệ trúng trong top-$k$): với mỗi truy vấn, được tính bằng $1$ nếu bệnh đúng nằm trong $k$ tài liệu đứng đầu kết quả truy xuất, ngược lại bằng $0$; giá trị báo cáo là trung bình trên toàn bộ truy vấn. \textbf{Hit@1} đo khả năng đưa đúng chẩn đoán lên vị trí đầu tiên (chỉ số chính, phản ánh trải nghiệm khi chỉ lấy một kết quả); \textbf{Hit@3} và \textbf{Hit@5} đo khả năng đưa bệnh đúng vào một danh sách ngắn để bác sĩ rà soát.
+    \item \textbf{MRR} (Mean Reciprocal Rank): trung bình của nghịch đảo thứ hạng $1/\mathrm{rank}$ của bệnh đúng trên mọi truy vấn (nếu bệnh đúng không xuất hiện thì đóng góp $0$). Khác với Hit@$k$ chỉ quan tâm trúng/trượt, MRR thưởng điểm cao hơn khi bệnh đúng được xếp \textit{càng gần đầu danh sách}, do đó phản ánh chất lượng xếp hạng tinh hơn. Trong nghiên cứu này MRR được tính trên toàn bộ 49 tài liệu (không cắt ngưỡng top-$k$).
+\end{itemize}
+Vì Knowledge Base chỉ gồm 49 tài liệu, mốc tham chiếu ngẫu nhiên của các chỉ số này (Hit@1 $\approx 2\%$) được thảo luận chi tiết ở mục Dữ liệu và thiết lập thí nghiệm.
+
