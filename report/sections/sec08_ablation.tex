@@ -5,6 +5,6 @@
 
 \textbf{(B) Ảnh hưởng của chiến lược truy xuất:} trên bộ đánh giá hiện tại, lexical (BM25) chiếm ưu thế; hybrid kéo theo thành phần BM25 nên cao hơn dense thuần (Bảng \ref{tab:offline}).
 
-\textbf{(C) Tính nhất quán hạ tầng (offline vs OpenSearch):} chênh lệch Hit@1 giữa Python thuần và OpenSearch live (mẫu 5k) nhỏ và giữ nguyên thứ hạng phương pháp (Bảng \ref{tab:livevsoffline}), củng cố độ tin cậy của logic truy xuất.
+\textbf{(C) Tính nhất quán hạ tầng (offline vs OpenSearch):} trên toàn tập ($n=132{,}448$), chênh lệch Hit@1 giữa Python thuần và OpenSearch live nhỏ ở BM25/Hybrid ($+0.18$/$+1.13$ điểm \%) và giữ nguyên thứ hạng phương pháp (Bảng \ref{tab:livevsoffline}), củng cố độ tin cậy của logic truy xuất.
 
 \textbf{(D) Phân tích dự kiến (Phase 2):} (i) tinh chỉnh trọng số RRF (tăng tỉ trọng BM25 hoặc cascade BM25 $\rightarrow$ dense khi top-1 thiếu tự tin); (ii) thay embedding y khoa chuyên biệt; (iii) thêm re-ranking. Mục tiêu là kiểm chứng giá trị của kiến trúc hai tầng trên truy vấn ngôn ngữ tự nhiên.

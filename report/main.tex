@@ -16,6 +16,8 @@
 \usetikzlibrary{arrows.meta,positioning,calc}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.16}
+% Breakable inline file paths/code (url pkg comes from hyperref; avoids clash with TikZ \path)
+\DeclareUrlCommand\code{\urlstyle{tt}}
 \titleformat{\section}{\normalfont\huge\bfseries\raggedright}{\thesection}{0.6em}{}
 \titleformat{\subsection}{\normalfont\Large\bfseries\raggedright}{\thesubsection}{0.6em}{}
 \setlength{\emergencystretch}{3em}
