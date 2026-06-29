@@ -5,9 +5,9 @@
 \item \textbf{Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System} (nhánh mặc định: \texttt{dev}).
 \item \textbf{Chuẩn bị dữ liệu:} tải DDXPlus (English) phiên bản 2 từ Figshare (xem Phụ lục); các file dữ liệu lớn \textbf{không} commit lên Git -- xem hướng dẫn Data setup trong README.
 \item \textbf{Cài đặt môi trường:} \texttt{pip install -r requirements.txt}.
-\item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_evidences.json} và \texttt{release\_conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
+\item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_\allowbreak evidences.json} và \texttt{release\_\allowbreak conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
 \item \textbf{Đánh giá offline (Python thuần):} chạy \texttt{eval\_retrieval.py} để tái tạo Bảng \ref{tab:offline}.
-\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook \texttt{notebooks/exp02\_live\_eval.ipynb} (8 workers) trên toàn tập để tái tạo Bảng \ref{tab:livefull} và \ref{tab:livevsoffline}; kết quả lưu ở \texttt{experiments/exp02/results/live\_eval\_latest.json}.
+\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook \texttt{notebooks/\allowbreak exp02\_live\_eval.ipynb} (8 workers) trên toàn tập để tái tạo Bảng \ref{tab:livefull} và \ref{tab:livevsoffline}; kết quả lưu ở \texttt{experiments/\allowbreak exp02/\allowbreak results/\allowbreak live\_eval\_latest.json}.
 \end{itemize}
 
 \begin{aivncodebox}[Cấu trúc mã nguồn (rút gọn):]
@@ -19,3 +19,4 @@ Disease-Diagnosis-RAG-System/
 |-- requirements.txt
 |-- README.md
 \end{aivncodebox}
+

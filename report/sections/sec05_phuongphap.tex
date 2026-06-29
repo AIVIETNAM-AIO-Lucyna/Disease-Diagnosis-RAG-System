@@ -52,7 +52,7 @@ Mỗi mã evidence được ánh xạ sang câu hỏi tiếng Anh (\texttt{quest
 
 Quy trình trên chuyển đổi các câu hỏi dạng hội thoại trong DDXPlus thành các cụm triệu chứng ngắn gọn và nhất quán, giúp cải thiện hiệu quả lập chỉ mục và truy xuất, đồng thời bảo đảm cùng một quy tắc chuẩn hoá được áp dụng ở cả giai đoạn xây dựng Knowledge Base và xử lý truy vấ
 
-Trước bước này, \texttt{PreprocessPipeline} còn \textbf{mở rộng từ đồng nghĩa} (vd. \textit{tired/exhausted}$\rightarrow$\texttt{fatigue}, \textit{throwing up}$\rightarrow$\texttt{vomiting}). Triệu chứng/antecedent sau chuẩn hoá được \textbf{khử trùng lặp giữ thứ tự}.
+Trước bước này, \texttt{PreprocessPipeline} còn \textbf{mở rộng từ đồng nghĩa} (vd. \textit{tired/exhausted} $\rightarrow$ \texttt{fatigue}, \textit{throwing up} $\rightarrow$ \texttt{vomiting}). Triệu chứng/antecedent sau chuẩn hoá được \textbf{khử trùng lặp giữ thứ tự}.
 
 \paragraph{(c) Chuẩn hoá mã ICD-10 và định danh tài liệu.}
 Mã ICD-10 được chuẩn hoá bằng hàm \texttt{normalize\_icd10}, bao gồm chuyển sang chữ hoa và loại bỏ khoảng trắng dư thừa. Với các bệnh có nhiều mã ICD-10, hệ thống tách từng mã riêng biệt bằng \texttt{split\_icd10\_codes} trước khi xác định \texttt{doc\_id}. Mỗi tài liệu được gán một \texttt{doc\_id} duy nhất theo quy tắc tất định nhằm bảo đảm tính nhất quán trong quá trình lập chỉ mục và truy xuất. Một số trường hợp ngoại lệ được xử lý bằng bảng override; ví dụ, bệnh \textit{Pneumonia} có cặp mã \texttt{(J17,J18)} được ánh xạ về \texttt{J18} làm \texttt{doc\_id} chuẩn.
