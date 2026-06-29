@@ -1,10 +1,87 @@
 \section{Ablation Study và phân tích bổ sung}
-% [NHÁP -- Phụ trách: Nguyễn Thị Diễm Hương & Nguyễn Minh Tú.]
+% [Phụ trách: Nguyễn Thị Diễm Hương.]
+% Nguồn số liệu: Bảng~\ref{tab:offline} (offline, n=132,448);
+% experiments/exp02/results/exp02_per_disease.csv (per-disease BM25);
+% experiments/exp02/results/live_eval_latest.json (OpenSearch full run 26/06).
+% MSR và Bootstrap CI dưới đây tính trực tiếp từ per-disease BM25; đã đối chiếu
+% khớp Hit@1 (98.47% / 98.78%) và MRR (0.9921 / 0.9937) với Bảng~\ref{tab:offline}.
 
-\textbf{(A) Ảnh hưởng của trường \textit{description} (A/B):} bật \textit{description} cải thiện Hit@1 ở cả ba phương pháp -- Dense +1.17, Hybrid +0.78, BM25 +0.31 điểm \% -- cho thấy \textit{description} cung cấp tín hiệu hữu ích và nhất quán; nên giữ ở cả keyword text lẫn embedding.
+Mục này tách riêng đóng góp của từng thành phần trong pipeline truy xuất nhằm
+trả lời câu hỏi: \emph{mỗi lựa chọn thiết kế đem lại bao nhiêu giá trị?} Trừ khi
+ghi chú khác, Hit@1 trích từ Bảng~\ref{tab:offline} (offline, $n=132{,}448$).
 
-\textbf{(B) Ảnh hưởng của chiến lược truy xuất:} trên bộ đánh giá hiện tại, lexical (BM25) chiếm ưu thế; hybrid kéo theo thành phần BM25 nên cao hơn dense thuần (Bảng \ref{tab:offline}).
+\subsection*{(A) Ảnh hưởng của trường \texttt{description} (A/B test)}
+Bật/tắt \texttt{description} trong cả \texttt{keyword\_text} lẫn embedding cho cải
+thiện Hit@1 \emph{nhất quán} ở cả ba phương pháp:
+Dense $83.11 \rightarrow 84.28\%$ (\textbf{+1.17} điểm \%),
+Hybrid-RRF $91.17 \rightarrow 91.95\%$ (\textbf{+0.78}),
+BM25 $98.47 \rightarrow 98.78\%$ (\textbf{+0.31}).
+Mức lợi giảm dần theo độ "đã bão hoà" của phương pháp: Dense hưởng lợi nhiều nhất
+vì embedding khai thác được ngữ cảnh ngữ nghĩa bổ sung; BM25 vốn gần trần nên lợi
+ít. \textbf{Kết luận:} giữ \texttt{description} ở cả hai biểu diễn.
 
-\textbf{(C) Tính nhất quán hạ tầng (offline vs OpenSearch):} trên toàn tập ($n=132{,}448$), chênh lệch Hit@1 giữa Python thuần và OpenSearch live nhỏ ở BM25/Hybrid ($+0.18$/$+1.13$ điểm \%) và giữ nguyên thứ hạng phương pháp (Bảng \ref{tab:livevsoffline}), củng cố độ tin cậy của logic truy xuất.
+\subsection*{(B) Ảnh hưởng của chiến lược truy xuất}
+Thứ tự Hit@1 ổn định \textbf{BM25 $>$ Hybrid-RRF $>$ Dense} ở cả hai hạ tầng.
+Đáng chú ý, Hybrid-RRF cao hơn Dense thuần \emph{chỉ nhờ} thành phần BM25 bên
+trong RRF, nhưng vẫn \textbf{thấp hơn BM25 đơn lẻ}: ghép thêm nhánh Dense vào lại
+\emph{kéo Hit@1 xuống}. Nguyên nhân là đặc thù DDXPlus -- truy vấn là token triệu
+chứng đã chuẩn hoá, khớp từ khoá gần như hoàn hảo, nên tín hiệu lexical rất mạnh
+và embedding ngữ nghĩa làm "nhoè" tín hiệu đó. Đây là phát hiện ngược trực giác
+cần nhấn mạnh: trên dạng dữ liệu này, hybrid \emph{chưa} mang lại lợi ích như kỳ
+vọng lý thuyết.
 
-\textbf{(D) Phân tích dự kiến (Phase 2):} (i) tinh chỉnh trọng số RRF (tăng tỉ trọng BM25 hoặc cascade BM25 $\rightarrow$ dense khi top-1 thiếu tự tin); (ii) thay embedding y khoa chuyên biệt; (iii) thêm re-ranking. Mục tiêu là kiểm chứng giá trị của kiến trúc hai tầng trên truy vấn ngôn ngữ tự nhiên.
+\subsection*{(C) Tính nhất quán hạ tầng (offline Python vs OpenSearch live)}
+Đối chiếu cùng KB, cùng normalizer, cùng ground truth, chỉ khác hạ tầng: chênh
+lệch Hit@1 nhỏ và \textbf{thứ hạng phương pháp được bảo toàn}
+(Bảng~\ref{tab:livevsoffline}). Bản chạy đầy đủ trên OpenSearch ($n=132{,}448$)
+cho BM25 $98.65\%$, Hybrid-RRF $92.30\%$, Dense $79.54\%$ -- thống nhất với mốc
+offline ở mức điểm phần trăm và giữ nguyên thứ hạng. (Nhánh Dense live thấp hơn
+offline do dùng biến thể query-embed legacy; ghi rõ để tránh hiểu nhầm là mâu
+thuẫn số liệu.)
+
+\subsection*{(D) An toàn lâm sàng: tỉ lệ bỏ sót bệnh nặng (MSR)}
+Ngoài Hit@1 trung bình, một hệ chẩn đoán cần được đánh giá theo \emph{rủi ro bỏ
+sót bệnh nặng}. Định nghĩa \textbf{MSR (Missed-Severe Ratio)} là tỉ lệ ca thuộc
+nhóm bệnh có severity $\le 2$ (1--2 là nặng nhất) mà nhãn gold \emph{không} nằm ở
+top-1. Tính trực tiếp trên BM25 ($36{,}774$ ca nặng):
+\texttt{keyword\_text} cho MSR $=1.57\%$ ($576/36{,}774$),
+\texttt{keyword\_text+description} cho MSR $=1.19\%$ ($439/36{,}774$).
+Trường \texttt{description} không chỉ tăng Hit@1 mà còn \textbf{giảm bỏ sót bệnh
+nặng $\approx 24\%$ tương đối}. Gần như toàn bộ ($\approx 99\%$) ca bỏ sót tập
+trung ở nhóm tim mạch dễ nhầm lẫn (Unstable angina, Myocarditis, Stable angina);
+một số rất ít ca còn lại rải rác ở các bệnh nặng khác (ví dụ Pulmonary embolism,
+Anaphylaxis). Đây là gợi ý hướng ưu tiên cải thiện ở Phase~2 (Bảng~\ref{tab:msr}).
+
+\begin{table}[H]
+\centering
+\small
+\caption{MSR (severity $\le 2$) trên BM25, $n_{\text{severe}}=36{,}774$. Nguồn:
+\texttt{exp02\_per\_disease.csv}.}
+\label{tab:msr}
+\begin{tabular}{lccc}
+\hline
+\textbf{Biến thể BM25} & \textbf{Ca nặng bỏ sót} & \textbf{MSR} & \textbf{Hit@1}\\
+\hline
+\texttt{keyword\_text}              & 576 & 1.57\% & 98.47\%\\
+\texttt{keyword\_text+description}  & 439 & 1.19\% & 98.78\%\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{(E) Độ tin cậy thống kê (Bootstrap 95\% CI)}
+Để khẳng định chênh lệch giữa hai biến thể không phải nhiễu, áp dụng bootstrap
+($B=1000$, seed $42$) cho Hit@1 trên toàn $n=132{,}448$:
+\texttt{keyword\_text} $98.47\%$, CI $95\%=[98.40,\,98.54]\%$;
+\texttt{keyword\_text+description} $98.78\%$, CI $95\%=[98.72,\,98.84]\%$.
+Hai khoảng tin cậy \textbf{không giao nhau}, xác nhận lợi ích của
+\texttt{description} là có ý nghĩa thống kê chứ không do dao động lấy mẫu.
+
+\subsection*{(F) Phân tích dự kiến và tham số RRF (Phase 2)}
+Các hướng ablate tiếp theo: (i) \textbf{re-ranking} hai tầng với
+\texttt{bge-reranker-base} -- biên độ cải thiện ở Phase~1 kỳ vọng rất nhỏ vì BM25
+đã gần trần, giá trị thực rõ hơn trên truy vấn ngôn ngữ tự nhiên;
+(ii) \textbf{tinh chỉnh RRF} -- tăng tỉ trọng nhánh BM25 hoặc tăng
+\texttt{rank\_constant} ($k=60$ hiện tại); (iii) \textbf{cascade}
+BM25 $\rightarrow$ Dense chỉ khi top-1 thiếu tự tin; (iv) thay embedding y khoa
+chuyên biệt cho \texttt{bge-small-en-v1.5} tổng quát. Mục tiêu là kiểm chứng giá
+trị kiến trúc hai tầng trên truy vấn ngôn ngữ tự nhiên thay vì token chuẩn hoá.

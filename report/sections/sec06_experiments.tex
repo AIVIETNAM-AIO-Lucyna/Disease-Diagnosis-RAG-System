@@ -22,11 +22,11 @@ Nghiên cứu \textbf{không fine-tune}; dùng embedding pretrained \texttt{BAAI
 Mỗi truy vấn bệnh nhân được đối chiếu với \textbf{49 tài liệu} trong Knowledge Base (KB), tương ứng với một tài liệu cho mỗi bệnh. Bài toán được mô hình hoá như một tác vụ \emph{ranking}, trong đó mục tiêu là đưa tài liệu của \textit{bệnh đúng} (gold document) lên vị trí cao nhất trong danh sách kết quả. Do không gian ứng viên chỉ gồm 49 tài liệu, baseline ngẫu nhiên của Hit@1 là khoảng $1/49 \approx 2\%$; mốc này được dùng làm tham chiếu khi diễn giải các kết quả thực nghiệm.
 
 \paragraph{Chỉ số đánh giá.}
-Với $P$ là tập truy vấn và $\mathrm{rank}*p$ là thứ hạng của tài liệu gold đối với truy vấn $p$, các chỉ số được tính như sau:
+Với $P$ là tập truy vấn và $\mathrm{rank}_p$ là thứ hạng của tài liệu gold đối với truy vấn $p$, các chỉ số được tính như sau:
 \begin{equation}
-    \mathrm{Hit@}k=\frac{1}{|P|}\sum*{p\in P}\mathbb{1}!\left[\mathrm{rank}*p\le k\right],
+    \mathrm{Hit@}k=\frac{1}{|P|}\sum_{p\in P}\mathbb{1}\!\left[\mathrm{rank}_p\le k\right],
     \qquad
-    \mathrm{MRR}=\frac{1}{|P|}\sum*{p\in P}\frac{1}{\mathrm{rank}_p}.
+    \mathrm{MRR}=\frac{1}{|P|}\sum_{p\in P}\frac{1}{\mathrm{rank}_p}.
 \end{equation}
 
 Trong Phase~1, \textbf{Hit@1} được chọn làm chỉ số đánh giá chính, trong khi \textbf{Hit@3}, \textbf{Hit@5} và \textbf{MRR} được sử dụng để bổ sung góc nhìn về chất lượng xếp hạng. Lưu ý rằng MRR được tính trên thứ hạng của toàn bộ 49 tài liệu, không giới hạn ở top-5. Chỉ số \textbf{NDCG@5}, sử dụng graded relevance dựa trên Tier ICD-10, đã được tích hợp vào khung đánh giá nhưng chỉ được phân tích định lượng trong Phase~2.
@@ -34,13 +34,13 @@ Trong Phase~1, \textbf{Hit@1} được chọn làm chỉ số đánh giá chính
 \begin{itemize}
     \item \textbf{Knowledge Base.} Tất cả các thí nghiệm sử dụng cùng một phiên bản KB đã chuẩn hoá gồm 49 tài liệu (\href{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System/pull/6}{PR~\#6}), với cùng bộ chuẩn hoá cho cả giai đoạn xây dựng chỉ mục và truy vấn. Phiên bản giữ nguyên câu hỏi gốc (\texttt{kb\_ddxplus\_rawq.json}) chỉ được dùng để đánh giá ảnh hưởng của bước chuẩn hoá.
 
-    \item \textbf{Truy vấn và nhãn.} Mỗi truy vấn được xây dựng từ trường \texttt{EVIDENCES} sau khi loại bỏ tên bệnh nhằm tránh rò rỉ thông tin; nhãn đúng lấy từ trường \texttt{PATHOLOGY}. Những truy vấn trở thành rỗng sau bước chuẩn hoá được loại khỏi tập đánh giá. Trước khi chấm điểm, tập đánh giá được chia ra làm 2 phần (test: 101 trường hợp, validation: 75 trường hợp).
+    \item \textbf{Truy vấn và nhãn.} Mỗi truy vấn được xây dựng từ trường \texttt{EVIDENCES} sau khi loại bỏ tên bệnh nhằm tránh rò rỉ thông tin; nhãn đúng lấy từ trường \texttt{PATHOLOGY}. Những truy vấn trở thành rỗng sau bước chuẩn hoá được loại khỏi tập đánh giá. Ngoài ra, nhóm khử trùng các dòng trùng lặp trong bộ eval, loại bỏ 101 dòng ở phần \textit{test} và 75 dòng ở phần \textit{validate} (nhật ký: \texttt{data/kb/dedup\_eval\_log.md}); việc chấm điểm offline sau đó được thực hiện trên \textbf{toàn bộ tập validate} ($n=132{,}448$).
 
     \item \textbf{Đánh giá offline (Python).} Các thí nghiệm EXP-01 (BM25) và EXP-02 (Dense, Hybrid-RRF) được thực hiện trên toàn bộ tập dữ liệu ($n=132{,}448$), không lấy mẫu. BM25 sử dụng công thức Okapi với $k_1=1.5$, $b=0.75$ và tokenizer \texttt{[a-z0-9]+}. Dense retrieval sử dụng mô hình \texttt{sentence-transformers} với độ tương đồng cosine được tính chính xác bằng brute-force trên toàn bộ 49 tài liệu. Các trường hợp đồng điểm được xử lý bằng quy tắc tie-break tất định (giảm dần theo điểm, sau đó theo tên bệnh). Hai biến thể được khảo sát gồm: (i) trường BM25 chỉ dùng \texttt{keyword\_text} hoặc kết hợp \texttt{keyword\_text+description}; và (ii) văn bản dùng để tạo embedding có hoặc không bao gồm trường \texttt{description}.
 
     \item \textbf{Đánh giá production (OpenSearch).} Quy trình gồm ba bước: chuẩn hoá KB, sinh embedding cho tài liệu và bulk indexing vào OpenSearch. Hệ thống hỗ trợ ba chế độ truy xuất: \texttt{match} (BM25), \texttt{knn} (Dense Retrieval) và \texttt{hybrid} sử dụng search pipeline \texttt{hybrid-rrf}, với top-$20$ kết quả. Chỉ mục vector sử dụng trường \texttt{knn\_vector} kích thước 384, \texttt{space\_type=cosinesimil} với các tham số mặc định (\texttt{ef}, \texttt{m}); do đó, truy vấn k-NN trong môi trường production là \emph{xấp xỉ} thay vì cosine chính xác như ở chế độ offline. Hybrid retrieval sử dụng \texttt{score-ranker-processor} với Reciprocal Rank Fusion (RRF, $k=60$). Sau lần chạy thử trên mẫu 5.000 bệnh nhân (25/06/2026, seed 13), hệ thống được đánh giá trên toàn bộ tập validation vào ngày 26/06/2026 ($n=132{,}448$, 8 workers, thời gian khoảng 3,7 giờ). Các kết quả này được sử dụng làm kết quả production chính thức của Phase~1 và được đối chiếu trực tiếp với các kết quả offline.
 
-    \item \textbf{Nguyên tắc đối chiếu.} Mọi phép so sánh đều sử dụng cùng một KB, cùng bộ chuẩn hoá và cùng ground truth; khác biệt duy nhất nằm ở hạ tầng thực thi (offline so với production). Trong Phase~1, nghiên cứu chỉ thực hiện so sánh mô tả; các kiểm định ý nghĩa thống kê (ví dụ bootstrap confidence interval) sẽ được thực hiện trong Phase~2.
+    \item \textbf{Nguyên tắc đối chiếu.} Mọi phép so sánh đều sử dụng cùng một KB, cùng bộ chuẩn hoá và cùng ground truth; khác biệt duy nhất nằm ở hạ tầng thực thi (offline so với production). Trong Phase~1, nghiên cứu thực hiện so sánh mô tả giữa hai hạ tầng; bên cạnh đó, độ tin cậy thống kê của chênh lệch giữa các biến thể BM25 được kiểm định bằng bootstrap confidence interval (trình bày ở mục Ablation). Các kiểm định thống kê cho so sánh Dense/Hybrid giữa hai hạ tầng được dời sang Phase~2, sau khi đồng bộ quy ước mã hoá truy vấn.
 \end{itemize}
 
 
