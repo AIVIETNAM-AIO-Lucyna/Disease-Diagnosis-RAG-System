@@ -36,4 +36,6 @@ Quan trọng nhất, \textbf{thứ tự BM25 $>$ Hybrid $>$ Dense được bảo
     \label{fig:liveoffline}
 \end{figure}
 
+\textbf{An toàn lâm sàng (Missed-Severe Ratio).} Ngoài Hit@1 trung bình, nhóm đánh giá rủi ro bỏ sót bệnh nặng (severity $\le 2$). Trên BM25 \texttt{keyword\_text+description}, MSR $=1.19\%$ ($439/36{,}774$ ca nặng), giảm $\approx 24\%$ tương đối so với biến thể không \texttt{description} ($1.57\%$). Gần như toàn bộ ($\approx 99\%$) ca bỏ sót thuộc nhóm tim mạch dễ nhầm lẫn (Unstable angina, Myocarditis, Stable angina); đây là nhóm cần ưu tiên cải thiện ở Phase~2 (xem mục Ablation, Bảng~\ref{tab:msr}).
+
 \textbf{Hệ quả thiết kế:} (i) embedding phổ thông (không chuyên y khoa) chưa được kiểm tra đúng thế mạnh ngữ nghĩa; (ii) RRF cào bằng trọng số kéo lùi BM25 gần hoàn hảo; (iii) cần bộ truy vấn ngôn ngữ tự nhiên để đo đúng giá trị dense/hybrid; (iv) cần đồng bộ quy ước mã hoá truy vấn (mẫu chuỗi + prefix BGE) giữa offline và production để Dense/Hybrid được đối chiếu công bằng. Các điểm này định hướng cho Phase 2.
