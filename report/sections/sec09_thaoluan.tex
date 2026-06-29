@@ -17,15 +17,15 @@ Quan trọng nhất, \textbf{thứ tự BM25 $>$ Hybrid $>$ Dense được bảo
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-                ybar, bar width=12pt,
-                width=0.9\textwidth, height=6.4cm,
-                enlarge x limits=0.32,
-                ymin=75, ymax=103,
+                ybar, bar width=16pt,
+                width=0.9\textwidth, height=6.8cm,
+                enlarge x limits=0.45,
+                ymin=75, ymax=112,
                 ylabel={Hit@1 (\%)},
                 symbolic x coords={BM25, Hybrid-RRF, Dense},
                 xtick=data,
-                nodes near coords, every node near coord/.append style={font=\tiny},
-                legend style={at={(0.5,-0.18)}, anchor=north, legend columns=2, font=\footnotesize},
+                nodes near coords, every node near coord/.append style={font=\tiny, rotate=90, anchor=west, /pgf/number format/.cd, fixed, fixed zerofill, precision=2},
+                legend style={at={(0.5,-0.22)}, anchor=north, legend columns=2, font=\footnotesize},
             ]
             \addplot coordinates {(BM25,98.65) (Hybrid-RRF,92.30) (Dense,79.54)};
             \addplot coordinates {(BM25,98.47) (Hybrid-RRF,91.17) (Dense,83.11)};
