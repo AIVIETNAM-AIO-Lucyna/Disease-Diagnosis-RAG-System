@@ -5,9 +5,9 @@
 \item \textbf{Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System} (nhánh mặc định: \texttt{dev}).
 \item \textbf{Chuẩn bị dữ liệu:} tải DDXPlus (English) phiên bản 2 từ Figshare (xem Phụ lục); các file dữ liệu lớn \textbf{không} commit lên Git -- xem hướng dẫn Data setup trong README.
 \item \textbf{Cài đặt môi trường:} \texttt{pip install -r requirements.txt}.
-\item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_evidences.json} và \texttt{release\_conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
+\item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_\allowbreak evidences.json} và \texttt{release\_\allowbreak conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
 \item \textbf{Đánh giá offline (Python thuần):} chạy \texttt{eval\_retrieval.py} để tái tạo Bảng \ref{tab:offline}.
-\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook \texttt{notebooks/exp02\_live\_eval.ipynb} (8 workers) trên toàn tập để tái tạo Bảng \ref{tab:livefull} và \ref{tab:livevsoffline}; kết quả lưu ở \texttt{experiments/exp02/results/live\_eval\_latest.json}.
+\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook \texttt{notebooks/\allowbreak exp02\_live\_eval.ipynb} (8 workers) trên toàn tập để tái tạo Bảng \ref{tab:livefull} và \ref{tab:livevsoffline}; kết quả lưu ở \texttt{experiments/\allowbreak exp02/\allowbreak results/\allowbreak live\_eval\_latest.json}.
 \end{itemize}
 
 \begin{aivncodebox}[Cấu trúc mã nguồn (rút gọn):]
@@ -19,3 +19,10 @@ Disease-Diagnosis-RAG-System/
 |-- requirements.txt
 |-- README.md
 \end{aivncodebox}
+
+\subsection{Quy trình soạn báo cáo chung trên GitHub (CI tự động dựng PDF)}
+Báo cáo được biên soạn cộng tác ngay trong repository theo template \textbf{AIConquer2026\_Kit\_v3} của ban tổ chức (lớp tài liệu \texttt{ai\_conquer2026.cls}, giữ nguyên, không chỉnh sửa). Toàn bộ nguồn báo cáo nằm trong thư mục \texttt{report/}: tệp gốc \texttt{report/main.tex} nạp lần lượt các mục trong \texttt{report/sections/} theo quy ước \emph{một tệp cho mỗi mục} (\texttt{sec01\_*.tex} đến \texttt{sec14\_*.tex}). Việc tách tệp theo mục cho phép nhiều thành viên viết song song và hạn chế xung đột khi gộp (\textit{merge conflict}).
+
+\textbf{Tự động dựng PDF.} Workflow \texttt{.github/workflows/latex.yml} (GitHub Actions) tự biên dịch báo cáo mỗi khi có thay đổi trong thư mục \texttt{report/} (sự kiện \textit{push} hoặc \textit{Pull Request}), dùng \texttt{xu-cheng/latex-action} trên môi trường TeX~Live để biên dịch \texttt{report/main.tex} và xuất bản PDF dưới dạng \emph{artifact} tên \texttt{BaoCao\_Phase1\_PDF}. Nhờ đó mỗi Pull Request đều có sẵn bản PDF dựng tự động để cả nhóm xem trước khi gộp, không cần cài đặt LaTeX trên máy cá nhân.
+
+\textbf{Quy trình đóng góp.} Mỗi thành viên tạo nhánh riêng từ \texttt{dev} theo mục được phân công, commit phần của mình rồi mở Pull Request vào \texttt{dev}; thành viên phụ trách QA soát lại số liệu, thuật ngữ và chính tả trước khi chốt bản cuối. Ngoài ra có thể tải thư mục \texttt{report/} lên Overleaf (đặt \texttt{main.tex} làm tệp gốc) để soạn thảo trực quan rồi đồng bộ ngược về GitHub. Quy ước chung: không chỉnh sửa \texttt{ai\_conquer2026.cls} và không commit các tệp dữ liệu lớn lên Git.

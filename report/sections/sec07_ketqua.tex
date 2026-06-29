@@ -72,15 +72,15 @@ Ngày \textbf{26/06/2026}, nhóm chạy pipeline OpenSearch production trên \te
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-        ybar, bar width=9pt,
-        width=0.92\textwidth, height=6.2cm,
-        enlarge x limits=0.28,
-        ymin=70, ymax=103,
+        ybar, bar width=11pt,
+        width=0.95\textwidth, height=6.8cm,
+        enlarge x limits=0.4,
+        ymin=70, ymax=112,
         ylabel={Tỉ lệ (\%)},
         symbolic x coords={BM25, Hybrid-RRF, Dense},
         xtick=data,
-        nodes near coords, every node near coord/.append style={font=\tiny},
-        legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3, font=\footnotesize},
+        nodes near coords, every node near coord/.append style={font=\tiny, rotate=90, anchor=west, /pgf/number format/.cd, fixed, fixed zerofill, precision=2},
+        legend style={at={(0.5,-0.22)}, anchor=north, legend columns=3, font=\footnotesize},
       ]
       \addplot coordinates {(BM25,98.65) (Hybrid-RRF,92.30) (Dense,79.54)};
       \addplot coordinates {(BM25,99.96) (Hybrid-RRF,98.85) (Dense,93.60)};
