@@ -1,0 +1,219 @@
+%!TEX program = xelatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{vietnamese}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\title{Hệ thống RAG Chẩn đoán Bệnh dựa trên Triệu chứng\\
+       \large Phần 8 --- Ablation Study và Phân tích Bổ sung}
+\author{AIO Vietnam 2026 --- Module 1 Project\\
+        \small Phụ trách Phần 8 \& QA: Nguyễn Thị Diễm Hương}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Kết quả thực nghiệm (bối cảnh cho Phần 8)}
+\label{sec:ketqua}
+
+Phần này tóm tắt các kết quả chính được Phần~\ref{sec:ablation} sử dụng làm
+điểm tham chiếu. Toàn bộ đánh giá thực hiện trên bộ dữ liệu
+DDXPlus~\cite{ddxplus2022} với $n=132{,}448$ truy vấn triệu chứng đã chuẩn hoá.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Kết quả truy xuất offline (Python, $n=132{,}448$). Hai biến thể trường
+văn bản: \texttt{keyword\_text} và \texttt{keyword\_text+description}.}
+\label{tab:offline}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Phương pháp} & \multicolumn{2}{c}{\textbf{Hit@1 (\%)}} &
+\multicolumn{2}{c}{\textbf{MRR}}\\
+ & \texttt{kw\_text} & \texttt{+desc} & \texttt{kw\_text} & \texttt{+desc}\\
+\hline
+Dense (bge-small-en-v1.5) & 83.11 & 84.28 & 0.8790 & 0.8902\\
+Hybrid-RRF ($k=60$)       & 91.17 & 91.95 & 0.9385 & 0.9441\\
+BM25                      & 98.47 & 98.78 & 0.9921 & 0.9937\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox[c][3.2cm][c]{0.7\linewidth}{\centering\small
+\textit{Biểu đồ cột Hit@1 theo phương pháp}\\[4pt]
+BM25 $98.78\% >$ Hybrid-RRF $91.95\% >$ Dense $84.28\%$\\[2pt]
+(biến thể \texttt{keyword\_text+description})}}
+\caption{Hit@1 theo phương pháp truy xuất (offline, biến thể có
+\texttt{description}). Thứ hạng BM25 $>$ Hybrid-RRF $>$ Dense ổn định ở mọi cấu
+hình.}
+\label{fig:bar}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Đối chiếu Hit@1 (\%) giữa hạ tầng offline (Python) và live (OpenSearch),
+cùng KB / normalizer / ground truth. Thứ hạng phương pháp được bảo toàn.}
+\label{tab:livevsoffline}
+\begin{tabular}{lccc}
+\hline
+\textbf{Phương pháp} & \textbf{Offline} & \textbf{Live (OpenSearch)} &
+\textbf{$\Delta$}\\
+\hline
+BM25        & 98.78 & 98.65 & $-0.13$\\
+Hybrid-RRF  & 91.95 & 92.30 & $+0.35$\\
+Dense       & 84.28 & 79.54 & $-4.74$\,$^{\dagger}$\\
+\hline
+\end{tabular}\\[2pt]
+{\footnotesize $^{\dagger}$ Nhánh Dense live dùng biến thể query-embed legacy nên
+thấp hơn offline; ghi rõ để tránh hiểu nhầm là mâu thuẫn số liệu.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Bản chạy đầy đủ trên OpenSearch (live, $n=132{,}448$, ngày 26/06,
+seed mặc định). Δ so với mốc offline biến thể \texttt{+description}.}
+\label{tab:livefull}
+\begin{tabular}{lccc}
+\hline
+\textbf{Phương pháp} & \textbf{Hit@1 (\%)} & \textbf{Offline (\%)} &
+\textbf{$\Delta$ (điểm \%)}\\
+\hline
+BM25        & 98.65 & 98.78 & $-0.13$\\
+Hybrid-RRF  & 92.30 & 91.95 & $+0.35$\\
+Dense       & 79.54 & 84.28 & $-4.74$\\
+\hline
+\end{tabular}
+\end{table}
+
+\clearpage
+
+\section{Ablation Study và phân tích bổ sung}
+\label{sec:ablation}
+
+Mục này tách riêng đóng góp của từng thành phần trong pipeline truy xuất nhằm
+trả lời câu hỏi: \emph{mỗi lựa chọn thiết kế đem lại bao nhiêu giá trị?} Trừ khi
+ghi chú khác, Hit@1 trích từ Bảng~\ref{tab:offline} (offline, $n=132{,}448$).
+
+\subsection*{(A) Ảnh hưởng của trường \texttt{description} (A/B test)}
+Bật/tắt \texttt{description} trong cả \texttt{keyword\_text} lẫn embedding cho cải
+thiện Hit@1 \emph{nhất quán} ở cả ba phương pháp:
+Dense $83.11 \rightarrow 84.28\%$ (\textbf{+1.17} điểm \%),
+Hybrid-RRF $91.17 \rightarrow 91.95\%$ (\textbf{+0.78}),
+BM25 $98.47 \rightarrow 98.78\%$ (\textbf{+0.31}).
+Mức lợi giảm dần theo độ "đã bão hoà" của phương pháp: Dense hưởng lợi nhiều nhất
+vì embedding khai thác được ngữ cảnh ngữ nghĩa bổ sung; BM25 vốn gần trần nên lợi
+ít. \textbf{Kết luận:} giữ \texttt{description} ở cả hai biểu diễn.
+
+\subsection*{(B) Ảnh hưởng của chiến lược truy xuất}
+Thứ tự Hit@1 ổn định \textbf{BM25 $>$ Hybrid-RRF $>$ Dense} ở cả hai hạ tầng.
+Đáng chú ý, Hybrid-RRF cao hơn Dense thuần \emph{chỉ nhờ} thành phần BM25 bên
+trong RRF, nhưng vẫn \textbf{thấp hơn BM25 đơn lẻ}: ghép thêm nhánh Dense vào lại
+\emph{kéo Hit@1 xuống}. Nguyên nhân là đặc thù DDXPlus -- truy vấn là token triệu
+chứng đã chuẩn hoá, khớp từ khoá gần như hoàn hảo, nên tín hiệu lexical rất mạnh
+và embedding ngữ nghĩa làm "nhoè" tín hiệu đó. Đây là phát hiện ngược trực giác
+cần nhấn mạnh: trên dạng dữ liệu này, hybrid \emph{chưa} mang lại lợi ích như kỳ
+vọng lý thuyết.
+
+\subsection*{(C) Tính nhất quán hạ tầng (offline Python vs OpenSearch live)}
+Đối chiếu cùng KB, cùng normalizer, cùng ground truth, chỉ khác hạ tầng: chênh
+lệch Hit@1 nhỏ và \textbf{thứ hạng phương pháp được bảo toàn}
+(Bảng~\ref{tab:livevsoffline}). Bản chạy đầy đủ trên OpenSearch ($n=132{,}448$)
+cho BM25 $98.65\%$, Hybrid-RRF $92.30\%$, Dense $79.54\%$ -- thống nhất với mốc
+offline ở mức điểm phần trăm và giữ nguyên thứ hạng. (Nhánh Dense live thấp hơn
+offline do dùng biến thể query-embed legacy; ghi rõ để tránh hiểu nhầm là mâu
+thuẫn số liệu.)
+
+\subsection*{(D) An toàn lâm sàng: tỉ lệ bỏ sót bệnh nặng (MSR)}
+Ngoài Hit@1 trung bình, một hệ chẩn đoán cần được đánh giá theo \emph{rủi ro bỏ
+sót bệnh nặng}. Định nghĩa \textbf{MSR (Missed-Severe Ratio)} là tỉ lệ ca thuộc
+nhóm bệnh có severity $\le 2$ (1--2 là nặng nhất) mà nhãn gold \emph{không} nằm ở
+top-1. Tính trực tiếp trên BM25 ($36{,}774$ ca nặng):
+\texttt{keyword\_text} cho MSR $=1.57\%$ ($576/36{,}774$),
+\texttt{keyword\_text+description} cho MSR $=1.19\%$ ($439/36{,}774$).
+Trường \texttt{description} không chỉ tăng Hit@1 mà còn \textbf{giảm bỏ sót bệnh
+nặng $\approx 24\%$ tương đối}. Toàn bộ ca bỏ sót tập trung ở nhóm tim mạch dễ
+nhầm lẫn (Unstable angina, Myocarditis, Stable angina), gợi ý hướng ưu tiên cải
+thiện ở Phase~2 (Bảng~\ref{tab:msr}).
+
+\begin{table}[H]
+\centering
+\small
+\caption{MSR (severity $\le 2$) trên BM25, $n_{\text{severe}}=36{,}774$. Nguồn:
+\texttt{exp02\_per\_disease.csv}.}
+\label{tab:msr}
+\begin{tabular}{lccc}
+\hline
+\textbf{Biến thể BM25} & \textbf{Ca nặng bỏ sót} & \textbf{MSR} & \textbf{Hit@1}\\
+\hline
+\texttt{keyword\_text}              & 576 & 1.57\% & 98.47\%\\
+\texttt{keyword\_text+description}  & 439 & 1.19\% & 98.78\%\\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{(E) Độ tin cậy thống kê (Bootstrap 95\% CI)}
+Để khẳng định chênh lệch giữa hai biến thể không phải nhiễu, áp dụng bootstrap
+($B=1000$, seed $42$) cho Hit@1 trên toàn $n=132{,}448$:
+\texttt{keyword\_text} $98.47\%$, CI $95\%=[98.40,\,98.54]\%$;
+\texttt{keyword\_text+description} $98.78\%$, CI $95\%=[98.72,\,98.84]\%$.
+Hai khoảng tin cậy \textbf{không giao nhau}, xác nhận lợi ích của
+\texttt{description} là có ý nghĩa thống kê chứ không do dao động lấy mẫu.
+
+\subsection*{(F) Phân tích dự kiến và tham số RRF (Phase 2)}
+Các hướng ablate tiếp theo: (i) \textbf{re-ranking} hai tầng với
+\texttt{bge-reranker-base} -- biên độ cải thiện ở Phase~1 kỳ vọng rất nhỏ vì BM25
+đã gần trần, giá trị thực rõ hơn trên truy vấn ngôn ngữ tự nhiên;
+(ii) \textbf{tinh chỉnh RRF} -- tăng tỉ trọng nhánh BM25 hoặc tăng
+\texttt{rank\_constant} ($k=60$ hiện tại); (iii) \textbf{cascade}
+BM25 $\rightarrow$ Dense chỉ khi top-1 thiếu tự tin; (iv) thay embedding y khoa
+chuyên biệt cho \texttt{bge-small-en-v1.5} tổng quát. Mục tiêu là kiểm chứng giá
+trị kiến trúc hai tầng trên truy vấn ngôn ngữ tự nhiên thay vì token chuẩn hoá.
+
+\subsection*{(G) Bảng chỉ số QA bổ sung}
+Để khép lại phần phân tích, Bảng~\ref{tab:qa} tổng hợp các chỉ số QA bổ sung. Hai
+chỉ số NDCG@5 và ICD-10 chapter/block Hit@1 cần dữ liệu dự đoán per-case (bệnh
+top-$k$ ở mỗi ca) -- file summary hiện chỉ tổng hợp per-disease nên tạm để trống
+kèm công thức tính sẵn cho Phase~2.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Chỉ số QA bổ sung (Người tính: Nguyễn Thị Diễm Hương). MSR và CI tính
+trên BM25 \texttt{keyword\_text+description}, $n=132{,}448$.}
+\label{tab:qa}
+\begin{tabular}{p{5.6cm}p{3.4cm}p{3.2cm}}
+\hline
+\textbf{Chỉ số QA} & \textbf{Ý nghĩa} & \textbf{Giá trị}\\
+\hline
+NDCG@5 (graded relevance) & Chất lượng xếp hạng có trọng số & \textit{[cần per-case rank]}\\
+Tier-1.5: ICD-10 chapter Hit@1 & Đúng chương ICD-10 & \textit{[cần dự đoán/ca]}\\
+Tier-1.5: ICD-10 block Hit@1 & Đúng block ICD-10 & \textit{[cần dự đoán/ca]}\\
+MSR (Missed-Severe Ratio, severity $\le 2$) & Tỉ lệ bỏ sót bệnh nặng & \textbf{1.19\%} (439/36{,}774)\\
+Bootstrap 95\% CI (B=1000, seed 42) & Khoảng tin cậy Hit@1 & $[98.72,\,98.84]\%$\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{thebibliography}{9}
+\bibitem{ddxplus2022}
+Arsene Fansi Tchango, Rishab Goel, Zhi Wen, Julien Martel, Joumana Ghosn.
+\emph{DDXPlus: A New Dataset for Automatic Medical Diagnosis}.
+Advances in Neural Information Processing Systems (NeurIPS), Datasets and
+Benchmarks Track, 2022.
+\end{thebibliography}
+
+\end{document}
