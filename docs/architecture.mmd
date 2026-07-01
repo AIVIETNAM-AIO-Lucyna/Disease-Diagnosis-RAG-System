@@ -1,0 +1,47 @@
+%% Disease Symptom Prediction - RAG Architecture (OpenSearch-only)
+%% Render: https://mermaid.live  or  npx @mermaid-js/mermaid-cli -i architecture.mmd -o architecture.png
+flowchart TD
+    classDef store fill:#e3f2fd,stroke:#1565c0,color:#0d47a1;
+    classDef model fill:#ede7f6,stroke:#5e35b1,color:#311b92;
+    classDef io fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20;
+    classDef proc fill:#fff8e1,stroke:#f9a825,color:#e65100;
+
+    subgraph INGEST["Offline Ingestion (batch / idempotent)"]
+        direction TB
+        DS[("Disease-Symptom Dataset")]:::io
+        NORM["Normalize symptoms<br/>snake_case to natural language"]:::proc
+        VIEWS["Build fields<br/>keyword_text / embed_text / metadata"]:::proc
+        EMB1["Embed docs - BGE-small-en-v1.5<br/>384-dim, L2-normalized"]:::model
+        DS --> NORM --> VIEWS
+        VIEWS --> EMB1
+    end
+
+    subgraph OS["OpenSearch (Aiven, managed)"]
+        direction TB
+        BM25["BM25<br/>analyzed text field"]:::store
+        KNN["k-NN vector<br/>knn_vector(384), cosine"]:::store
+        RRF["Hybrid query + search pipeline<br/>RRF score-ranker -> top 20"]:::proc
+        BM25 --> RRF
+        KNN --> RRF
+    end
+
+    EMB1 -->|index embedding| KNN
+    VIEWS -->|index keyword_text + metadata| BM25
+
+    subgraph QUERY["Online Query"]
+        direction TB
+        U["User Query<br/>'fever, cough, fatigue'"]:::io
+        SE["Synonym expansion<br/>+ normalization"]:::proc
+        QE["Query embedding<br/>BGE + search prefix (in app)"]:::model
+        RR["Reranker - bge-reranker-base<br/>top 20 -> top 5 (in app)"]:::model
+        LLM["LLM - Qwen3 8B"]:::model
+        OUT["Final Response<br/>diseases | description | severity | precautions"]:::io
+
+        U --> SE --> QE
+    end
+
+    QE -->|knn sub-query vector| KNN
+    SE -->|match sub-query text| BM25
+    RRF -->|top 20| RR
+    RR -->|top 5| LLM
+    LLM --> OUT
