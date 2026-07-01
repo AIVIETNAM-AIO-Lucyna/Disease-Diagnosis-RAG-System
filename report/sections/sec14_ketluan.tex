@@ -1,6 +1,16 @@
+% =============================================================
+% sec14_ketluan.tex  --  Muc XIV: Ket luan (Conclusion)
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: khong co (phan Ket luan)
+% Can rasoat: Dense offline 84.28% chi dinh huong, production 79.54%; giu dong bo voi sec07/sec09.
+% =============================================================
+
 \section{Kết luận (Conclusion)}
-% [NHÁP -- Phụ trách: Nguyễn Văn Thương.]
+\label{sec:ketluan}
 
-Nghiên cứu xây dựng một hệ thống RAG hỗ trợ chẩn đoán bệnh trên DDXPlus (49 bệnh, 223 evidences), với KB được chuẩn hoá và kiểm định. Trên toàn bộ tập validate ($n=132{,}448$), bộ số offline (Python thuần) cho Hit@1: BM25 + \textit{description} 98.78\%, Hybrid-RRF 91.95\%, Dense 84.28\%; trường \textit{description} cải thiện đều cả ba. Lần chạy OpenSearch production đầy đủ (cùng $n=132{,}448$, 26/06/2026) cho kết quả nhất quán và giữ nguyên thứ tự BM25 $>$ Hybrid $>$ Dense; riêng BM25 tái lập gần như khít (Hit@1 98.65\% production vs 98.47\% offline), khẳng định bộ offline là mốc tham chiếu đáng tin cậy và hạ tầng đã cấu hình đúng.
+Nghiên cứu đã bước đầu xây dựng và kiểm định một hệ thống RAG hỗ trợ chẩn đoán bệnh trên bộ dữ liệu DDXPlus (49 bệnh, 223 evidences), với Knowledge Base được chuẩn hoá và rà soát ánh xạ mã ICD-10. Trên toàn bộ tập validate ($n=132{,}448$), bộ số offline (Python thuần) đạt Hit@1: BM25 + \textit{description} 98.78\%, Hybrid-RRF 91.95\% và Dense 84.28\%, trong đó trường \textit{description} cải thiện đều cả ba phương pháp. Lần chạy OpenSearch production đầy đủ trên cùng tập ($n=132{,}448$, ngày 26/06/2026) cho kết quả nhất quán và giữ nguyên thứ tự BM25 $>$ Hybrid $>$ Dense; riêng BM25 tái lập gần như tương đồng giữa hai hạ tầng (Hit@1 98.65\% production so với 98.47\% offline, biến thể \texttt{keyword\_text}), khẳng định bộ số offline là mốc tham chiếu đáng tin cậy và hạ tầng production đã được cấu hình đúng.
 
-Kết quả cho thấy với thiết kế đánh giá thiên lexical, BM25 là baseline rất mạnh; đồng thời chỉ ra rằng việc kết luận về dense/hybrid cần một bộ đánh giá sát thực tế hơn và một quy ước embed truy vấn đồng nhất giữa offline và production. Phase 2 sẽ đồng bộ prefix và tái đo Dense/Hybrid, bổ sung re-ranking và sinh câu trả lời, xây bộ truy vấn ngôn ngữ tự nhiên và các chỉ số Tier-1.5 (ICD-10, MSR) để đánh giá toàn diện và an toàn lâm sàng.
+Kết quả cho thấy với thiết kế đánh giá hiện tại thiên về \textit{lexical} (truy vấn là token đã chuẩn hoá, trùng khớp từ vựng với KB), BM25 là một baseline rất mạnh. Cần lưu ý con số Dense offline 84.28\% chỉ mang tính định hướng: trên production, Dense đạt 79.54\% (giảm 3.57 điểm phần trăm) do khác biệt về quy ước mã hoá truy vấn giữa hai chế độ; do vậy việc kết luận đầy đủ về dense/hybrid cần một bộ đánh giá sát thực tế hơn, cùng một quy ước \textit{embed} truy vấn đồng nhất giữa offline và production.
+
+Trong khuôn khổ Phase 1, nhóm đã hoàn thành Thiết kế A (DDXPlus-only, retrieval-first), xây dựng và kiểm định KB, thiết lập khung đánh giá truy xuất và đối chiếu chéo giữa offline và production. Phase 2 sẽ đồng bộ quy ước prefix và tái đo Dense/Hybrid, bổ sung thành phần re-ranking (cross-encoder) và sinh câu trả lời có trích dẫn nguồn, đồng thời xây dựng bộ truy vấn ngôn ngữ tự nhiên và các chỉ số Tier-1.5 (ICD-10, MSR) nhằm đánh giá toàn diện và bảo đảm an toàn lâm sàng.
