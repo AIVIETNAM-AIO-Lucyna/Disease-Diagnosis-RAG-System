@@ -79,14 +79,63 @@ _LEAD_FRAMES = [
     r"^do you\b",
 ]
 
-SYMPTOM_SYNONYMS: dict[str, str] = {
-    "tired": "fatigue",
-    "exhausted": "fatigue",
-    "throwing up": "vomiting",
-    "threw up": "vomiting",
-    "high fever": "high fever",
-    "skin rash": "skin rash",
-}
+
+PATTERN_SYNONYMS: list[tuple[re.Pattern, str]] = [
+    # ---------------- Fatigue ----------------
+    (re.compile(r"\b(very tired|extremely tired|really tired)\b", re.I), "fatigue"),
+    (re.compile(r"\b(feeling tired|feel tired)\b", re.I), "fatigue"),
+    (re.compile(r"\b(exhausted|fatigued)\b", re.I), "fatigue"),
+    (re.compile(r"\b(low energy|lack of energy)\b", re.I), "fatigue"),
+    (re.compile(r"\btired\b", re.I), "fatigue"),
+    # ---------------- Vomiting ----------------
+    (re.compile(r"\b(throwing up|throw up|throws up|threw up)\b", re.I), "vomiting"),
+    (re.compile(r"\b(vomited|vomit)\b", re.I), "vomiting"),
+    # ---------------- Nausea ----------------
+    (re.compile(r"\b(feeling sick|feel sick)\b", re.I), "nausea"),
+    (re.compile(r"\b(queasy)\b", re.I), "nausea"),
+    (re.compile(r"\bnauseous\b", re.I), "nausea"),
+    # ---------------- Fever ----------------
+    (re.compile(r"\b(running a fever)\b", re.I), "fever"),
+    (re.compile(r"\b(high fever)\b", re.I), "fever"),
+    (re.compile(r"\b(feverish)\b", re.I), "fever"),
+    # ---------------- Rash ----------------
+    (re.compile(r"\b(skin rash|red rash|itchy rash)\b", re.I), "rash"),
+    (re.compile(r"\brashes\b", re.I), "rash"),
+    # ---------------- Shortness of breath ----------------
+    (
+        re.compile(r"\b(short of breath|shortness of breath)\b", re.I),
+        "shortness of breath",
+    ),
+    (
+        re.compile(r"\b(difficulty breathing|trouble breathing)\b", re.I),
+        "shortness of breath",
+    ),
+    (re.compile(r"\b(hard to breathe|can't breathe)\b", re.I), "shortness of breath"),
+    (re.compile(r"\b(breathless|breathlessness)\b", re.I), "shortness of breath"),
+    # ---------------- Chest pain ----------------
+    (re.compile(r"\b(pain in (the )?chest)\b", re.I), "chest pain"),
+    (re.compile(r"\b(chest hurts)\b", re.I), "chest pain"),
+    (re.compile(r"\b(chest tightness|tight chest)\b", re.I), "chest pain"),
+    # ---------------- Headache ----------------
+    (re.compile(r"\b(head hurts|pain in (my )?head)\b", re.I), "headache"),
+    (re.compile(r"\bmigraine\b", re.I), "headache"),
+    # ---------------- Abdominal pain ----------------
+    (re.compile(r"\b(stomach ache|stomach pain)\b", re.I), "abdominal pain"),
+    (re.compile(r"\b(belly ache|belly pain)\b", re.I), "abdominal pain"),
+    (re.compile(r"\b(abdominal ache|abdomen pain)\b", re.I), "abdominal pain"),
+    # ---------------- Diarrhea ----------------
+    (re.compile(r"\b(loose stools?|watery stools?)\b", re.I), "diarrhea"),
+    # ---------------- Dizziness ----------------
+    (re.compile(r"\b(light[- ]headed)\b", re.I), "dizziness"),
+    (re.compile(r"\b(feeling dizzy)\b", re.I), "dizziness"),
+    (re.compile(r"\bdizzy\b", re.I), "dizziness"),
+    # ---------------- Cough ----------------
+    (re.compile(r"\bcoughing\b", re.I), "cough"),
+    # ---------------- Sore throat ----------------
+    (re.compile(r"\b(throat hurts|painful throat)\b", re.I), "sore throat"),
+    # ---------------- Runny nose ----------------
+    (re.compile(r"\brunny nose\b", re.I), "rhinorrhea"),
+]
 
 CANONICAL_DOC_ID_OVERRIDES: dict[tuple[str, ...], str] = {
     ("J17", "J18"): "J18",
@@ -185,12 +234,12 @@ class PreprocessPipeline:
     """
 
     def expand_synonyms(self, text: str) -> str:
-        """Expand synonyms in a text."""
+        """Expand symptom synonyms to their canonical forms."""
         expanded = text.lower()
-        for source, target in sorted(
-            SYMPTOM_SYNONYMS.items(), key=lambda item: -len(item[0])
-        ):
-            expanded = expanded.replace(source, normalize_symptom(target))
+
+        for pattern, canonical in PATTERN_SYNONYMS:
+            expanded = pattern.sub(normalize_symptom(canonical), expanded)
+
         return expanded
 
     def preprocess_ddxplus_evidence(self, question: str) -> str:
@@ -198,11 +247,11 @@ class PreprocessPipeline:
         return normalize_symptom_phrase(self.expand_synonyms(question))
 
     def preprocess_query(self, query: str) -> str:
-        """Free-text production path: synonyms, then token-level symptom normalize."""
         expanded = self.expand_synonyms(query)
-        tokens: list[str] = []
-        for token in re.split(r"[,;\n]+|\s+", expanded):
-            cleaned = token.strip().strip("?.!").strip()
-            if cleaned:
-                tokens.append(cleaned)
+
+        tokens = re.findall(
+            r"[a-z0-9]+(?:[-'][a-z0-9]+)?",
+            expanded.lower(),
+        )
+
         return " ".join(normalize_symptoms(tokens))
