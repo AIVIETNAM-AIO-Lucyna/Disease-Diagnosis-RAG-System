@@ -1,15 +1,24 @@
-\section{Thảo luận (Discussion)}
-% [NHÁP -- Phụ trách: cả nhóm; chủ trì: Nguyễn Văn Thương.]
+% =============================================================
+% sec09_thaoluan.tex  --  Muc IX: Thao luan (Discussion)
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: xiao2024cpack, cormack2009rrf
+% Luu y: giu nguyen hinh TikZ (fig:liveoffline) va cac ref bang (tab:livevsoffline, tab:msr).
+% Luu y noi dung: BM25 dan dau do thiet ke danh gia (truy van token chuan hoa); Dense/Hybrid danh gia lai o Phase 2.
+% =============================================================
 
-\textbf{Vì sao BM25 dẫn đầu trên bộ đánh giá này?} Truy vấn được tạo từ các token evidence \textit{đã chuẩn hoá}, trùng khớp từ vựng cao với KB -- điều kiện thuận lợi cho khớp từ chính xác của BM25. Do đó kết quả \textbf{không} đồng nghĩa với việc kiến trúc dense/hybrid kém hơn về bản chất.
+\section{Thảo luận (Discussion)}
+\label{sec:thaoluan}
+
+\textbf{Vì sao BM25 dẫn đầu trên bộ đánh giá này?} Truy vấn được tạo từ các token evidence \textit{đã chuẩn hoá}, trùng khớp từ vựng cao với KB, điều kiện thuận lợi cho khớp từ chính xác của BM25. Do đó kết quả \textbf{không} đồng nghĩa với việc kiến trúc dense/hybrid kém hơn về bản chất.
 
 \textbf{Vai trò của description:} cải thiện đều cả ba phương pháp, củng cố quyết định giữ trường này.
 
 \textbf{Python thuần (offline) so với OpenSearch (production) trên toàn tập $n=132{,}448$.} Sau khi lần chạy production đầy đủ hoàn tất ngày 26/06/2026 (8 workers, $\approx 3.7$ giờ), hai hạ tầng được đối chiếu trực tiếp trên \emph{cùng cỡ mẫu} (toàn bộ 132.448 ca), thay cho lần chạy thử trên mẫu 5.000 trước đây. Số liệu (Bảng~\ref{tab:livevsoffline}, Hình~\ref{fig:liveoffline}) cho ba nhận định:
 \begin{itemize}
-    \item \textbf{BM25 tái lập gần như khít:} chênh lệch Hit@1 chỉ $+0.18$ điểm \% (98.65\% live so với 98.47\% offline), MRR $+0.0010$; các metric trùng tới chữ số thập phân thứ hai. Điều này xác nhận đồng thời (i) harness Python thuần là mốc tham chiếu trung thực, và (ii) khâu ingest, ánh xạ \texttt{keyword\_text} cùng analyzer BM25 trên OpenSearch đã cấu hình đúng.
+    \item \textbf{BM25 tái lập gần như tương đồng:} chênh lệch Hit@1 chỉ $+0.18$ điểm \% (98.65\% live so với 98.47\% offline), MRR $+0.0010$; các metric trùng tới chữ số thập phân thứ hai. Điều này xác nhận đồng thời (i) harness Python thuần là mốc tham chiếu trung thực, và (ii) khâu ingest, ánh xạ \texttt{keyword\_text} cùng analyzer BM25 trên OpenSearch đã cấu hình đúng.
     \item \textbf{Hybrid-RRF nhất quán:} Hit@1 live nhỉnh hơn $+1.13$ điểm \% (92.30\% so với 91.17\%); Hit@3/Hit@5 lệch không đáng kể ($\le 0.07$ điểm \%); thứ hạng được giữ nguyên. Khác biệt nhỏ đến từ việc live dùng search pipeline \texttt{hybrid-rrf} của OpenSearch, còn offline hợp nhất thứ hạng cục bộ.
-    \item \textbf{Dense kNN lệch có hệ thống và \emph{giải thích được}; đây không phải đối chiếu công bằng:} Hit@1 live thấp hơn offline $3.57$ điểm \% (79.54\% so với 83.11\%), MRR thấp hơn $0.0202$. Nguyên nhân \emph{không} phải mô hình suy giảm mà do \textbf{hai khác biệt ở cách mã hoá truy vấn} (phía tài liệu giống nhau -- cùng \texttt{build\_embed\_text} no-desc lúc ingest): (1) \emph{mẫu chuỗi truy vấn} -- offline dùng \texttt{embed\_text\_query()} sinh chuỗi dạng câu ``\textit{Symptoms and antecedents: <các cụm>.}'', còn production dùng \texttt{embed\_query()} trên chuỗi \emph{nối token bằng khoảng trắng}; (2) \emph{instruction prefix} của BGE -- production thêm tiền tố ``\textit{Represent this sentence for searching relevant passages:}'' còn offline không. Việc chỉ thêm prefix và đổi mẫu chuỗi ở phía truy vấn tạo \emph{bất đối xứng truy vấn--tài liệu}; với truy vấn dạng cụm token triệu chứng đã chuẩn hoá, prefix làm lệch vector truy vấn và giảm độ khớp k-NN. Vì vậy con số Dense offline chỉ mang tính \emph{định hướng}; muốn kết luận chắc chắn về Dense cần đồng bộ quy ước embed truy vấn ở hai phía rồi đo lại (Phase 2).
+    \item \textbf{Dense kNN lệch có hệ thống và \emph{giải thích được}; đây không phải đối chiếu công bằng:} Hit@1 live thấp hơn offline $3.57$ điểm \% (79.54\% so với 83.11\%), MRR thấp hơn $0.0202$. Nguyên nhân \emph{không} phải mô hình suy giảm mà do \textbf{hai khác biệt ở cách mã hoá truy vấn} (phía tài liệu giống nhau, cùng \texttt{build\_embed\_text} no-desc lúc ingest): (1) \emph{mẫu chuỗi truy vấn}: offline dùng \texttt{embed\_text\_query()} sinh chuỗi dạng câu ``\textit{Symptoms and antecedents: <các cụm>.}'', còn production dùng \texttt{embed\_query()} trên chuỗi \emph{nối token bằng khoảng trắng}; (2) \emph{instruction prefix} của BGE: production thêm tiền tố ``\textit{Represent this sentence for searching relevant passages:}'' còn offline không. Việc chỉ thêm prefix và đổi mẫu chuỗi ở phía truy vấn tạo \emph{bất đối xứng truy vấn - tài liệu}; với truy vấn dạng cụm token triệu chứng đã chuẩn hoá, prefix làm lệch vector truy vấn và giảm độ khớp k-NN~\cite{xiao2024cpack}. Vì vậy con số Dense offline chỉ mang tính \emph{định hướng}; muốn kết luận chắc chắn về Dense cần đồng bộ quy ước embed truy vấn ở hai phía rồi đo lại (Phase 2).
 \end{itemize}
 Quan trọng nhất, \textbf{thứ tự BM25 $>$ Hybrid $>$ Dense được bảo toàn ở cả hai hạ tầng}, nên các kết luận của Phase 1 vẫn vững. BM25 và Hybrid (khớp trực tiếp) đóng vai trò \emph{mỏ neo} xác thực rằng pipeline production đã tái lập đúng bộ offline.
 
@@ -38,4 +47,4 @@ Quan trọng nhất, \textbf{thứ tự BM25 $>$ Hybrid $>$ Dense được bảo
 
 \textbf{An toàn lâm sàng (Missed-Severe Ratio).} Ngoài Hit@1 trung bình, nhóm đánh giá rủi ro bỏ sót bệnh nặng (severity $\le 2$). Trên BM25 \texttt{keyword\_text+description}, MSR $=1.19\%$ ($439/36{,}774$ ca nặng), giảm $\approx 24\%$ tương đối so với biến thể không \texttt{description} ($1.57\%$). Gần như toàn bộ ($\approx 99\%$) ca bỏ sót thuộc nhóm tim mạch dễ nhầm lẫn (Unstable angina, Myocarditis, Stable angina); đây là nhóm cần ưu tiên cải thiện ở Phase~2 (xem mục Ablation, Bảng~\ref{tab:msr}).
 
-\textbf{Hệ quả thiết kế:} (i) embedding phổ thông (không chuyên y khoa) chưa được kiểm tra đúng thế mạnh ngữ nghĩa; (ii) RRF cào bằng trọng số kéo lùi BM25 gần hoàn hảo; (iii) cần bộ truy vấn ngôn ngữ tự nhiên để đo đúng giá trị dense/hybrid; (iv) cần đồng bộ quy ước mã hoá truy vấn (mẫu chuỗi + prefix BGE) giữa offline và production để Dense/Hybrid được đối chiếu công bằng. Các điểm này định hướng cho Phase 2.
+\textbf{Hệ quả thiết kế:} (i) embedding phổ thông (không chuyên y khoa) chưa được kiểm tra đúng thế mạnh ngữ nghĩa; (ii) RRF cào bằng trọng số kéo lùi BM25 gần hoàn hảo~\cite{cormack2009rrf}; (iii) cần bộ truy vấn ngôn ngữ tự nhiên để đo đúng giá trị dense/hybrid; (iv) cần đồng bộ quy ước mã hoá truy vấn (mẫu chuỗi + prefix BGE) giữa offline và production để Dense/Hybrid được đối chiếu công bằng. Các điểm này định hướng cho Phase 2.
