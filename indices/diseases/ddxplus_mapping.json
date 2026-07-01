@@ -32,7 +32,16 @@
         "embedding": {
             "type": "knn_vector",
             "dimension": 384,
-            "space_type": "cosinesimil"
+            "space_type": "cosinesimil",
+            "method": {
+                "name": "hnsw",
+                "engine": "lucene",
+                "space_type": "cosinesimil",
+                "parameters": {
+                    "ef_construction": 100,
+                    "m": 16
+                }
+            }
         }
     }
 }
