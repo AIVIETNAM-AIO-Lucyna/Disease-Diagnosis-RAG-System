@@ -1,5 +1,15 @@
+% =============================================================
+% sec10_hanche.tex  --  Muc X: Phan tich loi va han che
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: johnson2001bootstrap, jarvelin2002ndcg
+% Dong phu trach: phan tich loi (Huong) + han che (Thuong).
+% Luu y: giu nguyen Bang tab:hard va cau truc itemize.
+% Luu y noi dung: gioi han Phase 1 mo duong Phase 2; Dense danh gia lai sau khi dong bo embed truy van.
+% =============================================================
+
 \section{Phân tích lỗi và hạn chế}
-% [NHÁP -- Phụ trách: Nguyễn Thị Diễm Hương (phân tích lỗi) & Nguyễn Văn Thương (hạn chế).]
+\label{sec:hanche}
 
 \textbf{Các bệnh khó nhất (offline, biến thể keyword\_text):} một số bệnh có Hit@1 thấp rõ rệt do chồng lấp triệu chứng và mô tả ngắn (Bảng \ref{tab:hard}). Lần chạy OpenSearch production đầy đủ ($n=132{,}448$) cho cùng xu hướng (BM25 per-disease thấp nhất vẫn rơi vào nhóm này).
 
@@ -23,16 +33,16 @@
     \end{tabular}
 \end{table}
 
-\textbf{Kiểm chứng hồi quy KB (PR \#6):} 9/49 bệnh từng bị ảnh hưởng bởi lệch normalizer (Anemia, Bronchiectasis, Cluster headache, GERD, Guillain-Barré syndrome, Localized edema, Panic attack, Pulmonary embolism, Tuberculosis) sau khi sửa đều đạt 99--100\% Hit@1 -- không gây hồi quy (đã kiểm chứng lại trên lần chạy live đầy đủ).
+\textbf{Kiểm chứng hồi quy KB (PR \#6):} 9/49 bệnh từng bị ảnh hưởng bởi lệch normalizer (Anemia, Bronchiectasis, Cluster headache, GERD, Guillain-Barré syndrome, Localized edema, Panic attack, Pulmonary embolism, Tuberculosis) sau khi sửa đều đạt 99 đến 100\% Hit@1, không gây hồi quy (đã kiểm chứng lại trên lần chạy live đầy đủ).
 
 \textbf{Hạn chế của nghiên cứu:}
 \begin{itemize}
     \item \textbf{Thiết kế đánh giá thiên lexical:} truy vấn chuẩn hoá trùng KB, có lợi cho BM25; chưa đánh giá trên truy vấn ngôn ngữ tự nhiên/nhiễu.
     \item \textbf{Embedding phổ thông:} \texttt{bge-small-en-v1.5} chưa chuyên biệt cho y khoa.
     \item \textbf{RRF chưa tinh chỉnh trọng số.}
-    \item \textbf{Đối chiếu Dense chưa công bằng (threat to validity):} phía truy vấn của Dense khác nhau giữa hai hạ tầng ở \emph{hai điểm} -- (1) mẫu chuỗi truy vấn (offline ``Symptoms and antecedents: ...'' so với production nối token bằng khoảng trắng) và (2) instruction prefix BGE (production có, offline không), trong khi phía tài liệu giống nhau. Bất đối xứng này giải thích phần lớn khoảng cách Dense live$-$offline (Hit@1 $-3.57$ điểm \%); vì vậy con số Dense offline chỉ mang tính định hướng. Cần đồng bộ quy ước embed truy vấn ở hai phía rồi đo lại (Phase 2) trước khi kết luận về Dense.
+    \item \textbf{Đối chiếu Dense chưa công bằng (threat to validity):} phía truy vấn của Dense khác nhau giữa hai hạ tầng ở \emph{hai điểm}: (1) mẫu chuỗi truy vấn (offline ``Symptoms and antecedents: ...'' so với production nối token bằng khoảng trắng) và (2) instruction prefix BGE (production có, offline không), trong khi phía tài liệu giống nhau. Bất đối xứng này giải thích phần lớn khoảng cách Dense giữa live và offline (Hit@1 $-3.57$ điểm \%); vì vậy con số Dense offline chỉ mang tính định hướng. Cần đồng bộ quy ước embed truy vấn ở hai phía rồi đo lại (Phase 2) trước khi kết luận về Dense.
     \item \textbf{Cấu phần chưa triển khai:} re-ranking (A4) và sinh câu trả lời bằng LLM (A5) thuộc Phase 2.
-    \item \textbf{Số lần chạy:} báo cáo một lần chạy trên toàn tập do hạn chế tài nguyên; để bù lại, độ tin cậy của chênh lệch giữa các biến thể BM25 được kiểm định bằng bootstrap CI ($B=1000$, seed 42; xem mục Ablation), với hai khoảng tin cậy \textbf{không giao nhau}.
+    \item \textbf{Số lần chạy:} báo cáo một lần chạy trên toàn tập do hạn chế tài nguyên; để bù lại, độ tin cậy của chênh lệch giữa các biến thể BM25 được kiểm định bằng bootstrap CI~\cite{johnson2001bootstrap} ($B=1000$, seed 42; xem mục Ablation), với hai khoảng tin cậy \textbf{không giao nhau}.
     \item \textbf{Bỏ sót bệnh nặng (an toàn lâm sàng):} với severity $\le 2$, vẫn còn $1.19\%$ ca bị bỏ sót top-1 (BM25 \texttt{+description}), tập trung ở nhóm tim mạch (Unstable angina, Myocarditis, Stable angina). Đây là rủi ro cần giảm thiểu trước khi triển khai thực tế; hướng xử lý ở Phase~2 gồm re-ranking và embedding y khoa chuyên biệt.
-    \item \textbf{Chỉ số xếp hạng nâng cao chưa đủ dữ liệu:} NDCG@5 (graded theo ICD-10 tier) và Hit@1 theo chương/block ICD-10 cần file xuất dự đoán per-case; sẽ bổ sung khi có dữ liệu (Phase~2).
+    \item \textbf{Chỉ số xếp hạng nâng cao chưa đủ dữ liệu:} NDCG@5 (graded theo ICD-10 tier)~\cite{jarvelin2002ndcg} và Hit@1 theo chương/block ICD-10 cần file xuất dự đoán per-case; sẽ bổ sung khi có dữ liệu (Phase~2).
 \end{itemize}

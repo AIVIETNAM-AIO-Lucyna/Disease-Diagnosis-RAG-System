@@ -1,18 +1,24 @@
+% =============================================================
+% sec02_gioithieu.tex  --  Muc II: Gioi thieu (Introduction)
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: lewis2020rag, ji2023hallucination, karpukhin2020dpr, reimers2019sbert
+% Luu y: 4 khoa tren phai co trong references.bib truoc khi build.
+% =============================================================
+
 \section{Giới thiệu (Introduction)}
-% [NHÁP -- Phụ trách: Nguyễn Văn Thương.]
+\label{sec:gioithieu}
 
-Đề tài thuộc lĩnh vực giao thoa giữa \textbf{Healthcare AI} và \textbf{Xử lý ngôn ngữ tự nhiên (NLP)}, cụ thể là bài toán \textbf{truy xuất tri thức phục vụ hỗ trợ chẩn đoán bệnh} theo khung Retrieval-Augmented Generation (RAG).
+Đề tài thuộc lĩnh vực giao thoa giữa AI y tế (healthcare AI) và xử lý ngôn ngữ tự nhiên (NLP), cụ thể là bài toán truy xuất tri thức phục vụ hỗ trợ chẩn đoán bệnh theo khung retrieval-augmented generation (RAG)~\cite{lewis2020rag}.
 
-Trong thực hành lâm sàng, một bệnh nhân thường được mô tả bằng một tập hợp triệu chứng và tiền sử (evidences). Hệ thống cần truy xuất đúng các bệnh lý liên quan từ một kho tri thức y khoa để hỗ trợ bác sĩ thu hẹp chẩn đoán phân biệt. Bài toán này quan trọng vì: (i) sai sót trong truy xuất tri thức có thể dẫn tới gợi ý chẩn đoán sai lệch; (ii) hệ thống RAG cho phép kiểm soát nguồn tri thức và giảm hiện tượng ảo giác (hallucination) của mô hình ngôn ngữ lớn.
+Trong thực hành lâm sàng, một bệnh nhân thường được mô tả bằng một tập hợp triệu chứng và tiền sử (evidences). Hệ thống cần truy xuất đúng các bệnh lý liên quan từ một kho tri thức y khoa để hỗ trợ bác sĩ thu hẹp chẩn đoán phân biệt. Bài toán này quan trọng vì: (i) sai sót trong truy xuất tri thức có thể dẫn tới gợi ý chẩn đoán sai lệch; (ii) hệ thống RAG cho phép kiểm soát nguồn tri thức và giảm hiện tượng ảo giác (hallucination)~\cite{ji2023hallucination} của mô hình ngôn ngữ lớn.
 
-\textbf{Khó khăn hiện tại:} dữ liệu y khoa có độ chồng lấp triệu chứng cao giữa các bệnh; truy vấn thực tế thường diễn đạt tự nhiên, thiếu hoặc nhiễu thông tin; và các mô hình embedding phổ thông chưa được tối ưu cho miền y khoa.
-
-\textbf{Mục tiêu nghiên cứu:} xây dựng một baseline RAG rõ ràng trên DDXPlus, thiết lập một bộ số liệu nền bằng Python thuần để kiểm soát logic truy xuất, rồi đối chiếu với pipeline OpenSearch thật trước khi mở rộng sang sinh câu trả lời.
+\textbf{Khó khăn hiện tại:} dữ liệu y khoa có độ chồng lấp triệu chứng cao giữa các bệnh; truy vấn thực tế thường diễn đạt tự nhiên, thiếu hoặc nhiễu thông tin; và các mô hình embedding phổ thông (như DPR, SBERT)~\cite{karpukhin2020dpr,reimers2019sbert} chưa được tối ưu cho miền y khoa. Những khó khăn trên đặt ra yêu cầu về một baseline truy xuất minh bạch và một quy trình đánh giá kiểm soát được; từ đó, \textbf{mục tiêu của nghiên cứu} là xây dựng một baseline RAG rõ ràng trên DDXPlus, thiết lập một bộ số liệu nền bằng Python thuần để kiểm soát logic truy xuất, rồi đối chiếu với pipeline OpenSearch thật trước khi mở rộng sang phần sinh câu trả lời.
 
 Các đóng góp chính của nghiên cứu:
 \begin{itemize}
-\item Xây dựng và kiểm định Knowledge Base bệnh học từ DDXPlus (49 bệnh, 223 evidences), gồm chuẩn hoá evidence và rà soát ánh xạ mã ICD-10.
+\item Xây dựng và kiểm định knowledge base bệnh học từ DDXPlus (49 bệnh, 223 evidences), gồm chuẩn hoá evidence và rà soát ánh xạ mã ICD-10.
 \item Thiết lập khung đánh giá truy xuất chuẩn (Hit@1/3/5, MRR, NDCG@5) trên toàn bộ tập validate ($n=132{,}448$).
-\item So sánh ba chiến lược truy xuất BM25, Dense (BGE-small-en-v1.5) và Hybrid (RRF), kèm ablation về vai trò của trường \textit{description}.
+\item So sánh ba chiến lược truy xuất BM25, Dense (bge-small-en-v1.5) và Hybrid (RRF), kèm ablation về vai trò của trường \textit{description}.
 \item Thiết kế quy trình đối chiếu \textbf{Python thuần với OpenSearch} để bảo đảm số liệu production đáng tin cậy, và phân tích trung thực giới hạn của thiết kế đánh giá.
 \end{itemize}

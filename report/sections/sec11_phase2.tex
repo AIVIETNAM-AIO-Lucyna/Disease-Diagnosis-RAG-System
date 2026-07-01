@@ -1,17 +1,26 @@
+% =============================================================
+% sec11_phase2.tex  --  Muc XI: Ke hoach Phase 2 (Module 2)
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: nogueira2019bert
+% Luu y: giu nguyen Hinh fig:roadmap va Bang tab:phase2 (co ref tab:livefull).
+% Luu y noi dung: A4 reranker moi o muc ma nguon cuoi Phase 1, danh gia o Phase 2.
+% =============================================================
+
 \section{Kế hoạch Phase 2 (Module 2)}
-% [NHÁP -- Chủ trì: Nguyễn Văn Thương; pipeline: Tú/Trí; QA: Hương.]
+\label{sec:phase2}
 
 Phase 1 đã chốt Thiết kế A (DDXPlus-only, retrieval-first) với không gian nhãn duy nhất gồm 49 bệnh, KB đã chuẩn hoá và kiểm định, bộ số offline (Python thuần) làm trần trên, và lần chạy OpenSearch đầy đủ ($n=132{,}448$, 26/06/2026) xác nhận tính nhất quán và chốt số production cho Phase 1 (BM25 và Hybrid bám sát offline; Dense lệch do khác biệt prefix khi embed truy vấn). Phase 2 hoàn thiện hệ thống end-to-end trên hạ tầng thật và bổ sung sinh câu trả lời.
 
-\textbf{Chiến lược trên DDXPlus:} giữ truy xuất làm lõi (retrieval-first), nâng dần theo bậc A1 BM25 $\rightarrow$ A2 k-NN $\rightarrow$ A3 Hybrid-RRF (đã chốt ở Phase 1) $\rightarrow$ A4 + reranker (\textit{mã nguồn cuối Phase 1, đánh giá Phase 2}) $\rightarrow$ A5 sinh câu trả lời (Module 2, Phase 2). Mọi bước được đo trên cùng KB + normalizer để so sánh công bằng với bộ offline.
+\textbf{Chiến lược trên DDXPlus:} giữ truy xuất làm lõi (retrieval-first), nâng dần theo bậc A1 BM25 $\rightarrow$ A2 k-NN $\rightarrow$ A3 Hybrid-RRF (đã chốt ở Phase 1) $\rightarrow$ A4 + reranker cross-encoder~\cite{nogueira2019bert} (\textit{mã nguồn hoàn thiện cuối Phase 1, đánh giá Phase 2}) $\rightarrow$ A5 sinh câu trả lời (Module 2, Phase 2). Mọi bước được đo trên cùng KB + normalizer để so sánh công bằng với bộ offline.
 
 \begin{figure}[H]
     \centering
     \resizebox{\textwidth}{!}{%
         \begin{tikzpicture}[node distance=1.0cm]
             \node[stage, text width=3.0cm] (p1) {\textbf{Phase 1 (MVP)}\\KB chuẩn hoá + offline (Python) + production full 132k + reranker (mã nguồn)};
-            \node[future, text width=3.0cm, right=of p1] (f1) {\textbf{Phase 2 -- Đánh giá nâng cao}\\đánh giá A4 reranker + Tier-1.5 + truy vấn NL + đồng bộ prefix + bootstrap CI};
-            \node[future, text width=3.0cm, right=of f1] (g1) {\textbf{Phase 2 -- Module 2}\\A5 Qwen3-8B + FastAPI};
+            \node[future, text width=3.0cm, right=of p1] (f1) {\textbf{Phase 2 - Đánh giá nâng cao}\\đánh giá A4 reranker + Tier-1.5 + truy vấn NL + đồng bộ prefix + bootstrap CI};
+            \node[future, text width=3.0cm, right=of f1] (g1) {\textbf{Phase 2 - Module 2}\\A5 Qwen3-8B + FastAPI};
             \draw[flow] (p1) -- (f1);
             \draw[flow] (f1) -- (g1);
         \end{tikzpicture}}

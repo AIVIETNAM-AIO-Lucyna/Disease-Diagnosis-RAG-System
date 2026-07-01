@@ -1,12 +1,23 @@
+% =============================================================
+% sec03_baitoan.tex  --  Muc III: Bai toan nghien cuu (Research Problem)
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: jarvelin2002ndcg
+% Luu y: khoa tren phai co trong references.bib truoc khi build.
+% Luu y noi dung: gia thuyet phat bieu co dieu kien; re-ranking thuoc Phase 2, khong kiem chung o Phase 1.
+% =============================================================
+
 \section{Bài toán nghiên cứu (Research Problem)}
-% [NHÁP -- Phụ trách: Nguyễn Văn Thương.]
+\label{sec:baitoan}
 
 \begin{itemize}
 \item \textbf{Tên bài toán:} Truy xuất tri thức y khoa (information retrieval) phục vụ hỗ trợ chẩn đoán bệnh trong khung RAG.
-\item \textbf{Input:} Một truy vấn biểu diễn tập bằng chứng/triệu chứng (evidences) của bệnh nhân, đã được chuẩn hoá theo cùng quy ước với KB.
+\item \textbf{Input:} Một truy vấn biểu diễn tập bằng chứng và triệu chứng (evidences) của bệnh nhân, đã được chuẩn hoá theo cùng quy ước với KB.
 \item \textbf{Output:} Danh sách bệnh (tài liệu KB) được xếp hạng theo độ liên quan; lấy top-$K$ để hỗ trợ chẩn đoán phân biệt.
-\item \textbf{Mục tiêu nghiên cứu:} Tối đa hoá độ chính xác truy xuất ở vị trí đầu (Hit@1) đồng thời giữ chất lượng xếp hạng tổng thể (MRR, NDCG@5) cao.
-\item \textbf{Metric đánh giá:} Hit@1, Hit@3, Hit@5, MRR, NDCG@5.
+\item \textbf{Mục tiêu nghiên cứu:} Tối đa hoá độ chính xác truy xuất ở vị trí đầu (Hit@1), đồng thời giữ chất lượng xếp hạng tổng thể (MRR, NDCG@5) cao.
+\item \textbf{Metric đánh giá:} Hit@1, Hit@3, Hit@5, MRR, NDCG@5~\cite{jarvelin2002ndcg}.
 \end{itemize}
 
-\textbf{Giả thuyết nghiên cứu:} việc kết hợp truy xuất lexical (BM25) và dense (embedding ngữ nghĩa) theo cơ chế hybrid hai tầng, kèm re-ranking, sẽ cải thiện chất lượng truy xuất so với từng thành phần riêng lẻ, đặc biệt với các truy vấn diễn đạt tự nhiên. Giả thuyết này cần được kiểm chứng bằng một bộ đánh giá sát thực tế (xem mục Thảo luận và Hạn chế).
+\textbf{Giả thuyết nghiên cứu:} giả thuyết được phát biểu theo hướng có điều kiện, gắn với đặc điểm của truy vấn. Với các truy vấn đã được token hoá và trùng khớp cao về mặt từ vựng với KB, chúng tôi kỳ vọng BM25 đạt hiệu quả rất cạnh tranh nhờ tín hiệu khớp từ khoá mạnh. Ngược lại, với các truy vấn diễn đạt tự nhiên, thiếu hoặc nhiễu thông tin, thành phần dense (embedding ngữ nghĩa) và cơ chế hybrid hợp nhất thứ hạng bằng RRF được kỳ vọng bổ khuyết cho BM25, nhờ khả năng nắm bắt tương đồng ngữ nghĩa vượt ra ngoài mức trùng khớp bề mặt. Nói cách khác, đóng góp của dense và hybrid phụ thuộc vào mức độ tự nhiên của truy vấn, và chỉ bộc lộ đầy đủ khi thiết kế đánh giá phản ánh được dạng truy vấn thực tế. Giả thuyết này cần được kiểm chứng bằng một bộ đánh giá sát thực tế hơn, và được bàn cụ thể ở mục Thảo luận và Hạn chế.
+
+Trong phạm vi Phase~1, hybrid được hiện thực bằng hợp nhất thứ hạng RRF giữa BM25 và dense; thành phần re-ranking chuyên biệt, ví dụ một mô hình cross-encoder, chưa được đưa vào và được dành cho Phase~2. Vì vậy, các kỳ vọng liên quan đến re-ranking chỉ mang tính định hướng cho giai đoạn sau, không nằm trong phạm vi kiểm chứng của báo cáo này.

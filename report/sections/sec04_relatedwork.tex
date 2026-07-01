@@ -1,14 +1,27 @@
+% =============================================================
+% sec04_relatedwork.tex  --  Muc IV: Tong quan nghien cuu lien quan (Related Work)
+% Bao cao Phase 1 -- Disease-Diagnosis-RAG-System
+% Trich dan: IEEE numeric (biblatex, style=ieee) qua \cite{...}
+% Cac khoa trich dan su dung: lewis2020rag, ji2023hallucination, robertson2009bm25,
+%   karpukhin2020dpr, reimers2019sbert, xiao2024cpack, cormack2009rrf, nogueira2019bert,
+%   ddxplus2022, xiong2024mirage
+% Luu y: 10 khoa tren phai co trong references.bib truoc khi build (se xoa het canh bao Citation undefined).
+% Luu y noi dung: re-ranking thuoc Phase 2; khoang trong nghien cuu gioi han quanh DDXPlus + thiet ke danh gia.
+% =============================================================
+
 \section{Tổng quan nghiên cứu liên quan (Related Work)}
-% [STUB -- Phụ trách: Nguyễn Thị Diễm Hương. Bổ sung trích dẫn vào references.bib.]
+\label{sec:relatedwork}
 
-Phần này tổng hợp các hướng nghiên cứu liên quan theo nhóm chủ đề (không liệt kê rời rạc):
-\begin{itemize}
-\item \textbf{Retrieval-Augmented Generation (RAG):} khung kết hợp truy xuất và sinh văn bản; động lực giảm ảo giác và cập nhật tri thức.
-\item \textbf{Truy xuất lexical:} BM25 và các biến thể; điểm mạnh khớp từ chính xác, hạn chế về ngữ nghĩa.
-\item \textbf{Truy xuất dense:} các mô hình embedding (ví dụ họ BGE, DPR, Sentence-BERT); điểm mạnh ngữ nghĩa, phụ thuộc dữ liệu huấn luyện và miền ứng dụng.
-\item \textbf{Hybrid retrieval và rank fusion:} hợp nhất lexical và dense (ví dụ Reciprocal Rank Fusion); cân bằng độ chính xác từ vựng và ngữ nghĩa.
-\item \textbf{Re-ranking:} cross-encoder / LLM re-ranker để tinh chỉnh top-$K$.
-\item \textbf{Truy xuất/Chẩn đoán trong miền y khoa và bộ dữ liệu DDXPlus~\cite{ddxplus2022}:} đặc thù chồng lấp triệu chứng, yêu cầu độ chính xác và khả năng kiểm chứng nguồn.
-\end{itemize}
+Khung retrieval-augmented generation (RAG) do Lewis và cộng sự đề xuất~\cite{lewis2020rag} kết hợp truy xuất tri thức phi tham số với sinh văn bản cho các tác vụ đòi hỏi nhiều tri thức, cho phép cập nhật nguồn tri thức và giảm hiện tượng ảo giác của mô hình ngôn ngữ lớn~\cite{ji2023hallucination}. Đây là khung nền cho hệ thống của chúng tôi; trong phạm vi Phase~1, nhóm tập trung hoàn thiện và đánh giá thành phần truy xuất, vốn quyết định chất lượng đầu vào cho bước sinh câu trả lời ở giai đoạn sau.
 
-\textit{Khoảng trống:} so với các công trình trên, nghiên cứu này tập trung đánh giá có hệ thống lexical/dense/hybrid trên KB DDXPlus đã chuẩn hoá, và chỉ ra ảnh hưởng của thiết kế đánh giá tới kết luận về hiệu quả các phương pháp.
+Ở hướng truy xuất lexical, BM25 trong khung probabilistic relevance~\cite{robertson2009bm25} là một baseline mạnh, khớp từ vựng chính xác nhưng dễ bỏ sót khi truy vấn và tài liệu diễn đạt khác nhau về mặt ngữ nghĩa. Đặc điểm này phù hợp với dữ liệu evidence đã được chuẩn hoá của chúng tôi, nơi truy vấn và KB dùng chung một quy ước biểu diễn.
+
+Ở hướng truy xuất dense, các mô hình embedding như DPR~\cite{karpukhin2020dpr} và Sentence-BERT~\cite{reimers2019sbert} biểu diễn truy vấn và tài liệu trong cùng một không gian vector để khớp theo ngữ nghĩa, với chất lượng phụ thuộc nhiều vào dữ liệu huấn luyện và miền ứng dụng. Trong nghiên cứu này, nhóm sử dụng họ embedding BGE~\cite{xiao2024cpack} (bge-small-en-v1.5) làm đại diện cho hướng dense.
+
+Để dung hoà hai hướng trên, các phương pháp hybrid hợp nhất kết quả từ nhiều hệ truy xuất. Reciprocal rank fusion (RRF)~\cite{cormack2009rrf} hợp nhất thứ hạng mà không cần huấn luyện thêm, cân bằng thế mạnh khớp từ vựng của lexical và khớp ngữ nghĩa của dense; đây chính là cơ sở cho biến thể Hybrid của chúng tôi.
+
+Một hướng bổ sung là re-ranking, trong đó cross-encoder trên nền BERT~\cite{nogueira2019bert} tinh chỉnh lại top-$K$ với độ chính xác cao hơn nhưng chi phí tính toán lớn hơn. Vì phạm vi và tài nguyên của giai đoạn hiện tại, nhóm xếp thành phần này vào Phase~2 và không đưa vào đánh giá của báo cáo này.
+
+Trong miền y khoa, bộ dữ liệu DDXPlus~\cite{ddxplus2022} đặt ra thách thức chồng lấp triệu chứng cao giữa các bệnh và yêu cầu khả năng kiểm chứng nguồn tri thức, khiến bài toán truy xuất trở nên nhạy cảm với cả chất lượng KB lẫn cách biểu diễn truy vấn. Gần đây, các nỗ lực chuẩn hoá đánh giá RAG cho y khoa như MIRAGE~\cite{xiong2024mirage} đã cung cấp benchmark cho tác vụ hỏi đáp y khoa; tuy nhiên, các benchmark này tập trung vào chất lượng câu trả lời sinh ra hơn là so sánh trực tiếp các chiến lược truy xuất lexical, dense và hybrid trên một knowledge base DDXPlus đã chuẩn hoá.
+
+\textbf{Khoảng trống nghiên cứu.} Phần lớn công trình nêu trên đánh giá truy xuất trên miền mở (open-domain QA) hoặc đề xuất từng phương pháp riêng lẻ, còn các benchmark y khoa hiện có nghiêng về hỏi đáp. Theo hiểu biết của nhóm, chưa có một đánh giá có hệ thống cả ba chiến lược lexical, dense và hybrid trên một knowledge base DDXPlus đã được chuẩn hoá và kiểm định, cũng như chưa phân tích ảnh hưởng của thiết kế đánh giá, bao gồm cách tạo truy vấn và quy ước mã hoá, tới kết luận về hiệu quả của các phương pháp. Nghiên cứu bước đầu này nhằm lấp khoảng trống đó, và một phát hiện đáng chú ý là kết luận về ưu thế của dense hay hybrid rất nhạy cảm với thiết kế đánh giá.
