@@ -20,7 +20,7 @@ Phase 1 đã chốt Thiết kế A (DDXPlus-only, retrieval-first) với không 
         \begin{tikzpicture}[node distance=1.0cm]
             \node[stage, text width=3.0cm] (p1) {\textbf{Phase 1 (MVP)}\\KB chuẩn hoá + offline (Python) + production full 132k + reranker (mã nguồn)};
             \node[future, text width=3.0cm, right=of p1] (f1) {\textbf{Phase 2 - Đánh giá nâng cao}\\đánh giá A4 reranker + Tier-1.5 + truy vấn NL + đồng bộ prefix + bootstrap CI};
-            \node[future, text width=3.0cm, right=of f1] (g1) {\textbf{Phase 2 - Module 2}\\A5 Qwen3-8B + FastAPI};
+            \node[future, text width=3.0cm, right=of f1] (g1) {\textbf{Phase 2 - Module 2}\\A5 Qwen3-8B~\cite{qwen2025qwen3} + FastAPI};
             \draw[flow] (p1) -- (f1);
             \draw[flow] (f1) -- (g1);
         \end{tikzpicture}}
@@ -40,9 +40,9 @@ Phase 1 đã chốt Thiết kế A (DDXPlus-only, retrieval-first) với không 
         Hoàn thiện \texttt{ingest.py} + index (alias \texttt{diseases}); khớp KB (antecedents, icd10\_codes)               & Vương Đình Minh Trí (critical path)        & 49 docs trên engine, 0 token lệch \\
         \textbf{Đồng bộ prefix BGE} offline $\leftrightarrow$ production khi embed truy vấn; tái đo Dense/Hybrid           & Nguyễn Minh Tú + Nguyễn Văn Thương         & đối chiếu Dense công bằng         \\
         Đánh giá A4 re-ranking \textit{(mã nguồn đã merge ở Phase 1)} (\texttt{bge-reranker-base}, top20$\rightarrow$top5) & Nguyễn Minh Tú                             & $\Delta$ so với A3                \\
-        Sinh câu trả lời A5 (\texttt{Qwen3-8B}) + FastAPI                                                                  & Nguyễn Minh Tú                             & chất lượng câu trả lời            \\
+        Sinh câu trả lời A5 (\texttt{Qwen3-8B}~\cite{qwen2025qwen3}) + FastAPI                                             & Nguyễn Minh Tú                             & chất lượng câu trả lời            \\
         Bộ truy vấn ngôn ngữ tự nhiên (thiếu/nhiễu triệu chứng)                                                            & Nguyễn Thị Diễm Hương + Hoàng Phước Nguyên & đo đúng dense/hybrid              \\
-        Tier-1.5: NDCG@5 + Hit@1 theo chương/block ICD-10 \textit{(cần dự đoán per-case)}                                                      & Nguyên + Hương + Thương                    & an toàn lâm sàng                  \\
+        Tier-1.5: NDCG@5 + Hit@1 theo chương/block ICD-10 \textit{(cần dự đoán per-case)}                                  & Nguyên + Hương + Thương                    & an toàn lâm sàng                  \\
         Bootstrap CI 95\% (B=1000, seed 42) trên số production                                                             & Nguyễn Văn Thương + Tú                     & CI 95\% cho Hit@1                 \\
         \hline
     \end{tabular}
