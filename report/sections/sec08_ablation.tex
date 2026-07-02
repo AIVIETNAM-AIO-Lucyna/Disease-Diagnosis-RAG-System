@@ -1,16 +1,10 @@
 \section{Ablation Study và phân tích bổ sung}
-% [Phụ trách: Nguyễn Thị Diễm Hương.]
-% Nguồn số liệu: Bảng~\ref{tab:offline} (offline, n=132,448);
-% experiments/exp02/results/exp02_per_disease.csv (per-disease BM25);
-% experiments/exp02/results/live_eval_latest.json (OpenSearch full run 26/06).
-% MSR và Bootstrap CI dưới đây tính trực tiếp từ per-disease BM25; đã đối chiếu
-% khớp Hit@1 (98.47% / 98.78%) và MRR (0.9921 / 0.9937) với Bảng~\ref{tab:offline}.
 
 Mục này tách riêng đóng góp của từng thành phần trong pipeline truy xuất nhằm
 trả lời câu hỏi: \emph{mỗi lựa chọn thiết kế đem lại bao nhiêu giá trị?} Trừ khi
 ghi chú khác, Hit@1 trích từ Bảng~\ref{tab:offline} (offline, $n=132{,}448$).
 
-\subsection*{(A) Ảnh hưởng của trường \texttt{description} (A/B test)}
+\subsection{Ảnh hưởng của trường \texttt{description} (A/B test)}
 Bật/tắt \texttt{description} trong cả \texttt{keyword\_text} lẫn embedding cho cải
 thiện Hit@1 \emph{nhất quán} ở cả ba phương pháp:
 Dense $83.11 \rightarrow 84.28\%$ (\textbf{+1.17} điểm \%),
@@ -20,7 +14,7 @@ Mức lợi giảm dần theo độ "đã bão hoà" của phương pháp: Dense
 vì embedding khai thác được ngữ cảnh ngữ nghĩa bổ sung; BM25 vốn gần trần nên lợi
 ít. \textbf{Kết luận:} giữ \texttt{description} ở cả hai biểu diễn.
 
-\subsection*{(B) Ảnh hưởng của chiến lược truy xuất}
+\subsection{Ảnh hưởng của chiến lược truy xuất}
 Thứ tự Hit@1 ổn định \textbf{BM25 $>$ Hybrid-RRF $>$ Dense} ở cả hai hạ tầng.
 Đáng chú ý, Hybrid-RRF cao hơn Dense thuần \emph{chỉ nhờ} thành phần BM25 bên
 trong RRF, nhưng vẫn \textbf{thấp hơn BM25 đơn lẻ}: ghép thêm nhánh Dense vào lại
@@ -30,7 +24,7 @@ và embedding ngữ nghĩa làm "nhoè" tín hiệu đó. Đây là phát hiện
 cần nhấn mạnh: trên dạng dữ liệu này, hybrid \emph{chưa} mang lại lợi ích như kỳ
 vọng lý thuyết.
 
-\subsection*{(C) Tính nhất quán hạ tầng (offline Python vs OpenSearch live)}
+\subsection{Tính nhất quán hạ tầng (offline Python vs OpenSearch live)}
 Đối chiếu cùng KB, cùng normalizer, cùng ground truth, chỉ khác hạ tầng: chênh
 lệch Hit@1 nhỏ và \textbf{thứ hạng phương pháp được bảo toàn}
 (Bảng~\ref{tab:livevsoffline}). Bản chạy đầy đủ trên OpenSearch ($n=132{,}448$)
@@ -39,36 +33,36 @@ offline ở mức điểm phần trăm và giữ nguyên thứ hạng. (Nhánh D
 offline do dùng biến thể query-embed legacy; ghi rõ để tránh hiểu nhầm là mâu
 thuẫn số liệu.)
 
-\subsection*{(D) An toàn lâm sàng: tỉ lệ bỏ sót bệnh nặng (MSR)}
+\subsection{An toàn lâm sàng: tỉ lệ bỏ sót bệnh nặng (MSR)}
 Ngoài Hit@1 trung bình, một hệ chẩn đoán cần được đánh giá theo \emph{rủi ro bỏ
-sót bệnh nặng}. Định nghĩa \textbf{MSR (Missed-Severe Ratio)} là tỉ lệ ca thuộc
+    sót bệnh nặng}. Định nghĩa \textbf{MSR (Missed-Severe Ratio)} là tỉ lệ ca thuộc
 nhóm bệnh có severity $\le 2$ (1--2 là nặng nhất) mà nhãn gold \emph{không} nằm ở
 top-1. Tính trực tiếp trên BM25 ($36{,}774$ ca nặng):
 \texttt{keyword\_text} cho MSR $=1.57\%$ ($576/36{,}774$),
 \texttt{keyword\_text+description} cho MSR $=1.19\%$ ($439/36{,}774$).
 Trường \texttt{description} không chỉ tăng Hit@1 mà còn \textbf{giảm bỏ sót bệnh
-nặng $\approx 24\%$ tương đối}. Gần như toàn bộ ($\approx 99\%$) ca bỏ sót tập
+    nặng $\approx 24\%$ tương đối}. Gần như toàn bộ ($\approx 99\%$) ca bỏ sót tập
 trung ở nhóm tim mạch dễ nhầm lẫn (Unstable angina, Myocarditis, Stable angina);
 một số rất ít ca còn lại rải rác ở các bệnh nặng khác (ví dụ Pulmonary embolism,
 Anaphylaxis). Đây là gợi ý hướng ưu tiên cải thiện ở Phase~2 (Bảng~\ref{tab:msr}).
 
 \begin{table}[H]
-\centering
-\small
-\caption{MSR (severity $\le 2$) trên BM25, $n_{\text{severe}}=36{,}774$. Nguồn:
-\texttt{exp02\_per\_disease.csv}.}
-\label{tab:msr}
-\begin{tabular}{lccc}
-\hline
-\textbf{Biến thể BM25} & \textbf{Ca nặng bỏ sót} & \textbf{MSR} & \textbf{Hit@1}\\
-\hline
-\texttt{keyword\_text}              & 576 & 1.57\% & 98.47\%\\
-\texttt{keyword\_text+description}  & 439 & 1.19\% & 98.78\%\\
-\hline
-\end{tabular}
+    \centering
+    \small
+    \caption{MSR (severity $\le 2$) trên BM25, $n_{\text{severe}}=36{,}774$. Nguồn:
+            \texttt{exp02\_per\_disease.csv}.}
+    \label{tab:msr}
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Biến thể BM25}             & \textbf{Ca nặng bỏ sót} & \textbf{MSR} & \textbf{Hit@1} \\
+        \hline
+        \texttt{keyword\_text}             & 576                     & 1.57\%       & 98.47\%        \\
+        \texttt{keyword\_text+description} & 439                     & 1.19\%       & 98.78\%        \\
+        \hline
+    \end{tabular}
 \end{table}
 
-\subsection*{(E) Độ tin cậy thống kê (Bootstrap 95\% CI)}
+\subsection{Độ tin cậy thống kê (Bootstrap 95\% CI)}
 Để khẳng định chênh lệch giữa hai biến thể không phải nhiễu, áp dụng bootstrap
 ($B=1000$, seed $42$) cho Hit@1 trên toàn $n=132{,}448$:
 \texttt{keyword\_text} $98.47\%$, CI $95\%=[98.40,\,98.54]\%$;
@@ -76,7 +70,7 @@ Anaphylaxis). Đây là gợi ý hướng ưu tiên cải thiện ở Phase~2 (B
 Hai khoảng tin cậy \textbf{không giao nhau}, xác nhận lợi ích của
 \texttt{description} là có ý nghĩa thống kê chứ không do dao động lấy mẫu.
 
-\subsection*{(F) Phân tích dự kiến và tham số RRF (Phase 2)}
+\subsection{Phân tích dự kiến và tham số RRF (Phase 2)}
 Các hướng ablate tiếp theo: (i) \textbf{re-ranking} hai tầng với
 \texttt{bge-reranker-base} -- biên độ cải thiện ở Phase~1 kỳ vọng rất nhỏ vì BM25
 đã gần trần, giá trị thực rõ hơn trên truy vấn ngôn ngữ tự nhiên;

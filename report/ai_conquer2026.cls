@@ -12,11 +12,10 @@
 % =========================================================
 % I. LANGUAGE & FONT SETUP
 % =========================================================
-\PassOptionsToPackage{vietnamese.licr}{babel}
+\PassOptionsToPackage{vietnamese}{babel}
 \RequirePackage[vietnamese=nohyphenation]{hyphsubst}
 \RequirePackage[vietnamese]{babel}
-\RequirePackage[T1]{fontenc}
-\RequirePackage{lmodern,mathrsfs}
+\RequirePackage{mathrsfs}
 \RequirePackage[bottom]{footmisc}
 
 % =========================================================
@@ -24,7 +23,7 @@
 % =========================================================
 \RequirePackage[table,dvipsnames]{xcolor}
 \RequirePackage{ragged2e}
-\RequirePackage{svg}
+\IfFileExists{svg.sty}{\RequirePackage{svg}}{}
 \RequirePackage{booktabs}
 \RequirePackage{caption}
 \RequirePackage{subcaption}
@@ -146,10 +145,10 @@
 % Font for cmd blocks
 \ifLuaTeX
   \RequirePackage{fontspec}
-  \newfontfamily\cmdmono{Consolas}
+  \IfFontExistsTF{Consolas}{\newfontfamily\cmdmono{Consolas}}{\newfontfamily\cmdmono{DejaVu Sans Mono}}
 \else\ifXeTeX
   \RequirePackage{fontspec}
-  \newfontfamily\cmdmono{Consolas}
+  \IfFontExistsTF{Consolas}{\newfontfamily\cmdmono{Consolas}}{\newfontfamily\cmdmono{DejaVu Sans Mono}}
 \else
   \newcommand{\cmdmono}{\ttfamily}
 \fi\fi

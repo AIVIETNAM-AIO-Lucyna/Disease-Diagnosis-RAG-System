@@ -1,6 +1,4 @@
 \section{Kết quả thí nghiệm (Results)}
-% [SỐ LIỆU THỰC -- EXP-02 offline (19/06, n=132,448) + OpenSearch live FULL (26/06, n=132,448, 8 workers, ~3.7h). Trình bày: Hương; số liệu: Thương/Tú.]
-
 \subsection{Kết quả tham chiếu offline (Python thuần, n=132,448)}
 Bảng \ref{tab:offline} tổng hợp kết quả EXP-01/EXP-02 chạy bằng Python thuần trên toàn bộ tập validate. Các dòng BM25 là tham chiếu từ EXP-01; đóng góp của EXP-02 là Dense và Hybrid-RRF. Đây là \textit{mốc tham chiếu / trần trên} cho chất lượng logic truy xuất trên cùng KB và normalizer.
 
@@ -148,12 +146,6 @@ Quan trọng hơn, thứ tự hiệu năng \textbf{BM25 $>$ Hybrid-RRF $>$ Dense
 \subsection{Chỉ số QA bổ sung (an toàn lâm sàng \& độ tin cậy)}
 Bên cạnh các chỉ số xếp hạng, nhóm bổ sung hai chỉ số kiểm chứng chất lượng (QA) tính trực tiếp từ dữ liệu Phase~1: \emph{Missed-Severe Ratio} (MSR) và khoảng tin cậy bootstrap cho Hit@1 (Bảng~\ref{tab:qa}). Các chỉ số cần dữ liệu xếp hạng per-case (NDCG@5, Hit@1 theo chương/block ICD-10) được ghi nhận khung phương pháp và dời sang Phase~2.
 
-% Bảng QA bổ sung (tab:qa) -- Người điền: Nguyễn Thị Diễm Hương.
-% Thay khối "khung chờ điền" trong sec07_ketqua.tex bằng bảng dưới đây.
-% Số liệu MSR và Bootstrap CI tính trực tiếp từ exp02_per_disease.csv (BM25).
-% NDCG@5 và ICD-10 chapter/block cần dữ liệu per-case (bệnh dự đoán ở mỗi ca) --
-% file summary hiện chưa có -> ghi "Dời sang Phase 2" kèm ghi chú phương pháp.
-
 \begin{table}[H]
 \centering
 \small
@@ -172,17 +164,6 @@ Bootstrap 95\% CI (B=1000, seed 42) & Khoảng tin cậy Hit@1 & $[98.72,\,98.84
 \hline
 \end{tabular}
 \end{table}
-
-% GHI CHÚ phương pháp (để trong phần text hoặc footnote):
-% - MSR: severity từ data/kb/icd10_audit.csv (thang 1-5, <=2 là nặng). Toàn bộ
-%   ca bỏ sót thuộc nhóm tim mạch dễ nhầm (Unstable/Stable angina, Myocarditis).
-% - Bootstrap: tái chọn mẫu có hoàn lại trên vector hit/miss của n=132,448 ca.
-% - NDCG@5 & ICD-10 Hit@1: cần xuất dự đoán per-case (bệnh top-k mỗi ca) từ
-%   eval_retrieval.py. Khi Tú/Thương cung cấp file per-case, công thức:
-%     NDCG@5 = (1/N) * sum_i DCG_i/IDCG_i, rel nhị phân theo gold;
-%     ICD chapter/block Hit@1 = tỉ lệ ca mà bệnh top-1 cùng chương/block ICD-10
-%     với gold (nới lỏng tiêu chí "đúng" để đo mức độ "gần đúng lâm sàng").
-
 
 \begin{notebox}{Quy ước số liệu}
   \begin{itemize}
