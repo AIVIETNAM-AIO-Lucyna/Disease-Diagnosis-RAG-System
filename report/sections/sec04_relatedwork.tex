@@ -5,8 +5,7 @@
 % Cac khoa trich dan su dung: lewis2020rag, ji2023hallucination, robertson2009bm25,
 %   karpukhin2020dpr, reimers2019sbert, xiao2024cpack, cormack2009rrf, nogueira2019bert,
 %   ddxplus2022, xiong2024mirage
-% Luu y: 10 khoa tren phai co trong references.bib truoc khi build (se xoa het canh bao Citation undefined).
-% Luu y noi dung: re-ranking thuoc Phase 2; khoang trong nghien cuu gioi han quanh DDXPlus + thiet ke danh gia.
+% Luu y: 10 khoa tren phai co trong references.bib truoc khi build.
 % =============================================================
 
 \section{Tổng quan nghiên cứu liên quan (Related Work)}
@@ -16,43 +15,37 @@ Khung retrieval-augmented generation (RAG) do Lewis và cộng sự đề xuất
 
 Ở hướng truy xuất lexical, BM25 trong khung probabilistic relevance~\cite{robertson2009bm25} là một baseline mạnh, khớp từ vựng chính xác nhưng dễ bỏ sót khi truy vấn và tài liệu diễn đạt khác nhau về mặt ngữ nghĩa. Đặc điểm này phù hợp với dữ liệu evidence đã được chuẩn hoá của chúng tôi, nơi truy vấn và KB dùng chung một quy ước biểu diễn.
 
-Ở hướng truy xuất dense, các mô hình embedding như DPR~\cite{karpukhin2020dpr} và Sentence-BERT~\cite{reimers2019sbert} biểu diễn truy vấn và tài liệu trong cùng một không gian vector để khớp theo ngữ nghĩa, với chất lượng phụ thuộc nhiều vào dữ liệu huấn luyện và miền ứng dụng. Trong nghiên cứu này, nhóm sử dụng họ embedding BGE~\cite{xiao2024cpack} (bge-small-en-v1.5) làm đại diện cho hướng dense.
+Ở hướng truy xuất Dense, các mô hình embedding như DPR~\cite{karpukhin2020dpr} và Sentence-BERT~\cite{reimers2019sbert} biểu diễn truy vấn và tài liệu trong cùng một không gian vector để khớp theo ngữ nghĩa, với chất lượng phụ thuộc nhiều vào dữ liệu huấn luyện và miền ứng dụng. Trong nghiên cứu này, nhóm sử dụng họ embedding BGE~\cite{xiao2024cpack} (bge-small-en-v1.5) làm đại diện cho hướng Dense.
 
-Để dung hoà hai hướng trên, các phương pháp hybrid hợp nhất kết quả từ nhiều hệ truy xuất. Reciprocal rank fusion (RRF)~\cite{cormack2009rrf} hợp nhất thứ hạng mà không cần huấn luyện thêm, cân bằng thế mạnh khớp từ vựng của lexical và khớp ngữ nghĩa của dense; đây chính là cơ sở cho biến thể Hybrid của chúng tôi.
+Để dung hoà hai hướng trên, các phương pháp Hybrid hợp nhất kết quả từ nhiều hệ truy xuất. Reciprocal rank fusion (RRF)~\cite{cormack2009rrf} hợp nhất thứ hạng mà không cần huấn luyện thêm, cân bằng thế mạnh khớp từ vựng của lexical và khớp ngữ nghĩa của Dense; đây chính là cơ sở cho biến thể Hybrid của chúng tôi.
 
 Một hướng bổ sung là re-ranking, trong đó cross-encoder trên nền BERT~\cite{nogueira2019bert} tinh chỉnh lại top-$K$ với độ chính xác cao hơn nhưng chi phí tính toán lớn hơn. Vì phạm vi và tài nguyên của giai đoạn hiện tại, nhóm xếp thành phần này vào Phase~2 và không đưa vào đánh giá của báo cáo này.
 
-Trong lĩnh vực y khoa, bộ dữ liệu DDXPlus~\cite{ddxplus2022} có mức độ chồng lấp triệu chứng cao giữa các bệnh và yêu cầu khả năng kiểm chứng nguồn tri thức, khiến bài toán truy xuất trở nên nhạy cảm với cả chất lượng KB lẫn cách biểu diễn truy vấn. Công trình gốc của Fansi Tchango và cộng sự~\cite{ddxplus2022} báo cáo GTPA@1 (Ground Truth Pathology Accuracy@1) từ 67.71\% đến 99.21\% trên hai hệ thống AARLC và BASD với/không có differential diagnosis, sử dụng tương tác hội thoại nhiều lượt. Gần đây, các nỗ lực chuẩn hoá đánh giá RAG cho y khoa như MIRAGE~\cite{xiong2024mirage} đã cung cấp benchmark cho tác vụ hỏi đáp y khoa; tuy nhiên, các benchmark này tập trung vào chất lượng câu trả lời sinh ra hơn là so sánh trực tiếp các chiến lược truy xuất lexical, dense và hybrid.
+Trong lĩnh vực y khoa, bộ dữ liệu DDXPlus~\cite{ddxplus2022} có mức độ chồng lấp triệu chứng cao giữa các bệnh và yêu cầu khả năng kiểm chứng nguồn tri thức, khiến bài toán truy xuất trở nên nhạy cảm với cả chất lượng KB lẫn cách biểu diễn truy vấn. Gần đây, các nỗ lực chuẩn hoá đánh giá RAG cho y khoa như MIRAGE~\cite{xiong2024mirage} đã cung cấp benchmark cho tác vụ hỏi đáp y khoa; tuy nhiên, các benchmark này tập trung vào chất lượng câu trả lời sinh ra hơn là so sánh trực tiếp các chiến lược truy xuất.
 
-\textbf{So sánh định lượng.} Bảng~\ref{tab:comp} đối chiếu Hit@1 của ba chiến lược truy xuất trong nghiên cứu này với GTPA@1 của hai hệ thống gốc trên DDXPlus~\cite{ddxplus2022}. Cần lưu ý khác biệt thiết kế: GTPA@1 đo tỉ lệ bệnh đúng được xếp hạng 1 sau tương tác hội thoại nhiều lượt, còn Hit@1 đo truy xuất một lượt từ KB tĩnh. BM25 kết hợp \textit{description} (98.78\%) gần với mức GTPA@1 cao nhất từng được báo cáo trên DDXPlus (99.21\%) và cao hơn giá trị GTPA@1 được báo cáo cho AARLC có dùng differential (75.39\%).Tuy nhiên, hai chỉ số được tính theo giao thức đánh giá khác nhau nên sự đối chiếu này chỉ mang tính tham khảo. Các kết quả này cho thấy retrieval-first kết hợp knowledge base chuẩn hóa là một hướng tiếp cận đầy hứa hẹn cho bài toán chẩn đoán trên DDXPlus.
+Để làm rõ bối cảnh hiệu năng trên DDXPlus: Bảng~\ref{tab:baseline_ddxplus} tóm tắt các kết quả từ công trình gốc của Fansi Tchango và cộng sự~\cite{ddxplus2022}. Các tác giả đã đánh giá mức độ chính xác trên hai hệ thống AARLC và BASD. Điểm chung của các phương pháp này là đều tiếp cận theo hướng hội thoại đầu cuối (end-to-end), tối ưu hóa luồng tương tác nhiều lượt với bệnh nhân thay vì bóc tách riêng lẻ năng lực của hệ truy xuất tĩnh. Số liệu cũng minh chứng rõ: khi mô hình được huấn luyện để sinh ra một danh sách chẩn đoán phân biệt thay vì chỉ dự đoán một bệnh duy nhất, việc đánh giá bắt buộc phải xem xét toàn bộ danh sách (đại diện qua chỉ số GTPA) thay vì chỉ nhìn vào vị trí top-1.
 
 \begin{table}[H]
     \centering
     \begin{threeparttable}
-        \caption{So sánh kết quả truy xuất (nghiên cứu này) với kết quả báo cáo trên DDXPlus~\cite{ddxplus2022}. GTPA@1 = tỉ lệ bệnh đúng ở vị trí đầu sau tương tác hội thoại; Hit@1 = tỉ lệ bệnh đúng ở top-1 truy xuất một lượt.}
-        \label{tab:comp}
-
+        \caption{Tổng hợp hiệu năng của các hệ thống chẩn đoán baseline trên bộ dữ liệu DDXPlus~\cite{ddxplus2022}.}
+        \label{tab:baseline_ddxplus}
         \small
-        \begin{tabular}{lcc}
-            \hline
-            \textbf{Phương pháp}                         & \textbf{GTPA@1 / Hit@1} & \textbf{Loại}          \\
-            \hline
-            AARLC (Diff $\times$)~\cite{ddxplus2022}     & 99.21\%                 & End-to-end (hội thoại) \\
-            BASD (Diff $\times$)~\cite{ddxplus2022}      & 97.15\%                 & End-to-end (hội thoại) \\
-            AARLC (Diff $\checkmark$)~\cite{ddxplus2022} & 75.39\%                 & End-to-end (hội thoại) \\
-            BASD (Diff $\checkmark$)~\cite{ddxplus2022}  & 67.71\%                 & End-to-end (hội thoại) \\
-            \hline
-            \textbf{BM25 + description (Ours)}           & \textbf{98.78\%}        & Truy xuất một lượt     \\
-            Hybrid-RRF + description (Ours)              & 91.95\%                 & Truy xuất một lượt     \\
-            Dense + description (Ours)                   & 84.28\%                 & Truy xuất một lượt     \\
-            \hline
+        \begin{tabular}{lccc}
+            \toprule
+            \textbf{Phương pháp (Baseline)}              & \textbf{GTPA@1} & \textbf{GTPA} & \textbf{Hướng tiếp cận} \\
+            \midrule
+            AARLC (Diff $\times$)~\cite{ddxplus2022}     & 99.21\%         & 99.97\%       & Hội thoại đầu cuối      \\
+            BASD (Diff $\times$)~\cite{ddxplus2022}      & 97.15\%         & 98.82\%       & Hội thoại đầu cuối      \\
+            AARLC (Diff $\checkmark$)~\cite{ddxplus2022} & 75.39\%         & 99.92\%       & Hội thoại đầu cuối      \\
+            BASD (Diff $\checkmark$)~\cite{ddxplus2022}  & 67.71\%         & 99.30\%       & Hội thoại đầu cuối      \\
+            \bottomrule
         \end{tabular}
-
         \begin{tablenotes}[flushleft]
             \footnotesize
-            \item \textit{Ghi chú:} Số GTPA@1 lấy từ Table~3 của~\cite{ddxplus2022} (test set gốc). Hit@1 được đo trên tập validate ($n=132{,}448$).
+            \item \textit{Ghi chú:} Diff ($\checkmark/\times$) cho biết mô hình có được huấn luyện để dự đoán chẩn đoán phân biệt (differential diagnosis) hay không. Theo nguyên bản của Fansi Tchango và cộng sự~\cite{ddxplus2022}, GTPA@1 chỉ phù hợp để đánh giá mô hình được huấn luyện dự đoán bệnh gốc (Diff $\times$). Ngược lại, đối với mô hình dự đoán differential (Diff $\checkmark$), việc bệnh gốc không nằm ở vị trí đầu tiên là bản chất của thuật toán, do đó chỉ số đánh giá tổng thể phù hợp là GTPA. Số liệu trích xuất từ Table~3 của~\cite{ddxplus2022}.
         \end{tablenotes}
     \end{threeparttable}
 \end{table}
 
-\textbf{Khoảng trống nghiên cứu.} Phần lớn công trình nêu trên đánh giá truy xuất trên miền mở (open-domain QA) hoặc đề xuất từng phương pháp riêng lẻ cho bài toán hội thoại đầu cuối, còn các benchmark y khoa hiện có thì đang nghiêng về hỏi đáp. Theo hiểu biết của chúng tôi, hiện chưa có benchmark chuẩn hóa đánh giá đồng thời ba chiến lược truy xuất (lexical, dense và hybrid) trên cùng một knowledge base DDXPlus với cùng quy trình đánh giá. Bên cạnh đó, ảnh hưởng của lựa chọn chỉ số đánh giá và quy trình truy xuất đối với kết luận về hiệu quả của từng phương pháp vẫn chưa được phân tích một cách hệ thống. Nghiên cứu này nhằm bước đầu lấp đầy khoảng trống trên bằng cách xây dựng benchmark đánh giá thống nhất cho ba chiến lược truy xuất trên DDXPlus..
+\textbf{Khoảng trống nghiên cứu.} Phần lớn công trình nêu trên đánh giá truy xuất trên miền mở (open-domain QA) hoặc đề xuất từng phương pháp riêng lẻ cho bài toán hội thoại đầu cuối, còn các benchmark y khoa hiện có thì đang nghiêng về hỏi đáp. Theo hiểu biết của chúng tôi, hiện chưa có benchmark chuẩn hóa nào đánh giá đồng thời ba chiến lược truy xuất tĩnh (lexical, dense và hybrid) trên cùng một knowledge base DDXPlus. Bên cạnh đó, ảnh hưởng của lựa chọn chỉ số đánh giá và quy trình truy xuất đối với kết luận về hiệu quả của từng phương pháp vẫn chưa được phân tích một cách hệ thống. Nghiên cứu này nhằm bước đầu lấp đầy khoảng trống đó bằng cách xây dựng một khung đánh giá minh bạch và độc lập cho khâu truy xuất trước khi tiến tới xây dựng hệ thống hỏi đáp hoàn chỉnh.
