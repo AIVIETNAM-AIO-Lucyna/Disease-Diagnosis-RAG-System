@@ -12,6 +12,8 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc}
 \usepackage{pgfplots}
+% ---- Bổ sung gói cho table, align footnoot tốt hơn
+\usepackage{threeparttable}
 \pgfplotsset{compat=1.16}
 % Breakable inline file paths/code (url pkg comes from hyperref; avoids clash with TikZ \path)
 \DeclareUrlCommand\code{\urlstyle{tt}}
@@ -94,37 +96,37 @@ Nguyễn Văn Thương & AI Engineer (Model) & Quản lý nhóm\\
 
 \newpage
 \begin{appendices}
-\begin{enumerate}
-\item \textbf{AIVIETNAM:} Thông tin về AIVIETNAM có thể đọc thêm tại \href{https://aivietnam.edu.vn/}{đây}.
-\item \textbf{GitHub Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System}
-\item \textbf{Dataset:} DDXPlus (English), phiên bản 2 -- đăng ngày 10/03/2026 trên Figshare: \url{https://figshare.com/articles/dataset/DDXPlus_Dataset_English_/22687585}. Mã nguồn gốc: \url{https://github.com/mila-iqia/ddxplus}.
-\item \textbf{Model:} \texttt{BAAI/bge-small-en-v1.5} (HuggingFace) -- dùng zero-shot, không fine-tune.
-\item \textbf{Experiment Logs:} EXP-01 (offline) và EXP-02 (offline, $n=132{,}448$) cùng lần chạy OpenSearch production đầy đủ (26/06/2026, $n=132{,}448$, 8 workers) được ghi đầy đủ trên Notion (Experiment \& Logs).
-\item \textbf{Quản lý dự án:} JIRA (key SCRUM): \url{https://thng.atlassian.net/jira/software/projects/SCRUM/boards/1}; Discord server ID: \texttt{1511918814995157074}; Notion: không gian làm việc nội bộ của nhóm (Single Source of Truth).
-\item \textbf{Demo Video / Presentation:} \textit{[điền sau].}
-\end{enumerate}
+  \begin{enumerate}
+    \item \textbf{AIVIETNAM:} Thông tin về AIVIETNAM có thể đọc thêm tại \href{https://aivietnam.edu.vn/}{đây}.
+    \item \textbf{GitHub Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System}
+    \item \textbf{Dataset:} DDXPlus (English), phiên bản 2 -- đăng ngày 10/03/2026 trên Figshare: \url{https://figshare.com/articles/dataset/DDXPlus_Dataset_English_/22687585}. Mã nguồn gốc: \url{https://github.com/mila-iqia/ddxplus}.
+    \item \textbf{Model:} \texttt{BAAI/bge-small-en-v1.5} (HuggingFace) -- dùng zero-shot, không fine-tune.
+    \item \textbf{Experiment Logs:} EXP-01 (offline) và EXP-02 (offline, $n=132{,}448$) cùng lần chạy OpenSearch production đầy đủ (26/06/2026, $n=132{,}448$, 8 workers) được ghi đầy đủ trên Notion (Experiment \& Logs).
+    \item \textbf{Quản lý dự án:} JIRA (key SCRUM): \url{https://thng.atlassian.net/jira/software/projects/SCRUM/boards/1}; Discord server ID: \texttt{1511918814995157074}; Notion: không gian làm việc nội bộ của nhóm (Single Source of Truth).
+    \item \textbf{Demo Video / Presentation:} \textit{[điền sau].}
+  \end{enumerate}
 
-\bigskip
-\noindent\textbf{Phân công \& Đóng góp (CRediT -- Phase 1).} Bảng \ref{tab:credit} ghi nhận đóng góp dựa trên bằng chứng kiểm chứng được (commit/PR trên GitHub; biểu mẫu \& nhật ký trên Notion), tách riêng hai trục: \textit{thực hiện kỹ thuật} và \textit{viết \& biên tập báo cáo}.
+  \bigskip
+  \noindent\textbf{Phân công \& Đóng góp (CRediT -- Phase 1).} Bảng \ref{tab:credit} ghi nhận đóng góp dựa trên bằng chứng kiểm chứng được (commit/PR trên GitHub; biểu mẫu \& nhật ký trên Notion), tách riêng hai trục: \textit{thực hiện kỹ thuật} và \textit{viết \& biên tập báo cáo}.
 
-\begin{table}[H]
-\centering
-\small
-\caption{Phân công \& đóng góp theo CRediT (Phase 1), trên cơ sở commit/PR/Notion.}
-\label{tab:credit}
-\begin{tabular}{p{2.8cm}p{4.8cm}p{3.4cm}}
-\hline
-\textbf{Thành viên} & \textbf{Đóng góp thực hiện (có dẫn chứng)} & \textbf{Viết \& biên tập báo cáo}\\
-\hline
-Nguyễn Văn Thương & Rà soát y khoa KB; chuẩn hoá ICD-10 + audit; thiết kế \& chạy harness offline (EXP-01/02; PR \#6, \#8); điều phối nhóm & Chủ trì viết \& tổng hợp (Report Integrator)\\
-Nguyễn Minh Tú & Pipeline RAG; ingest/index OpenSearch (PR \#9, \#12); reranker (PR \#10); chạy eval live OpenSearch & Đóng góp nội dung pipeline \& kết quả live\\
-Nguyễn Thị Diễm Hương & Thiết kế \& đo chỉ số QA (Tier-1.5, MSR, NDCG@5) & Viết mục Kết quả/QA; review \& hiệu đính\\
-Vương Đình Minh Trí & Kiến trúc \& DevOps; ingest mapping; tech-lead review & Đóng góp nội dung kiến trúc/DevOps\\
-Hoàng Phước Nguyên & KB v1 (49 thẻ bệnh, ICD-10 ID, severity); hàm chuẩn hoá triệu chứng; khử trùng eval (nhánh \texttt{feat/ddxplus-kb}) & Cung cấp tư liệu KB cho mục Dữ liệu; không tham gia trực tiếp khâu viết\\
-\hline
-\end{tabular}
-\end{table}
-\noindent{\footnotesize\textit{Ghi chú: bảng phản ánh đóng góp Phase 1 trên cơ sở dữ liệu khách quan (lịch sử Git, biểu mẫu Notion); vai trò Report Integrator do nhóm thống nhất qua biểu quyết nội bộ.}}
+  \begin{table}[H]
+    \centering
+    \small
+    \caption{Phân công \& đóng góp theo CRediT (Phase 1), trên cơ sở commit/PR/Notion.}
+    \label{tab:credit}
+    \begin{tabular}{p{2.8cm}p{4.8cm}p{3.4cm}}
+      \hline
+      \textbf{Thành viên}   & \textbf{Đóng góp thực hiện (có dẫn chứng)}                                                                             & \textbf{Viết \& biên tập báo cáo}                                       \\
+      \hline
+      Nguyễn Văn Thương     & Rà soát y khoa KB; chuẩn hoá ICD-10 + audit; thiết kế \& chạy harness offline (EXP-01/02; PR \#6, \#8); điều phối nhóm & Chủ trì viết \& tổng hợp (Report Integrator)                            \\
+      Nguyễn Minh Tú        & Pipeline RAG; ingest/index OpenSearch (PR \#9, \#12); reranker (PR \#10); chạy eval live OpenSearch                    & Đóng góp nội dung pipeline \& kết quả live                              \\
+      Nguyễn Thị Diễm Hương & Thiết kế \& đo chỉ số QA (Tier-1.5, MSR, NDCG@5)                                                                       & Viết mục Kết quả/QA; review \& hiệu đính                                \\
+      Vương Đình Minh Trí   & Kiến trúc \& DevOps; ingest mapping; tech-lead review                                                                  & Đóng góp nội dung kiến trúc/DevOps                                      \\
+      Hoàng Phước Nguyên    & KB v1 (49 thẻ bệnh, ICD-10 ID, severity); hàm chuẩn hoá triệu chứng; khử trùng eval (nhánh \texttt{feat/ddxplus-kb})   & Cung cấp tư liệu KB cho mục Dữ liệu; không tham gia trực tiếp khâu viết \\
+      \hline
+    \end{tabular}
+  \end{table}
+  \noindent{\footnotesize\textit{Ghi chú: bảng phản ánh đóng góp Phase 1 trên cơ sở dữ liệu khách quan (lịch sử Git, biểu mẫu Notion); vai trò Report Integrator do nhóm thống nhất qua biểu quyết nội bộ.}}
 
 \end{appendices}
 

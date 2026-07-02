@@ -1,6 +1,4 @@
 \section{Phương pháp nghiên cứu (Methodology)}
-% [Phụ trách: Nguyễn Minh Tú (pipeline) & Nguyễn Văn Thương (KB/đánh giá). Mọi công thức/tham số bám theo mã nguồn thực tế: scripts/build_kb.py, src/services/rag/*, experiments/exp02/*.]
-
 \subsection{Tổng quan pipeline hai tầng (Two-Layer RAG)}
 
 Thiết kế A (DDXPlus-only, \textit{retrieval-first}) gồm năm giai đoạn. Đầu tiên, \textbf{Knowledge Base (KB)} được xây dựng từ định nghĩa bệnh và các evidence sau khi tiền xử lý và chuẩn hoá bằng các kỹ thuật NLP. Tiếp theo, KB được \textbf{lập chỉ mục} trên OpenSearch với hai loại chỉ mục: chỉ mục từ vựng phục vụ BM25 và chỉ mục vector phục vụ truy xuất k-NN.
