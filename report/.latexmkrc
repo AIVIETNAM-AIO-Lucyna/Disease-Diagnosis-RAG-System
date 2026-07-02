@@ -1,8 +1,9 @@
 # .latexmkrc -- dieu khien trinh build latexmk (ke ca tren GitHub Actions / xu-cheng/latex-action).
 # Bao cao dung biblatex voi backend=bibtex (khai bao trong ai_conquer2026.cls).
-# File nay KHONG sua .cls.
+# Da chuyen sang xelatex (truoc day dung pdflatex) de xu ly UTF-8 Vietnamese tot hon.
 
-$pdf_mode   = 1;   # dung pdflatex de tao PDF
+$pdf_mode   = 4;   # xelatex (truoc day: 1 = pdflatex)
+$xelatex    = 'xelatex -shell-escape %O %S';
 $bibtex_use = 2;   # LUON chay bibtex (biblatex backend=bibtex) -> dung muc Tai lieu tham khao
 $max_repeat = 7;   # rerun du nhieu luot de giai het tham chieu cheo (\ref het "??")
 
