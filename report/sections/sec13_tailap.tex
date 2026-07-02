@@ -1,21 +1,103 @@
 \section{Tái lập kết quả và mã nguồn (Replicate the results)}
-% [NHÁP -- Phụ trách: Vương Đình Minh Trí (môi trường) & Nguyễn Minh Tú (lệnh chạy).]
 
-\begin{itemize}
-\item \textbf{Repository:} \url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System} (nhánh mặc định: \texttt{dev}).
-\item \textbf{Chuẩn bị dữ liệu:} tải DDXPlus (English) phiên bản 2 từ Figshare (xem Phụ lục); các file dữ liệu lớn \textbf{không} commit lên Git -- xem hướng dẫn Data setup trong README.
-\item \textbf{Cài đặt môi trường:} \texttt{pip install -r requirements.txt}.
-\item \textbf{Xây KB:} chạy script dựng KB từ \texttt{release\_\allowbreak evidences.json} và \texttt{release\_\allowbreak conditions.json} (dùng chung normalizer \texttt{ddxplus\_normalize}).
-\item \textbf{Đánh giá offline (Python thuần):} chạy \texttt{eval\_retrieval.py} để tái tạo Bảng \ref{tab:offline}.
-\item \textbf{Đánh giá live (OpenSearch):} ingest KB rồi chạy notebook \texttt{notebooks/\allowbreak exp02\_live\_eval.ipynb} (8 workers) trên toàn tập để tái tạo Bảng \ref{tab:livefull} và \ref{tab:livevsoffline}; kết quả lưu ở \texttt{experiments/\allowbreak exp02/\allowbreak results/\allowbreak live\_eval\_latest.json}.
-\end{itemize}
+Để đảm bảo khả năng tái lập kết quả, toàn bộ mã nguồn, tài liệu hướng dẫn và các thành phần triển khai của hệ thống được quản lý tập trung trên GitHub. Dự án sử dụng môi trường Python cùng OpenSearch làm cơ sở dữ liệu vector và BM25, đồng thời áp dụng quy trình kiểm thử tự động nhằm đảm bảo tính ổn định của hệ thống trước khi thực hiện các thí nghiệm.
 
-\begin{aivncodebox}[Cấu trúc mã nguồn (rút gọn):]
+\subsection{Mã nguồn và cấu trúc dự án}
+
+Mã nguồn của dự án được công khai tại:
+
+\begin{center}
+\url{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System}
+\end{center}
+
+Nhánh phát triển chính của dự án là \texttt{dev}. Các chức năng mới được phát triển trên các nhánh \texttt{feature/*}, sau đó được hợp nhất thông qua Pull Request sau khi hoàn thành kiểm thử và đánh giá mã nguồn.
+
+Cấu trúc thư mục chính của dự án được trình bày trong Hộp mã~\ref{code:project-structure}.
+
+\begin{aivncodebox}[Cấu trúc mã nguồn (rút gọn)]
+\label{code:project-structure}
 Disease-Diagnosis-RAG-System/
-|-- data/
-|-- src/
-|-- eval/
-|-- kb/
-|-- requirements.txt
+|-- data/                % dữ liệu DDXPlus và tập đánh giá
+|-- docs/                % tài liệu hướng dẫn
+|-- experiments/         % kết quả thực nghiệm
+|-- indices/             % OpenSearch mappings
+|-- notebooks/           % notebook minh họa và đánh giá
+|-- scripts/             % script xây dựng Knowledge Base
+|-- src/                 % mã nguồn chính
+|-- tests/               % unit tests
+|-- pyproject.toml
+|-- uv.lock
 |-- README.md
 \end{aivncodebox}
+
+Trong đó, thư mục \texttt{src/} chứa toàn bộ mã nguồn của hệ thống, \texttt{scripts/} phục vụ quá trình xây dựng Knowledge Base, \texttt{notebooks/} chứa các notebook minh họa và đánh giá, còn \texttt{tests/} bao gồm các bài kiểm thử tự động.
+
+\subsection{Môi trường thực nghiệm}
+
+Hệ thống được phát triển bằng Python (phiên bản từ 3.10 đến dưới 3.13) và quản lý phụ thuộc bằng công cụ \texttt{uv}. Các thư viện chính được sử dụng bao gồm:
+
+\begin{itemize}
+    \item \textbf{OpenSearch} và \texttt{opensearch-py} cho truy hồi tài liệu.
+    \item \textbf{sentence-transformers} để sinh vector embedding.
+    \item \textbf{Pydantic} để kiểm tra và quản lý dữ liệu.
+    \item \textbf{pytest} phục vụ kiểm thử tự động.
+    \item \textbf{pre-commit} để kiểm tra định dạng và chất lượng mã nguồn trước khi commit.
+\end{itemize}
+
+Sau khi sao chép mã nguồn, môi trường được thiết lập bằng các lệnh:
+
+\begin{verbatim}
+uv sync
+cp .env.example .env
+uv run python -m src.migrations.init_db upgrade
+uv run python -m src.migrations.migrate_ddxplus_index upgrade
+\end{verbatim}
+
+Người dùng cần cấu hình các biến môi trường trong tệp \texttt{.env}, đặc biệt là các thông tin kết nối tới cụm OpenSearch.
+
+\subsection{Chuẩn bị dữ liệu và xây dựng Knowledge Base}
+
+Nguồn dữ liệu sử dụng trong dự án là bộ dữ liệu DDXPlus (English Version 2). Theo chính sách quản lý dữ liệu của nhóm, các tệp dữ liệu gốc không được lưu trực tiếp trong GitHub repository mà cần được tải riêng và đặt vào thư mục \texttt{data/} theo hướng dẫn trong tài liệu dự án.
+
+Knowledge Base được xây dựng thông qua các script trong thư mục \texttt{scripts/}. Dữ liệu sau khi được chuẩn hóa sẽ được chuyển thành các đối tượng \texttt{IngestRecord}. Hệ thống tiếp tục sinh vector embedding bằng mô hình BGE, xây dựng các đối tượng \texttt{DiseaseDocument} và thực hiện Bulk Index vào OpenSearch thông qua dịch vụ \texttt{Ingestion}. Quy trình này đảm bảo mỗi bệnh được ánh xạ duy nhất bởi trường \texttt{doc\_id}, hỗ trợ cập nhật và tái lập dữ liệu một cách nhất quán.
+
+\subsection{Tái lập các thí nghiệm}
+
+Dự án cung cấp hai notebook nhằm hỗ trợ quá trình tái lập kết quả:
+
+\begin{itemize}
+    \item \textbf{walkthrough.ipynb}: minh họa toàn bộ pipeline của hệ thống từ quá trình ingest dữ liệu, truy hồi tài liệu đến reranking.
+    \item \textbf{exp02\_live\_eval.ipynb}: thực hiện đánh giá trực tiếp trên OpenSearch và tái tạo các kết quả của thí nghiệm EXP-02.
+\end{itemize}
+
+Các kết quả đánh giá được lưu tại thư mục:
+
+\begin{center}
+\texttt{experiments/exp02/results/}
+\end{center}
+
+trong đó tệp \texttt{live\_eval\_latest.json} chứa kết quả đánh giá đầy đủ mới nhất.
+
+\subsection{Kiểm thử và DevOps}
+
+Để đảm bảo tính ổn định của hệ thống, dự án sử dụng \texttt{pytest} cho các bài kiểm thử đơn vị. Các kiểm thử tập trung vào những thành phần quan trọng của pipeline RAG như Retrieval, Batch Ingestion và các schema xử lý dữ liệu. Các bài kiểm thử sử dụng mô hình embedding và OpenSearch giả lập (mock), do đó không yêu cầu kết nối tới cụm OpenSearch thực tế.
+
+Toàn bộ kiểm thử có thể được thực hiện bằng:
+
+\begin{verbatim}
+uv run pytest
+\end{verbatim}
+
+hoặc chỉ kiểm thử các thành phần của RAG:
+
+\begin{verbatim}
+uv run pytest tests/rag
+\end{verbatim}
+
+Trước khi tạo Pull Request, nhóm sử dụng \texttt{pre-commit} để tự động kiểm tra định dạng mã nguồn, lint và tính nhất quán của các tệp trong dự án:
+
+\begin{verbatim}
+uv run pre-commit run --all-files
+\end{verbatim}
+
+Quy trình phát triển của nhóm tuân theo mô hình Git Flow đơn giản. Các chức năng mới được phát triển trên các nhánh \texttt{feature/*}, sau đó gửi Pull Request vào nhánh \texttt{dev}. Mã nguồn chỉ được hợp nhất sau khi hoàn thành kiểm thử, giải quyết xung đột (merge conflict) và được các thành viên trong nhóm xem xét (code review). Quy trình này góp phần đảm bảo tính ổn định, khả năng tái lập và chất lượng của hệ thống trong suốt quá trình phát triển.
