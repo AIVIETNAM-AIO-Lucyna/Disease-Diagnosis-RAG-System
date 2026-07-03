@@ -4,12 +4,12 @@
 
 \section{Kết quả thí nghiệm (Results)}
 \subsection{Kết quả tham chiếu offline (Python thuần, $n=132{,}448$)}
-Bảng~\ref{tab:offline} tổng hợp kết quả EXP-01/EXP-02 chạy bằng Python thuần trên toàn bộ tập validate. Các dòng BM25 là tham chiếu từ EXP-01; đóng góp của EXP-02 là Dense và Hybrid-RRF. Đây là \textit{mốc tham chiếu / trần trên} cho chất lượng logic truy xuất trên cùng KB và normalizer.
+Bảng~\ref{tab:offline} tổng hợp kết quả EXP-01/EXP-02 chạy bằng Python thuần trên toàn bộ tập validation. Các dòng BM25 là tham chiếu từ EXP-01; đóng góp của EXP-02 là Dense và Hybrid-RRF. Đây là \textit{mốc tham chiếu / trần trên} cho chất lượng logic truy xuất trên cùng KB và normalizer.
 
 \begin{table}[H]
   \centering
   \small
-  \caption{Kết quả truy xuất offline (Python thuần) trên tập validate DDXPlus đầy đủ ($n=132{,}448$). Dense: \texttt{bge-small-en-v1.5}; Hybrid: RRF($k=60$). Nguồn: \texttt{experiments/exp02/results/dense\_hybrid\_summary.md}, \texttt{EXP02\_eval\_report.md}.}
+  \caption{Kết quả truy xuất offline (Python thuần) trên tập validation DDXPlus đầy đủ ($n=132{,}448$). Dense: \texttt{bge-small-en-v1.5}; Hybrid: RRF($k=60$). Nguồn: \texttt{experiments/exp02/results/dense\_hybrid\_summary.md}, \texttt{EXP02\_eval\_report.md}.}
   \label{tab:offline}
   \begin{tabular}{lcccc}
     \toprule
@@ -53,7 +53,7 @@ Con số tổng hợp $\sim$98\% che giấu một số bệnh khó. Bảng~\ref{
 Nguyên nhân chủ yếu xuất phát từ bản chất của BM25, vốn dựa trên đối sánh từ vựng. Khi nhiều bệnh chia sẻ phần lớn các evidence, tài liệu của bệnh anh em thường đạt điểm BM25 tương đương hoặc cao hơn và chiếm vị trí đầu bảng xếp hạng. Tuy nhiên, giá trị MRR vẫn duy trì ở mức cao (từ 0.92 trở lên đối với hầu hết các bệnh, ngoại trừ \textit{Acute rhinosinusitis} với MRR = 0.7481), cho thấy tài liệu đúng thường vẫn xuất hiện trong những vị trí đầu dù chưa đạt hạng 1. Kết quả này là cơ sở để triển khai bước \textbf{semantic re-ranking} bằng cross-encoder trong Phase~2 nhằm phân biệt các bệnh có biểu hiện lâm sàng tương tự.
 
 \subsection{Kết quả OpenSearch chạy đầy đủ -- con số chốt Phase 1 ($n=132{,}448$)}
-Ngày \textbf{26/06/2026}, nhóm chạy pipeline OpenSearch production trên \textbf{toàn bộ tập validate} ($n=132{,}448$, 8 workers, $\approx 3.7$ giờ), thay thế cho lần chạy thử trên mẫu $5{,}000$ trước đó. Đây là \textbf{con số chốt của Phase 1} (Bảng~\ref{tab:livefull}). Truy xuất qua BM25 query + k-NN vector + search pipeline \texttt{hybrid-rrf}; biến thể \texttt{keyword\_text}/no-desc để khớp đúng cấu hình production. Notebook chạy (\texttt{exp02\_live\_eval.ipynb}) và kết quả (\texttt{live\_eval\_latest.json}) được commit trong \href{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System/pull/13}{PR~\#13}.
+Ngày \textbf{26/06/2026}, nhóm chạy pipeline OpenSearch production trên \textbf{toàn bộ tập validation} ($n=132{,}448$, 8 workers, $\approx 3.7$ giờ), thay thế cho lần chạy thử trên mẫu $5{,}000$ trước đó. Đây là \textbf{con số chốt của Phase 1} (Bảng~\ref{tab:livefull}). Truy xuất qua BM25 query + k-NN vector + search pipeline \texttt{hybrid-rrf}; biến thể \texttt{keyword\_text}/no-desc để khớp đúng cấu hình production. Notebook chạy (\texttt{exp02\_live\_eval.ipynb}) và kết quả (\texttt{live\_eval\_latest.json}) được commit trong \href{https://github.com/AIVIETNAM-AIO-Lucyna/Disease-Diagnosis-RAG-System/pull/13}{PR~\#13}.
 
 \begin{table}[H]
   \centering
@@ -176,7 +176,7 @@ Kết quả cho thấy BM25 kết hợp \textit{description} đạt độ chính
     \end{tabular}
     \begin{tablenotes}[flushleft]
       \footnotesize
-      \item \textit{Ghi chú:} Số liệu GTPA@1 và GTPA lấy từ Table~3 của~\cite{ddxplus2022} (test set gốc). Theo~\cite{ddxplus2022}, GTPA@1 dùng để đánh giá mô hình dự đoán bệnh gốc (Diff $\times$), còn GTPA dùng cho mô hình dự đoán differential (Diff $\checkmark$). Số liệu Hit@1 của nghiên cứu này là mốc tham chiếu offline, được đo trên tập validate ($n = 132{,}448$). Dấu (--) biểu thị chỉ số không áp dụng.
+      \item \textit{Ghi chú:} Số liệu GTPA@1 và GTPA lấy từ Table~3 của~\cite{ddxplus2022} (test set gốc). Theo~\cite{ddxplus2022}, GTPA@1 dùng để đánh giá mô hình dự đoán bệnh gốc (Diff $\times$), còn GTPA dùng cho mô hình dự đoán differential (Diff $\checkmark$). Số liệu Hit@1 của nghiên cứu này là mốc tham chiếu offline, được đo trên tập validation ($n = 132{,}448$). Dấu (--) biểu thị chỉ số không áp dụng.
     \end{tablenotes}
   \end{threeparttable}
 \end{table}
