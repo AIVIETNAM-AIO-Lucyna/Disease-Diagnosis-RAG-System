@@ -16,7 +16,7 @@ Trong phạm vi này, chúng tôi tập trung vào thành phần truy xuất và
 
 Từ DDXPlus, chúng tôi dựng một knowledge base (KB) mô tả bệnh, chuẩn hoá bằng chứng và rà soát ánh xạ mã ICD-10, sau đó so sánh ba chiến lược truy xuất: (1) BM25 cho khớp từ vựng, (2) Dense với embedding bge-small-en-v1.5 (384 chiều, độ đo cosine), và (3) Hybrid hợp nhất thứ hạng bằng reciprocal rank fusion (RRF, $k = 60$).
 
-Để tách chất lượng logic truy xuất khỏi ảnh hưởng của hạ tầng, số liệu được đo trước bằng một harness Python thuần chạy in-memory trên 49 tài liệu KB, đóng vai trò mốc tham chiếu, rồi đối chiếu với pipeline OpenSearch thật qua lần chạy đầy đủ ngày 26/06/2026 trên toàn bộ $132{,}448$ ca của tập validate.
+Để tách chất lượng logic truy xuất khỏi ảnh hưởng của hạ tầng, số liệu được đo trước bằng một harness Python thuần chạy in-memory trên 49 tài liệu KB, đóng vai trò mốc tham chiếu, rồi đối chiếu với pipeline OpenSearch thật qua lần chạy đầy đủ ngày 26/06/2026 trên toàn bộ $132{,}448$ ca của tập validation.
 
 Trên cùng quy mô đó, BM25 kết hợp trường description đạt Hit@1 $98.78\%$ (MRR $0.9937$), vượt Hybrid-RRF ($91.95\%$; MRR $0.9570$) và Dense ($84.28\%$; MRR $0.9027$); riêng BM25 tái lập gần như tương đồng giữa hai hạ tầng (Hit@1 $98.65\%$ trên OpenSearch so với $98.47\%$ offline), qua đó xác nhận cả harness lẫn cấu hình hạ tầng đều đáng tin cậy.
 
