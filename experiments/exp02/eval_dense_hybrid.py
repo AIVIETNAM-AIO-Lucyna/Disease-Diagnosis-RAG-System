@@ -17,17 +17,22 @@ NOTE on fairness: the query embedding text excludes the disease name (it is the 
 """
 
 import ast
+import collections
 import csv
+import importlib.util
 import json
 import math
-import re
-import importlib.util
-import collections
-import sys
-import random
 import os
+import random
+import re
+import sys
 import zipfile
 from pathlib import Path
+
+import numpy as np
+
+# ---- dense ----
+from sentence_transformers import SentenceTransformer
 
 # Set EXP02_DATA to the folder holding the data files (defaults to /data).
 DATA = Path(os.environ.get("EXP02_DATA", "/data"))
@@ -61,7 +66,11 @@ spec.loader.exec_module(nz)
 normalize_symptom_phrase = nz.normalize_symptom_phrase
 
 TOK = re.compile(r"[a-z0-9]+")
-tokenize = lambda t: TOK.findall(t.lower())
+
+
+def tokenize(t):
+    return TOK.findall(t.lower())
+
 
 kb = json.loads(KB_PATH.read_text(encoding="utf-8"))
 diseases = [d["disease"] for d in kb]
@@ -72,7 +81,11 @@ evidences = json.loads(EVID.read_text(encoding="utf-8"))
 code_phrase = {
     c: normalize_symptom_phrase(m.get("question_en", c)) for c, m in evidences.items()
 }
-base_code = lambda ev: ev.split("_@_")[0]
+
+
+def base_code(ev):
+    # 'E_55_@_V_167' -> 'E_55' ; 'E_56_@_2' -> 'E_56' ; 'E_7' -> 'E_7'
+    return ev.split("_@_")[0]
 
 
 def patient_phrases(evidences_field):
@@ -127,9 +140,6 @@ class BM25:
 
 bm25 = BM25([d["keyword_text"] + " " + d.get("description", "") for d in kb])
 
-# ---- dense ----
-from sentence_transformers import SentenceTransformer
-import numpy as np
 
 model = SentenceTransformer(MODEL)
 
@@ -220,5 +230,10 @@ print("| config | Hit@1 | Hit@3 | Hit@5 | MRR |")
 print("|---|---|---|---|---|")
 for c, a in agg.items():
     n = a["n"]
-    f = lambda x: f"{100*x/n:.2f}%"
-    print(f"| {c} | {f(a['h1'])} | {f(a['h3'])} | {f(a['h5'])} | {a['rr']/n:.4f} |")
+
+    def pct(x):
+        return f"{100 * x / n:.2f}%"
+
+    print(
+        f"| {c} | {pct(a['h1'])} | {pct(a['h3'])} | {pct(a['h5'])} | {a['rr'] / n:.4f} |"
+    )
