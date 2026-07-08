@@ -78,7 +78,7 @@ Read these guides **once** when joining the project:
 | Document | Audience |
 |----------|----------|
 | [DDXPlus index mapping](./docs/ddxplus-index-mapping.md) | Data team — field schema, ingest workflow |
-| [`Technical Proposal.pdf`](./docs/Technical Proposal.pdf) | All — original architecture design |
+| [Technical Proposal](./docs/Technical-Proposal.pdf) | All — original architecture design |
 | [`indices/diseases/ddxplus_mapping.json`](./indices/diseases/ddxplus_mapping.json) | Data team — active OpenSearch mapping |
 
 ### Versioning policy

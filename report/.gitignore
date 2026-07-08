@@ -1,8 +1,10 @@
+# ---- LaTeX build artifacts (sinh ra khi build -> bo qua) ----
 *.aux
 *.log
 *.out
 *.toc
 *.bbl
+*.bib
 *.bcf
 *.blg
 *.run.xml
@@ -12,3 +14,6 @@
 *.lof
 *.lot
 /main.pdf
+
+# ---- Ngoai le: references.bib la FILE NGUON----
+!references.bib

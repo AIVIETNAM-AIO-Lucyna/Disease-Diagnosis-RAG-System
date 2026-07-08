@@ -12,11 +12,10 @@
 % =========================================================
 % I. LANGUAGE & FONT SETUP
 % =========================================================
-\PassOptionsToPackage{vietnamese.licr}{babel}
+\PassOptionsToPackage{vietnamese}{babel}
 \RequirePackage[vietnamese=nohyphenation]{hyphsubst}
 \RequirePackage[vietnamese]{babel}
-\RequirePackage[T1]{fontenc}
-\RequirePackage{lmodern,mathrsfs}
+\RequirePackage{mathrsfs}
 \RequirePackage[bottom]{footmisc}
 
 % =========================================================
@@ -24,7 +23,7 @@
 % =========================================================
 \RequirePackage[table,dvipsnames]{xcolor}
 \RequirePackage{ragged2e}
-\RequirePackage{svg}
+\IfFileExists{svg.sty}{\RequirePackage{svg}}{}
 \RequirePackage{booktabs}
 \RequirePackage{caption}
 \RequirePackage{subcaption}
@@ -73,12 +72,12 @@
 % IV. BIBLIOGRAPHY & APPENDIX
 % =========================================================
 \RequirePackage[
-    backend=bibtex,
-    style=ieee,
-    maxnames=1,
-    minnames=1,
-    uniquelist=false,
-    hyperref=false
+  backend=bibtex,
+  style=ieee,
+  maxnames=1,
+  minnames=1,
+  uniquelist=false,
+  hyperref=false
 ]{biblatex}
 
 \DefineBibliographyStrings{english}{andothers = {et\addabbrvspace al\adddot}}
@@ -94,14 +93,14 @@
 % =========================================================
 \RequirePackage{hyperref}
 \hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    filecolor=magenta,
-    citecolor=black,
-    urlcolor=blue,
-    pdfborder={0 0 0}, % tắt border (an toàn)
-    pdftitle={AIO2025 Material},
-    pdfpagemode=FullScreen
+  colorlinks=true,
+  linkcolor=black,
+  filecolor=magenta,
+  citecolor=black,
+  urlcolor=blue,
+  pdfborder={0 0 0}, % tắt border (an toàn)
+  pdftitle={AIO2025 Material},
+  pdfpagemode=FullScreen
 }
 
 \RequirePackage[os=win]{menukeys}
@@ -146,13 +145,13 @@
 % Font for cmd blocks
 \ifLuaTeX
   \RequirePackage{fontspec}
-  \newfontfamily\cmdmono{Consolas}
+  \IfFontExistsTF{Consolas}{\newfontfamily\cmdmono{Consolas}}{\newfontfamily\cmdmono{DejaVu Sans Mono}}
 \else\ifXeTeX
-  \RequirePackage{fontspec}
-  \newfontfamily\cmdmono{Consolas}
-\else
-  \newcommand{\cmdmono}{\ttfamily}
-\fi\fi
+    \RequirePackage{fontspec}
+    \IfFontExistsTF{Consolas}{\newfontfamily\cmdmono{Consolas}}{\newfontfamily\cmdmono{DejaVu Sans Mono}}
+  \else
+    \newcommand{\cmdmono}{\ttfamily}
+  \fi\fi
 
 \definecolor{crtgreen}{rgb}{0.0,0.85,0.2}
 
@@ -183,18 +182,18 @@
   listing only,
   listing engine=listings,
   listing options={
-    language=Python,
-    basicstyle=\ttfamily\footnotesize,
-    commentstyle=\color{ForestGreen},
-    keywordstyle=\color{blue},
-    stringstyle=\color{red!70!black},
-    numbers=left,
-    numberstyle=\tiny\color{gray},
-    numbersep=5pt,
-    breaklines=true,
-    xleftmargin=1.5em,
-    framexleftmargin=1.5em
-  }
+      language=Python,
+      basicstyle=\ttfamily\footnotesize,
+      commentstyle=\color{ForestGreen},
+      keywordstyle=\color{blue},
+      stringstyle=\color{red!70!black},
+      numbers=left,
+      numberstyle=\tiny\color{gray},
+      numbersep=5pt,
+      breaklines=true,
+      xleftmargin=1.5em,
+      framexleftmargin=1.5em
+    }
 }
 
 % =========================================================
@@ -213,7 +212,7 @@
 \newcounter{hinh}
 \newcommand{\capfig}[1]{%
   \refstepcounter{hinh}%
-    Hình~\thehinh:~#1
+  Hình~\thehinh:~#1
 }
 
 \newtcolorbox{figurecardcaptionaivn}{

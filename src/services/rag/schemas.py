@@ -8,7 +8,11 @@ from pydantic import Field, computed_field, model_validator
 
 from src.schemas import SearchResponse
 from src.schemas.base import ORSBaseModel, RWSBaseModel
-from src.services.rag.preprocess import build_embed_text, build_keyword_text
+from src.services.rag.preprocess import (
+    build_description,
+    build_embed_text,
+    build_keyword_text,
+)
 from src.settings import settings
 
 MatchOperator = Literal["or", "and"]
@@ -318,6 +322,12 @@ class DiseaseDocument(RWSBaseModel):
     antecedents: list[str] = Field(default_factory=list)
     description: str = ""
     embedding: list[float] | None = None
+
+    @model_validator(mode="after")
+    def build_description(self) -> "DiseaseDocument":
+        if self.description is None or self.description == "":
+            self.description = build_description(self.symptoms, self.antecedents)
+        return self
 
     @property
     def embed_text(self) -> str:
